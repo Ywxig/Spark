@@ -1,4 +1,5 @@
 
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -10,37 +11,19 @@
 
 using namespace std;
 
-vector<string> split(string str, string sep = " ") {
-	int idx = 0, lidx = 0,// îáÿâëåíèå èíäåêñîâ
-		sep_len = sep.size();// ïîðëó÷åíèå äëèíû ñòðîêè
-	vector<string> ret_list; // îáÿâëåíèå âåêòîðà äëÿ çàïèñè
+vector<string> split(const string& s, const string& delimiter) {
+    vector<string> tokens;
+    size_t start = 0;
+    size_t end = s.find(delimiter); // Find first occurrence of delimiter
 
-	while (true) { // áåñêîíå÷üíûé öèêîë
-		lidx = str.find(sep, idx);// íàõîæäåíèå èíäåêñà â ñòðîêå
-
-		ret_list.push_back(str.substr(idx, lidx - idx));
-
-		if (lidx == string::npos) // ïðîâåðêà ïîçèöèè
-			break;
-
-		idx = lidx + sep.size(); // ïðåñâîåíèå íîâîãî èíäåêñà
-	}
-
-	return ret_list;// âåðíóòü ðåçóëüòàò ðàçäåëåíèÿ
+    while (end != string::npos) {
+        tokens.push_back(s.substr(start, end - start)); // Extract substring
+        start = end + delimiter.length(); // Move start past the delimiter
+        end = s.find(delimiter, start); // Find next occurrence
+    }
+    tokens.push_back(s.substr(start)); // Add the last token
+    return tokens;
 }
-
-
-	void AddInFile(string file_for_input, string string_for_input) {// îáÿâëåíèÿ ìåòîäà WriteInFile
-		ofstream out(file_for_input, std::ios::app);// ñîçäàíèå ïîòîêà äëÿ çàïèñè
-		out << string_for_input;// çàïèñü ðåçóëüòàòà
-		out.close();// çàêðûòèå ïîòîêà
-	}
-
-	void WriteInFile(string file_for_input, string string_for_input) {// îáÿâëåíèÿ ìåòîäà WriteInFile
-		ofstream out(file_for_input);// ñîçäàíèå ïîòîêà äëÿ çàïèñè
-		out << string_for_input;// çàïèñü ðåçóëüòàòà
-		out.close();// çàêðûòèå ïîòîêà
-	}
 
 	string join(std::vector<string> vec, string sep = " ") {// ôóíêöèÿ ñîåäèíåíèÿ âñåõ ýëåìåíòîâ âåêòîðà â îäíó ñòðîêó ñ ðàçäåëèòåëåì
 	
@@ -50,6 +33,48 @@ vector<string> split(string str, string sep = " ") {
 			oss << vec.back();
 		}
 		return oss.str();
+	}
+
+    class file{
+        public:
+	    void nwf(string file_for_input, string string_for_input) {// îáÿâëåíèÿ ìåòîäà WriteInFile
+	    	ofstream out(file_for_input);// ñîçäàíèå ïîòîêà äëÿ çàïèñè
+	    	out << string_for_input;// çàïèñü ðåçóëüòàòà
+	    	out.close();// çàêðûòèå ïîòîêà
+	    }
+
+        public:
+	    void addctx(string file_for_input, string string_for_input) {// îáÿâëåíèÿ ìåòîäà WriteInFile
+	    	ofstream out(file_for_input, std::ios::app);// ñîçäàíèå ïîòîêà äëÿ çàïèñè
+	    	out << string_for_input;// çàïèñü ðåçóëüòàòà
+	    	out.close();// çàêðûòèå ïîòîêà
+	    }
+
+        public:
+        string rdf(string file_to_read) {
+	    	std::string line;
+	    	vector<string> return_string;
+                
+	    	std::ifstream in(file_to_read); // îêðûâàåì ôàéë äëÿ ÷òåíèÿ
+	    	if (in.is_open())
+	    	{
+	    		while (getline(in, line))
+	    		{
+	    			return_string.push_back( line );
+	    		}
+	    	}
+	    	else {
+	    		return_string.push_back( "" );
+	    	}
+	    	in.close();     // çàêðûâàåì ôàéë
+	    	return join(return_string);
+	    }
+    };
+
+    void newFile(string file_for_input, string string_for_input) {// creating a new file
+		ofstream out(file_for_input);// ñîçäàíèå ïîòîêà äëÿ çàïèñè
+		out << string_for_input;// çàïèñü ðåçóëüòàòà
+		out.close();// çàêðûòèå ïîòîêà
 	}
 
 	string Read(string file_to_read) {
@@ -77,29 +102,6 @@ vector<string> split(string str, string sep = " ") {
 		return Filds;// âîçâðàùÿåì ìàñèâ ñ ïîëÿìè!
 	}
 
-	void log(string log_text) {// ëþáîé ëîã ïðîâåðÿåòñÿ è âûâîäèò èíôîðìàöèþ
-
-		std::string line;
-
-		std::ifstream in("logs.txt"); // îêðûâàåì ôàéë äëÿ ÷òåíèÿ
-		if (in.is_open()) {
-
-			if (log_text == "") {
-				cout << "Log is empty" << endl;
-			}
-
-			else {
-				AddInFile("logs.txt", "\n" + log_text);
-			}
-		}
-
-		else {
-			cout << "Logs con't write in file!" << endl;
-		}
-	}
-
-	void log_sleep(string log_text){AddInFile("logs.txt", "\n" + log_text);} // Ëîã ñîõðàíÿåòñÿ áåç âûâîäà è ïðîâåðîê
-
 	string int_to_str(int num) {
 		std::ostringstream ost;
 		ost << num;
@@ -112,27 +114,3 @@ vector<string> split(string str, string sep = " ") {
 			cout << arr[i];
 		}
 	}
-
-
-	class Vec {
-
-
-	public:
-		vector<int> Creat2D(int VecX, int VecY) {
-			vector<int> Fin_Vector;
-			Fin_Vector.push_back(VecX);
-			Fin_Vector.push_back(VecY);
-			return Fin_Vector;
-		}
-
-	public:
-		vector<int> Creat3D(int VecX, int VecY) {
-			vector<int> Fin_Vector;
-			Fin_Vector.push_back(VecX);
-			Fin_Vector.push_back(VecY);
-			return Fin_Vector;
-		}
-
-
-
-	};

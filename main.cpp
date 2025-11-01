@@ -1,10 +1,24 @@
+/*
+main.cpp - main source file for CLI scaffolding tool, like VS template.
+This file contains the entry point of the application.
+
+├─ /src
+│  ├─ main.cpp                ← точка входа
+│  ├─ cli.cpp                 ← обработка аргументов командной строки
+│  ├─ scaffolder.cpp          ← логика создания проекта
+│  ├─ file_utils.cpp          ← операции с файлами/папками
+│  ├─ template_manager.cpp    ← работа с шаблонами
+│  └─ config.cpp              ← загрузка config.json
+
+*/
+
 #include <iostream>
 #include <vector>
 #include <string>
 #include <cstdio>
 #include <direct.h> // For _getcwd
 #include <windows.h> // For Windows-specific functions
-#include "command_scraper.cpp"
+#include "cli.cpp" // Include the CLI handling code
 
 // ANSI escape codes for text colors
 #define RESET "\033[0m"
@@ -51,7 +65,8 @@ int main() {
     cout << "Welcome to snake platform!" << endl;
     
     for (;;) { // main loop
-        scrape_command();
+        cout << RESET;
+        exec();
     }
     return 0;
 
