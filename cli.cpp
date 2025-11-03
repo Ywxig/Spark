@@ -6,6 +6,7 @@
 #include <map>
 #include <functional>
 #include <filesystem> // For directory iteration
+
 #include "utils.cpp" // Assuming utils.cpp is in the same directory
 
 // ANSI escape codes for text colors
@@ -71,8 +72,8 @@ void ls_files(string project)            // path to list files
                 project = "/" + hovered_project;
             } else {
                 project = "/" + project;
-            }
-            std::string path = "./solutions" + project; // путь к папке
+            } 
+            std::string path = "solutions" + project; // путь к папке
             for (const auto& entry : fs::directory_iterator(path)) {
                 if (entry.is_directory()) {
                     std::cout << GREEN << entry.path().filename().string() << " " << RESET;
@@ -80,8 +81,8 @@ void ls_files(string project)            // path to list files
                     std::cout << RESET << entry.path().filename().string() << " " << RESET;
                 }
             }
-        } catch (...) {
-            std::string path = "./solutions"; // путь к папке
+        } catch (const std::runtime_error& e) {
+            std::string path = "solutions"; // путь к папке
             for (const auto& entry : fs::directory_iterator(path)) {
                 if (entry.is_directory()) {
                     std::cout << GREEN << entry.path().filename().string() << " " << RESET;
@@ -146,6 +147,9 @@ void exec() {
         // make directory and files
         handle_commands hc;
         hc.new_project(name_new_project, template_of_project);
+
+        // create project structure from template
+        //creatProj(name_new_project, template_of_project);
     });
 
     command_map.emplace("add", [](vector<string>& args){
@@ -170,9 +174,29 @@ void exec() {
     });
 
     command_map.emplace("ls", [](vector<string>& args){
+        string project = ".";
+        try {
+            string project = args[0];
+        } catch (const std::out_of_range& e) {
+            cout << RESET << "";
+        }
         handle_commands hc;
-        string project = args[0];
         hc.ls_files(project);
+    });
+
+    command_map.emplace("del", [](vector<string>& args){
+        string flag = args[1];
+        string project = args[0];
+        // if project is ".", use hovered_project
+        if (project == ".") {project = hovered_project;}
+
+        if (flag == "-r") {
+            // remove all files and folders in the project
+            // use C++17 filesystem library
+            filesystem::remove_all("solutions/" + project);
+        } if (flag == "-f") {
+            filesystem::remove("solutions/" + project);
+        }
     });
 
     // Remove the command part for argument passing

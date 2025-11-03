@@ -1,12 +1,8 @@
-
-
 #include <iostream>
 #include <fstream>
-#include <string>
 #include <sstream>
-#include <vector>
 #include <iterator>
-#include <direct.h> // For _getcwd
+#include <direct.h>
 #include <cstdio>
 
 using namespace std;

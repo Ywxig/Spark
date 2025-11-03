@@ -62,11 +62,16 @@ int main() {
     dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
     SetConsoleMode(hConsole, dwMode);
 
-    cout << "Welcome to snake platform!" << endl;
+    cout << "Wellcome in scafolding tool Spark" << endl;
     
     for (;;) { // main loop
         cout << RESET;
-        exec();
+        try {
+            exec();
+        } catch (const std::runtime_error& e) {
+            cout << RED << "[ERR:] "<< RESET << e.what() << RESET << endl;
+        }
+        
     }
     return 0;
 
