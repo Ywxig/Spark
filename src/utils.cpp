@@ -41,26 +41,11 @@ void file::addctx(string file_for_input, string string_for_input) {
 }
 
 string file::rdf(string file_to_read) {
-	// read content from file
-    string line;
-    vector<string> return_string;
-
+    // read file content
     ifstream in(file_to_read);
-    if (in.is_open()) {
-        while (getline(in, line))
-            return_string.push_back(line);
-    } else {
-        return_string.push_back("");
-    }
+    string content((istreambuf_iterator<char>(in)), istreambuf_iterator<char>());
     in.close();
-
-    ostringstream oss;
-    string sep = " ";
-    if (!return_string.empty()) {
-        copy(return_string.begin(), return_string.end() - 1, ostream_iterator<string>(oss, sep.c_str()));
-        oss << return_string.back();
-    }
-    return oss.str();
+    return content;
 }
 
 // --- utility functions ---

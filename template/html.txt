@@ -1,0 +1,5 @@
+mkdir css
+mkdir js
+mkfile index.html <!DOCTYPE html> ^n <html lang="en"> ^n <head> ^n  <meta charset="UTF-8"> ^n  <meta name="viewport" content="width=device-width, initial-scale=1.0"> ^n  <title>Document</title> ^n  <link rel="stylesheet" href="css/style.css"> ^n </head> ^n <body> ^n  <h1>Welcome!</h1> ^n <script src="js/main.js"></script> ^n ^n </body> ^n </html>
+mkfile css/style.css body { ^n  font-family: Arial, sans-serif; ^n  background-color: #f0f0f0; ^n  color: #333; ^n  text-align: center; ^n  margin-top: 50px; ^n}
+mkfile js/main.js function sayHello() { ^n  alert("Hello from JavaScript!"); ^n } ^n sayHello();

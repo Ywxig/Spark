@@ -1,66 +1,94 @@
 #include <iostream>
-#include <fstream>
-#include <sstream>
-#include <iterator>
-#include <direct.h>
-#include <cstdio>
+#include <string>
 #include <vector>
+#include <algorithm>
+#include <map>
+#include <filesystem>
+#include <functional>
+#include <fstream>
+
+#include "../include/utils.h" // Your custom file utilities
 
 using namespace std;
 
 class Template {
-    public:
-    vector<string> laodTemplate(string template_path) {
-        // this method load a temlate as vector of string
-        // all lise seporeted by "\n" are stored as elements of vector 
-        vector<string> template_lines;
-        template_lines = m_split(m_rdf(template_path), "\n");
-        return template_lines;
+public:
+    void executeTemplate(
+        const string& name_new_project,     // name of new project
+        const string& template_of_project)  // template file name
+    {
+        string template_path = "template/" + template_of_project + ".txt";
+        file f;
+        string template_content = f.rdf(template_path);
+
+        vector<string> lines = split(template_content, "\n");
+
+        // Command registry
+        map<string, function<void(vector<string>&)>> template_commands;
+
+        // ---- mkfile ----
+        template_commands.emplace("mkfile", [name_new_project](vector<string>& args) {
+            if (args.empty()) {
+                cout << "Usage: mkfile <path> <content>\n";
+                return;
+            }
+
+            string path = "solutions/" + name_new_project + "/" + args[0];
+            string content;
+
+            // collect content arguments
+            for (size_t i = 1; i < args.size(); ++i) {
+                if (args[i] == "^n") {
+                    content += "\n";
+                    continue;
+                }
+                content += args[i];
+                if (i < args.size() - 1) content += " ";
+            }
+
+            // Ensure parent directories exist
+            filesystem::create_directories(filesystem::path(path).parent_path());
+
+            // Create file and write content
+            ofstream out(path);
+            if (!out.is_open()) {
+                cout << "Error: could not create file '" << path << "'\n";
+                return;
+            }
+
+            out << content;
+            out.close();
+        });
+
+        // ---- mkdir ----
+        template_commands.emplace("mkdir", [name_new_project](vector<string>& args) {
+            if (args.empty()) {
+                cout << "Usage: mkdir <path>\n";
+                return;
+            }
+
+            string dir_path = "solutions/" + name_new_project + "/" + args[0];
+            filesystem::create_directories(dir_path);
+        });
+
+        // ---- process each line ----
+        for (const string& line : lines) {
+            if (line.empty()) continue;
+
+            vector<string> parts = split(line, " ");
+            if (parts.empty()) continue;
+
+            string command = parts[0];
+            vector<string> args(parts.begin() + 1, parts.end());
+
+            auto it = template_commands.find(command);
+            if (it != template_commands.end()) {
+                it->second(args);
+            } else {
+                cout << "Unknown command: " << command << endl;
+            }
+        }
+
+        cout << "\n✅ Template applied successfully!\n";
     }
-
-    private:
-    vector<string> m_split(const string& s, const string& delimiter) {
-    vector<string> tokens;
-    size_t start = 0;
-    size_t end = s.find(delimiter); // Find first occurrence of delimiter
-
-    while (end != string::npos) {
-        tokens.push_back(s.substr(start, end - start)); // Extract substring
-        start = end + delimiter.length(); // Move start past the delimiter
-        end = s.find(delimiter, start); // Find next occurrence
-    }
-    tokens.push_back(s.substr(start)); // Add the last token
-    return tokens;
-}
-    private:
-	string m_join(std::vector<string> vec, string sep = " ") {// ôóíêöèÿ ñîåäèíåíèÿ âñåõ ýëåìåíòîâ âåêòîðà â îäíó ñòðîêó ñ ðàçäåëèòåëåì
-	
-		std::ostringstream oss;
-		if (!vec.empty()) {
-			std::copy(vec.begin(), vec.end() - 1, ostream_iterator<string>(oss, sep.c_str()));
-			oss << vec.back();
-		}
-		return oss.str();
-	}
-
-        private:
-        string m_rdf(string file_to_read) {
-	    	std::string line;
-	    	vector<string> return_string;
-                
-	    	std::ifstream in(file_to_read); // îêðûâàåì ôàéë äëÿ ÷òåíèÿ
-	    	if (in.is_open())
-	    	{
-	    		while (getline(in, line))
-	    		{
-	    			return_string.push_back( line );
-	    		}
-	    	}
-	    	else {
-	    		return_string.push_back( "" );
-	    	}
-	    	in.close();     // çàêðûâàåì ôàéë
-	    	return m_join(return_string);
-	    }
-
 };

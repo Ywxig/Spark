@@ -45,12 +45,7 @@ using namespace std;
 
 int main() {
 
-    //vector<string> PATH; // it's for using command lice "cd", "ls" and etc.
-    //char buffer[_MAX_PATH];
-    //_getcwd(buffer, _MAX_PATH);
-    //string BUFFER = ""; 
-    //BUFFER = buffer;
-    //PATH = split(BUFFER, "\\");
+    system("title Spark 1.0");
 
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     DWORD dwMode;
@@ -63,6 +58,10 @@ int main() {
     SetConsoleMode(hConsole, dwMode);
 
     cout << "Wellcome in scafolding tool Spark" << endl;
+    cout << "Your projects :" << endl;
+        handle_commands hc;
+        hc.ls_files("."); // list all projects in solutions/
+    cout << endl;
     
     for (;;) { // main loop
         cout << RESET;

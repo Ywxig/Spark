@@ -7,7 +7,7 @@
 #include <functional>
 #include <filesystem> // For directory iteration
 
-//#include "template.cpp" // Assuming template.cpp is in the same directory
+#include "template.cpp" // Assuming template.cpp is in the same directory
 #include "../include/utils.h" // Adjust the path as necessary
 
 // ANSI escape codes for text colors
@@ -48,6 +48,8 @@ void new_project(
             std::filesystem::create_directories(new_project_path);
             file f;
             f.nwf(new_project_path + "/README.md", "# " + name_new_project);
+            Template t;
+            t.executeTemplate(name_new_project, template_of_project);
         }
     };
 
@@ -77,7 +79,7 @@ void ls_files(string project)            // path to list files
             std::string path = "solutions" + project; // путь к папке
             for (const auto& entry : fs::directory_iterator(path)) {
                 if (entry.is_directory()) {
-                    std::cout << GREEN << entry.path().filename().string() << " " << RESET;
+                    std::cout << CYAN << entry.path().filename().string() << " " << RESET;
                 } else {
                     std::cout << RESET << entry.path().filename().string() << " " << RESET;
                 }
@@ -86,7 +88,7 @@ void ls_files(string project)            // path to list files
             std::string path = "solutions"; // путь к папке
             for (const auto& entry : fs::directory_iterator(path)) {
                 if (entry.is_directory()) {
-                    std::cout << GREEN << entry.path().filename().string() << " " << RESET;
+                    std::cout << CYAN << entry.path().filename().string() << " " << RESET;
                 } else {
                     std::cout << RESET << entry.path().filename().string() << " " << RESET;
                 }
@@ -115,7 +117,10 @@ void exec() {
     // Define command handlers using a map
     map<string, function<void(vector<string>&)>> command_map;
     command_map.emplace("help", [](vector<string>& args) {
-        cout << RESET << "Available commands:" << YELLOW << "help, exit, echo" << RESET << endl;
+        cout << RESET << "Available commands:" << endl;
+        cout << RESET << "Project management commands: " << YELLOW << "new, hover, code" << RESET << endl;
+        cout << RESET << "File management commands: " << YELLOW << "ls, del" << RESET << endl;
+        cout << RESET << "Utility commands: " << YELLOW << "echo, cls, help, exit" << RESET << endl;
         return;
     });
 
@@ -126,9 +131,18 @@ void exec() {
     });
 
     command_map.emplace("echo", [](vector<string>& args) {
-        string OUTPUT = join(args, " ");
-        cout << RESET << OUTPUT << endl;
+        // write a content form file
+        string file_path = "solutions/" + args[0];
+        cout << file_path << endl;
+        if (hovered_project != "~"){
+            file_path = "solutions/" + hovered_project + "/" + args[0];
+        }
+        
+        file f;
+        cout << endl;
+        cout << RESET << f.rdf(file_path) << RESET << endl;
         return;
+
     });
 
     command_map.emplace("cls", [](vector<string>& args){
@@ -164,6 +178,16 @@ void exec() {
 
     command_map.emplace("hover", [](vector<string>& args){
         hovered_project = args[0];
+        file f;
+
+        // if derectory if exists
+        if (!filesystem::exists("solutions/" + hovered_project)) {
+            cout << RESET << "Project '" << hovered_project << "' does not exist." << endl;
+            hovered_project = "~";
+        } else {
+            cout << endl;
+            cout << CYAN << f.rdf("solutions/" + hovered_project + "/README.md") << RESET << endl;
+        }
     });
 
     command_map.emplace("code", [](vector<string>& args){
@@ -171,18 +195,38 @@ void exec() {
             cout << RESET << "No project hovered. " <<  "Use '" << CYAN <<"hover " << GREEN << "<project_name>" << RESET << "' to hover a project." << endl;
             return;
         }
-        system(("code " + hovered_project).c_str());
+        string project_path = "solutions/" + hovered_project;
+        system(("code " + project_path).c_str());
     });
 
     command_map.emplace("ls", [](vector<string>& args){
         string project = ".";
         try {
-            string project = args[0];
+            project = args[0];
         } catch (const std::out_of_range& e) {
             cout << RESET << "";
         }
         handle_commands hc;
         hc.ls_files(project);
+    });
+
+    command_map.emplace("github", [](vector<string>& args){
+        std::string url = "https://github.com/";
+
+        #ifdef _WIN32 // For Windows
+            std::string command = "start " + url;
+        #elif __APPLE__ // For macOS
+            std::string command = "open " + url;
+        #elif __linux__ // For Linux
+            std::string command = "xdg-open " + url;
+        #else
+            // Handle other platforms or provide a default
+            std::string command = ""; // Or throw an error
+        #endif
+
+            if (!command.empty()) {
+                std::system(command.c_str());
+            }
     });
 
     command_map.emplace("del", [](vector<string>& args){
@@ -198,6 +242,19 @@ void exec() {
         } if (flag == "-f") {
             filesystem::remove("solutions/" + project);
         }
+    });
+
+    command_map.emplace("rm", [](vector<string>& args){
+
+        //remove project
+        string project = args[0];
+        // if project is ".", use hovered_project
+        if (project == ".") {project = hovered_project;}
+
+        
+        // remove all files and folders in the project
+        // use C++17 filesystem library
+        filesystem::remove_all("solutions/" + project);
     });
 
     // Remove the command part for argument passing
