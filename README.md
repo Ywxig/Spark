@@ -1,6 +1,42 @@
 # Spark
 Spark — the CLI tool that sparks your projects to life. Quickly generate project structures, scaffold files, and keep your codebase organized—so you can focus on building, not setting up.
 
+Spark is a lightweight, opinionated CLI for bootstrapping, organizing, and managing small-to-medium code projects with minimal friction. It focuses on predictable project layouts, repeatable scaffolding, and fast iterative workflows so developers spend less time on setup and more time building.
+
+## Key features
+- Deterministic scaffolding: create consistent project structures from reusable templates.
+- Context-aware commands: commands operate relative to a selected project (via `hover`) to prevent accidental cross-project changes.
+- File-level operations: add, list, and remove files or directories with simple flags for common workflows.
+- Editor integration: open the current project in VS Code with a single command.
+- Lightweight metadata: each project includes a README and minimal metadata to allow safe tooling and automation.
+
+## How it works (high level)
+- Projects live under `solutions/` and are identified by name. Selecting a project with `hover` sets the command context.
+- Templates are simple directory trees with placeholders; `new` copies a template and performs basic substitutions (e.g., project name).
+- CLI operations are implemented as small, focused commands that validate inputs, report clear errors, and avoid destructive defaults.
+
+## Templates & scaffolding
+- Templates can include optional hooks (pre/post) for initializing dependencies or running generators.
+- Template variables support common substitutions (project name, language, license), enabling consistent multi-language scaffolds.
+- Keep templates small and composable—prefer focused templates (library, app, test harness) that can be combined.
+
+## Extensibility and safety
+- Designed to be extended via new templates or wrapper scripts; avoid adding heavy runtime dependencies.
+- Destructive commands require explicit flags (`-r`, `-f`) to reduce accidental data loss.
+- Prefer idempotent operations (re-run scaffolds safely) and clear logging for auditability.
+
+## Typical workflow
+1. Create a project: `new my_app cpp_basic`
+2. Select it: `hover my_app`
+3. Add files or iterate: `add src/main.cpp "..."` / `ls`
+4. Open in editor: `code`
+5. Clean up when done: `rm my_app` (or `del` for finer control)
+
+## Best practices
+- Store reusable templates in version control and document required variables.
+- Use `hover` consistently in scripts to minimize accidental operations on the wrong project.
+- Regularly review and test pre/post hooks in templates to keep initialization deterministic.
+
 ## Commands:
 # CLI Application Documentation
 
