@@ -26,25 +26,16 @@ public:
         // Command registry
         map<string, function<void(vector<string>&)>> template_commands;
 
-        // ---- mkfile ----
+        // mkfile
         template_commands.emplace("mkfile", [name_new_project](vector<string>& args) {
             if (args.empty()) {
                 cout << "Usage: mkfile <path> <content>\n";
                 return;
             }
 
+            file f;
             string path = "solutions/" + name_new_project + "/" + args[0];
-            string content;
-
-            // collect content arguments
-            for (size_t i = 1; i < args.size(); ++i) {
-                if (args[i] == "^n") {
-                    content += "\n";
-                    continue;
-                }
-                content += args[i];
-                if (i < args.size() - 1) content += " ";
-            }
+            string content = f.rdf("template/code/" + args[1]);
 
             // Ensure parent directories exist
             filesystem::create_directories(filesystem::path(path).parent_path());
@@ -60,7 +51,7 @@ public:
             out.close();
         });
 
-        // ---- mkdir ----
+        // mkdir
         template_commands.emplace("mkdir", [name_new_project](vector<string>& args) {
             if (args.empty()) {
                 cout << "Usage: mkdir <path>\n";
@@ -71,7 +62,7 @@ public:
             filesystem::create_directories(dir_path);
         });
 
-        // ---- process each line ----
+        // process each line
         for (const string& line : lines) {
             if (line.empty()) continue;
 
@@ -89,6 +80,6 @@ public:
             }
         }
 
-        cout << "\n✅ Template applied successfully!\n";
+        cout << "\n Template applied successfully!\n" << endl;
     }
 };
