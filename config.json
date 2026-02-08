@@ -1,0 +1,15 @@
+{
+    "invite_" : "EFN $: ",
+    "type_default_" : "~",
+
+    "help" : {
+        "help": "",
+        "new" : "new [SOLUTION NAME] - `new` make solution in folder Solution/",
+        "hover": "hover",
+        "file": "file",
+        "pwd" : "qwd",
+        "remove" : "remove/rm",
+        "ls" : "ls ",
+        "exit": "exit"
+   }
+}
