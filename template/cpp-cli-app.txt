@@ -1,3 +1,0 @@
-mkdir src 
-mkfile src/main.cpp c++/hello-world.cpp
-mkdir include
