@@ -1,2 +1,1 @@
 from .Solution import Solution, SolutionManager
- 
