@@ -3,13 +3,21 @@
     "SRC_DIR" : "_src_", 
     "CONFIG_FILE" : "config.json",
     "MIGRATION_DIR" : "Migrations",
+
+    "START_OPTIONS" : {
+        "open_in_browser" : true,
+        "check_open_in_browser" : false,
+        "port" : 5000,
+        "ip" : "127.0.0.1"
+    },
+
     "IDE" : {
         "open_in_ide" : true,
         "open_in_ide_cmd" : true,
-        "name" : "Visual Studio Code",
+        "name" : "Kate",
         "path" : "",
         "cmd" : {
-            "open" : "code"
+            "open" : "kate"
         }
     }
 }

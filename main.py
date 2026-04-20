@@ -8,6 +8,10 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 from src.Solution_Manager import SolutionManager, Solution
 from config_loader import ConfigLoader
 
+import os
+
+import webbrowser
+
 app = Flask(__name__)
 manager = SolutionManager()
 cfg = ConfigLoader("config.json").load()
@@ -120,8 +124,25 @@ def api_solution(name):
     except FileNotFoundError:
         return jsonify({"error": "Not found"}), 404
 
-
-
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    start_options = cfg["START_OPTIONS"]
+    
+    if start_options["open_in_browser"]:
+        ip = start_options["ip"]
+        port = start_options["port"]
+        url = f"http://{ip}:{port}"
+        
+        should_open = False
+        
+        if not start_options["check_open_in_browser"]:
+            should_open = True
+        else:
+            # Only open if not running as the reloader child process
+            if not os.environ.get("WERKZEUG_RUN_MAIN"):
+                should_open = True
+        
+        if should_open:
+            webbrowser.open(url)
+    
+    # Передаем порт в параметры запуска
+    app.run(host=cfg["START_OPTIONS"]["ip"], port=cfg["START_OPTIONS"]["port"], debug=True)

@@ -1,5 +1,5 @@
 from pathlib import Path
-from .Solution import SolutionManager
+from manager import SolutionManager
 import sys
 
 def migrate(manager: SolutionManager, source_dir: str) -> dict:
