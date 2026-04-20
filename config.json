@@ -1,0 +1,15 @@
+{
+    "SOLUTION_DIR" : "Solutions", 
+    "SRC_DIR" : "_src_", 
+    "CONFIG_FILE" : "config.json",
+    "MIGRATION_DIR" : "Migrations",
+    "IDE" : {
+        "open_in_ide" : true,
+        "open_in_ide_cmd" : true,
+        "name" : "Visual Studio Code",
+        "path" : "",
+        "cmd" : {
+            "open" : "code"
+        }
+    }
+}

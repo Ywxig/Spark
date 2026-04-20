@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Новое решение{% endblock %}
+
+{% block content %}
+<div style="max-width:480px;">
+  <h1 style="margin-bottom:4px;">Новое решение</h1>
+  <p class="page-desc">Создаст папку в Solutions/</p>
+
+  {% if error %}
+  <div class="error-msg">{{ error }}</div>
+  {% endif %}
+
+  <form method="POST" style="display:flex; flex-direction:column; gap:18px;">
+    <div>
+      <label class="label">NAME</label>
+      <input class="input" type="text" name="name" placeholder="lab2_python"
+             autofocus autocomplete="off" value="{{ request.form.get('name', '') }}">
+    </div>
+    <div>
+      <label class="label">DESCRIPTION</label>
+      <input class="input" type="text" name="description" placeholder="Лабораторная работа №2"
+             value="{{ request.form.get('description', '') }}">
+    </div>
+    <div style="display:flex; gap:10px; margin-top:4px;">
+      <button class="btn btn-primary" type="submit">Создать</button>
+      <a href="/" class="btn btn-ghost">Отмена</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

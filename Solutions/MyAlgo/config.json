@@ -1,0 +1,9 @@
+{
+    "Name": "MyAlgo",
+    "Description": "Пример решения",
+    "Configuration": {
+        "language": "python",
+        "version": "1.0",
+        "author": "me"
+    }
+}
