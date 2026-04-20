@@ -35,9 +35,9 @@ class Solution:
 
         self._data = self._load_config()
 
-    # ------------------------------------------------------------------
+    
     # Свойства — при изменении сразу сохраняются на диск
-    # ------------------------------------------------------------------
+    
 
     @property
     def Name(self) -> str:
@@ -76,9 +76,9 @@ class Solution:
         """Папка с исходным кодом."""
         return self._src_path
 
-    # ------------------------------------------------------------------
+    
     # Работа с Configuration
-    # ------------------------------------------------------------------
+    
 
     def get_config(self, key: str, default: Any = None) -> Any:
         """Получить значение из Configuration по ключу."""
@@ -101,9 +101,9 @@ class Solution:
         """Перечитать config.json с диска (если файл изменён снаружи)."""
         self._data = self._load_config()
 
-    # ------------------------------------------------------------------
+    
     # Работа с исходным кодом (src/)
-    # ------------------------------------------------------------------
+    
 
     def list_sources(self) -> list[str]:
         """Вернуть список файлов в src/."""
@@ -131,9 +131,9 @@ class Solution:
         """Вернуть полный путь к файлу в src/."""
         return self._src_path / filename
 
-    # ------------------------------------------------------------------
+    
     # Приватные методы
-    # ------------------------------------------------------------------
+    
 
     def _load_config(self) -> dict:
         with open(self._config_path, encoding="utf-8") as f:
@@ -147,9 +147,9 @@ class Solution:
         return f"Solution(Name={self.Name!r}, path={str(self._path)!r})"
 
 
-# ---------------------------------------------------------------------------
+
 # SolutionManager
-# ---------------------------------------------------------------------------
+
 
 class SolutionManager:
     """
@@ -232,55 +232,3 @@ class SolutionManager:
                 SolutionManager._copy_contents(item, target)
             else:
                 shutil.copy2(item, target)
-
-    def migrate(self, source_dir: str) -> dict:
-        source = Path(source_dir)
-
-        if not source.exists():
-            print(f"[ERROR] Папка не найдена: {source}")
-            sys.exit(1)
-
-        if not source.is_dir():
-            print(f"[ERROR] Указанный путь не является папкой: {source}")
-            sys.exit(1)
-
-        # Собираем все подпапки — каждая это одно решение
-        solution_folders = [p for p in source.iterdir() if p.is_dir()]
-
-        if not solution_folders:
-            print(f"[WARN] В папке {source} не найдено ни одного решения.")
-            return
-
-        print(f"Найдено решений: {len(solution_folders)}")
-        print(f"Целевая папка:   {self._root.resolve()}\n")
-
-        migrated = 0
-        skipped = 0
-        failed = 0
-
-        for folder in sorted(solution_folders):
-            name = folder.name
-
-            try:
-                # Создаём решение (папку + config.json + src/)
-                solution = self.create(Name=name, Description="")
-
-                # Копируем все файлы (рекурсивно) в src/
-                SolutionManager._copy_contents(folder, solution.src_path)
-
-                print(f"  [OK]      {name}")
-                migrated += 1
-
-            except FileExistsError:
-                print(f"  [SKIP]    {name}  (уже существует)")
-                skipped += 1
-
-            except Exception as e:
-                print(f"  [FAILED]  {name}  ({e})")
-                failed += 1
-
-        return {
-            "migrated": migrated,
-            "skipped": skipped,
-            "failed": failed,
-        }
