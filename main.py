@@ -70,7 +70,18 @@ def delete(name):
 
 @app.route("/solution/<name>/open", methods=["POST"])
 def open_in_ide(name):
-    """Открыть папку решения в редакторе из конфига (IDE.cmd.open)."""
+    """Открыть папку решения в редакторе из конфига (IDE.cmd.open).
+
+    Args:
+        name (str): Имя решения, которое необходимо открыть.
+
+    Returns:
+        Response: JSON-ответ с результатом операции.
+            - 200 OK: {"ok": True, "opened": "<путь_к_решению>"}
+            - 400 Bad Request: Если функция открытия отключена или команда не задана.
+            - 404 Not Found: Если решение с указанным именем не найдено.
+            - 500 Internal Server Error: Если исполняемый файл редактора не найден.
+    """
     try:
         solution = manager.get(name)
     except FileNotFoundError:
@@ -78,6 +89,7 @@ def open_in_ide(name):
 
     ide = cfg.get("IDE", {})
 
+    # Проверка включения функции открытия в IDE и наличия команды
     if not ide.get("open_in_ide"):
         return jsonify({"error": "open_in_ide отключён в config.json"}), 400
 
@@ -99,8 +111,6 @@ def open_in_ide(name):
 
 
 # API (JSON)
-
-
 @app.route("/api/solutions")
 def api_solutions():
     solutions = manager.index()

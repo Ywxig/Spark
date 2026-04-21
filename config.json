@@ -14,10 +14,10 @@
     "IDE" : {
         "open_in_ide" : true,
         "open_in_ide_cmd" : true,
-        "name" : "Kate",
+        "name" : "Visual Studio Code",
         "path" : "",
         "cmd" : {
-            "open" : "kate"
+            "open" : "code"
         }
     }
 }

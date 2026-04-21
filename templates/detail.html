@@ -26,7 +26,7 @@
 <div class="card" style="margin-bottom:16px;">
   <div class="section-label">CONFIG.JSON</div>
   {% if solution.Configuration %}
-  <div style="display:flex; flex-direction:column; gap:8px;">
+  <div class="config-list">
     {% for key, val in solution.Configuration.items() %}
     <div class="config-row">
       <span class="config-key">{{ key }}</span>
@@ -35,7 +35,7 @@
     {% endfor %}
   </div>
   {% else %}
-  <div style="color:var(--muted); font-size:13px;">конфигурация пуста</div>
+  <div style="color:var(--muted); font-size:13px; padding: 8px 0;">конфигурация пуста</div>
   {% endif %}
 </div>
 
@@ -43,12 +43,22 @@
 <div class="card">
   <div class="section-label">SRC/ — {{ files|length }} файлов</div>
   {% if files %}
-  <div style="display:flex; flex-direction:column; gap:6px;">
+  <div style="display:flex; flex-direction:column; gap:2px;">
     {% for f in files %}
-    <div class="file-row">
-      <span style="color:var(--muted);">📄</span>
-      <span>{{ f }}</span>
-    </div>
+      <!-- If f is a string (flat list) -->
+      {% if f is string %}
+        <div class="file-row">
+          <span class="icon">📄</span>
+          <span>{{ f }}</span>
+        </div>
+      <!-- If f is a dict (nested structure from previous step) -->
+      {% else %}
+        <div class="file-row">
+          <span class="icon">{{ '📁' if f.type == 'dir' else '📄' }}</span>
+          <span>{{ f.name }}</span>
+        </div>
+        <!-- Note: Recursive rendering requires more complex HTML structure than just a loop here -->
+      {% endif %}
     {% endfor %}
   </div>
   {% else %}

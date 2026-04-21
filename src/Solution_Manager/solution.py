@@ -129,6 +129,47 @@ class Solution:
     def source_path(self, filename: str) -> Path:
         """Вернуть полный путь к файлу в src/."""
         return self._src_path / filename
+    
+    def list_sources(self) -> list[dict]:
+        """
+        Recursively list all files and directories in src/.
+        Returns a list of dictionaries with structure:
+        {
+            "name": str,
+            "type": "file" | "dir",
+            "path": str, # relative path from src/
+            "children": list[dict] # only for dirs
+        }
+        """
+        def _scan_dir(current_path: Path, relative_base: Path) -> list[dict]:
+            items = []
+            if not current_path.exists():
+                return items
+            
+            # Sort: directories first, then files, alphabetically
+            sorted_items = sorted(current_path.iterdir(), key=lambda p: (not p.is_dir(), p.name.lower()))
+
+            for item in sorted_items:
+                # Skip hidden files/folders if desired
+                if item.name.startswith('.'):
+                    continue
+                
+                rel_path = item.relative_to(relative_base)
+                
+                item_data = {
+                    "name": item.name,
+                    "type": "dir" if item.is_dir() else "file",
+                    "path": str(rel_path).replace('\\', '/'), # Normalize separators
+                }
+
+                if item.is_dir():
+                    item_data["children"] = _scan_dir(item, relative_base)
+                
+                items.append(item_data)
+            
+            return items
+
+        return _scan_dir(self._src_path, self._src_path)
 
     
     # Приватные методы

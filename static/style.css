@@ -73,11 +73,73 @@
     .btn-ghost   { background: transparent; color: var(--muted); border: 1px solid var(--border); }
     .btn-ghost:hover   { color: var(--text); border-color: var(--muted); }
 
+    /* ... existing code ... */
+
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 20px 24px;
+    }
+
+    .config-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      margin-bottom: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 13px;
+      transition: all 0.2s ease;
+    }
+
+    .config-row:hover {
+      border-color: var(--accent);
+      background: #1a1a1d;
+    }
+
+    .config-key {
+      font-family: var(--mono);
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .config-value {
+      color: var(--text);
+      max-width: 60%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Fixed class name from .ile-row to .file-row */
+    .file-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text);
+      transition: background 0.15s;
+    }
+
+    .file-row:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* Optional: Style for nested files if you implement tree view */
+    .file-row.nested {
+      margin-left: 20px; /* Indentation for nested items */
+    }
+    
+    .file-row .icon {
+      color: var(--muted);
+      width: 16px;
+      text-align: center;
     }
 
     .badge {
@@ -127,3 +189,60 @@
     h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
     h2 { font-size: 17px; font-weight: 500; }
     .page-desc { color: var(--muted); font-size: 13px; margin-bottom: 28px; }
+
+/* Add to style.css */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20; /* Higher than sidebar (1) and nav (10) to ensure it stays on top if needed, or match nav */
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  width: 100%;
+}
+
+nav {
+  /* Remove previous sticky/top/z-index from nav if moved to header, 
+     but keeping them here is fine if header doesn't have background. 
+     Since header has background, we can simplify nav. */
+  padding: 0 32px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  /* Remove position: sticky, top: 0, z-index: 10 from nav if applied in header */
+  position: relative; 
+  z-index: 1;
+  background: transparent; /* Let header handle background */
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  margin-left: auto; /* Push links to the right if needed, or adjust as per design */
+}
+
+/* Ensure openbtn fits in nav */
+.openbtn {
+  font-size: 16px; /* Adjust size to fit nav height */
+  cursor: pointer;
+  background-color: transparent; /* Match nav style */
+  color: var(--muted);
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-left: 10px;
+  transition: all 0.3s;
+}
+
+.openbtn:hover {
+  background-color: var(--surface);
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+/* Sidebar z-index should be lower than header/nav if you want header to stay visible, 
+   or higher if you want sidebar to cover header. Usually, sidebar covers everything. */
+.sidebar {
+  z-index: 30; /* Higher than header */
+}

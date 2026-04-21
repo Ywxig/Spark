@@ -7,15 +7,34 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='side_bar.css') }}">
+  <script src="{{ url_for('static', filename='side_bar.js') }}"></script>
 </head>
 <body>
-  <nav>
-    <a href="/" class="logo">solution<span>mgr</span></a>
-    <a href="/">все решения</a>
-    <a href="/create">+ создать</a>
-  </nav>
+
+  <header class="app-header">
+    <nav>
+      <a onclick="openNav()" class="logo">solution<span>mgr</span></a>
+      <div class="nav-links">
+        <a href="/">все решения</a>
+        <a href="/create">+ создать</a>
+      </div>
+
+    </nav>
+  </header>
+
+  <div id="side_menu" class="sidebar">
+    <a href="javascript:void(0)" onclick="closeNav()" class="logo">solution<span>mgr</span></a>
+    <a href="/">Home</a>
+    <a href="/docs">Documents</a>
+    <a href="https://github.com/Ywxig">
+      <img align="left" class="dev" width="50px" height="50px" src="https://upload.wikimedia.org/wikipedia/commons/c/c2/GitHub_Invertocat_Logo.svg">
+    </a>
+  </div>
+  
   <main>
     {% block content %}{% endblock %}
   </main>
+
 </body>
 </html>
