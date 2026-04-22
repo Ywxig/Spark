@@ -18,8 +18,22 @@ cfg = ConfigLoader("config.json").load()
 
 
 
-# Страницы
+@app.context_processor
+def inject_config():
+    """
+    Inject configuration into all template contexts.
+    
+    This function is registered as a Flask context processor to make the
+    application configuration available in all Jinja2 templates without
+    explicitly passing it in each route.
+    
+    Returns:
+        dict: A dictionary containing the configuration object accessible
+              as 'config' variable in templates.
+    """
+    return dict(config=cfg)
 
+# Страницы
 
 @app.route("/")
 def index():
@@ -27,6 +41,15 @@ def index():
     solutions = manager.index()
     return render_template("index.html", solutions=solutions)
 
+@app.route("/migrate")
+def migrate():
+    """Панель с настройкой миграции"""
+    return render_template("migration.html")
+
+@app.route("/user")
+def user_info():
+    """Statistic about user"""
+    return render_template("user.html")
 
 @app.route("/solution/<name>")
 def solution_detail(name):

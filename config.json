@@ -3,10 +3,17 @@
     "SRC_DIR" : "_src_", 
     "CONFIG_FILE" : "config.json",
     "MIGRATION_DIR" : "Migrations",
+    "AUTHOR" : {
+        "NAME" : "SomeUser",
+        "AVATAR" : "",
+        "GITHUB" : "",
+        "EMAIL" : "",
+        "LINKS" : []
+    },
 
     "START_OPTIONS" : {
-        "open_in_browser" : true,
-        "check_open_in_browser" : false,
+        "open_in_browser" : false,
+        "check_open_in_browser" : true,
         "port" : 5000,
         "ip" : "127.0.0.1"
     },
@@ -18,6 +25,16 @@
         "path" : "",
         "cmd" : {
             "open" : "code"
+        }
+    },
+
+    "MIGRATION" : {
+        "Name": "",
+        "Description": "",
+        "Configuration": {
+            "language": "",
+            "version": "",
+            "author": ""
         }
     }
 }

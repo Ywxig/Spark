@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Solutions{% endblock %}</title>
+  <title>{% block title %}{{ config.get('APP_NAME', 'Solutions') }}{% endblock %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -14,22 +14,29 @@
 
   <header class="app-header">
     <nav>
-      <a onclick="openNav()" class="logo">solution<span>mgr</span></a>
+      <a onclick="openNav()" class="logo">{{ config.get('APP_NAME', 'solution') }}<span>mgr</span></a>
       <div class="nav-links">
         <a href="/">все решения</a>
         <a href="/create">+ создать</a>
+        <div class="user_data">
+          <a href="/user">
+            <span>{{ config.AUTHOR.NAME }}</span>
+          </a>
+        </div>
       </div>
-
     </nav>
   </header>
 
   <div id="side_menu" class="sidebar">
-    <a href="javascript:void(0)" onclick="closeNav()" class="logo">solution<span>mgr</span></a>
+    <a href="javascript:void(0)" onclick="closeNav()" class="logo">{{ config.get('APP_NAME', 'solution') }}<span>mgr</span></a>
     <a href="/">Home</a>
     <a href="/docs">Documents</a>
-    <a href="https://github.com/Ywxig">
+    <a href="/migrate">Migrate</a>
+    {% if config.AUTHOR.GITHUB %}
+    <a href="{{ config.AUTHOR.GITHUB }}">
       <img align="left" class="dev" width="50px" height="50px" src="https://upload.wikimedia.org/wikipedia/commons/c/c2/GitHub_Invertocat_Logo.svg">
     </a>
+    {% endif %}
   </div>
   
   <main>
