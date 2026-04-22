@@ -46,6 +46,11 @@ def migrate():
     """Панель с настройкой миграции"""
     return render_template("migration.html")
 
+@app.route("/docs")
+def documentation():
+    """Place for documentation. About all what user need to know."""
+    return render_template("docs/main.html")
+
 @app.route("/user")
 def user_info():
     """Statistic about user"""
