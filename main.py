@@ -64,7 +64,7 @@ def solution_detail(name):
         files = solution.list_sources()
         return render_template("detail.html", solution=solution, files=files)
     except FileNotFoundError:
-        return render_template("404.html"), 404
+        return render_template("errors/404.html"), 404
 
 
 @app.route("/create", methods=["GET", "POST"])
@@ -149,6 +149,8 @@ def api_solutions():
     } for s in solutions])
 
 
+# ... existing code ...
+
 @app.route("/api/solutions/<name>")
 def api_solution(name):
     try:
@@ -161,6 +163,24 @@ def api_solution(name):
         })
     except FileNotFoundError:
         return jsonify({"error": "Not found"}), 404
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    """
+    Handle 404 errors for non-existent pages.
+    
+    This error handler is triggered when a user navigates to a URL that
+    doesn't match any defined route in the application.
+    
+    Args:
+        error: The HTTP exception object containing error details.
+    
+    Returns:
+        tuple: A tuple containing the rendered 404 error template and
+               the HTTP status code 404.
+    """
+    return render_template("errors/404.html"), 404
 
 if __name__ == "__main__":
     start_options = cfg["START_OPTIONS"]
