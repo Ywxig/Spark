@@ -17,7 +17,7 @@
         "open_in_browser" : false,
         "check_open_in_browser" : true,
         "port" : 5000,
-        "ip" : "127.0.0.1"
+        "host" : "127.0.0.1"
     },
 
     "IDE" : {
