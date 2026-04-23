@@ -22,9 +22,16 @@
              value="{{ request.form.get('description', '') }}">
     </div>
     <div>
-      <label class="label"> TEMPLATE</label>
-      <input class="input" type="text" name="template" placeholder="cli_python"
-             value="{{ request.form.get('template', '') }}">
+      <label class="label">TEMPLATE</label>
+      <select class="input" name="template">
+        <option value="">— без шаблона —</option>
+        {% for t in templates %}
+        <option value="{{ t.file_name }}"
+          {% if request.form.get('template') == t.file_name %}selected{% endif %}>
+          {{ t.name }}{% if t.description %} — {{ t.description }}{% endif %}
+        </option>
+        {% endfor %}
+      </select>
     </div>
     <div style="display:flex; gap:10px; margin-top:4px;">
       <button class="btn btn-primary" type="submit">Создать</button>

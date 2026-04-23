@@ -71,28 +71,26 @@ def solution_detail(name):
 @app.route("/create", methods=["GET", "POST"])
 def create():
     """Создать новое решение."""
+    templates = Template.index()  # <- добавить
+
     if request.method == "POST":
         name = request.form.get("name", "").strip()
         description = request.form.get("description", "").strip()
-        template = request.form.get("template", "")
+        template = request.form.get("template", "").strip() or None
 
         if not name:
-            return render_template("create.html", error="Имя не может быть пустым.")
+            return render_template("create.html", error="Имя не может быть пустым.", templates=templates)
 
-
-        """
-        if user use template we using template.create()
-        """
         try:
-            if template != None:
+            if template is not None:
                 Template(template).create(name, description)
             else:
                 manager.create(Name=name, Description=description)
             return redirect(url_for("solution_detail", name=name))
         except FileExistsError:
-            return render_template("create.html", error=f"Решение «{name}» уже существует.")
+            return render_template("create.html", error=f"Решение «{name}» уже существует.", templates=templates)
 
-    return render_template("create.html")
+    return render_template("create.html", templates=templates)  # <- передать
 
 
 @app.route("/solution/<name>/delete", methods=["POST"])
