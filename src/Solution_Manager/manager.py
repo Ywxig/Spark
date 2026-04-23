@@ -27,6 +27,7 @@ class SolutionManager:
         Name: str,
         Description: str,
         Configuration: dict | None = None,
+        Structure: list[dict] | None = None,
     ) -> Solution:
         """
         Создать окружение для нового решения и вернуть объект Solution.
@@ -49,6 +50,12 @@ class SolutionManager:
         }
         with open(solution_path / Solution.CONFIG_FILE, "w", encoding="utf-8") as f:
             json.dump(config_data, f, ensure_ascii=False, indent=4)
+
+        # create files using templates
+
+        for item in Structure:
+            with open(solution_path / Solution.SRC_DIR / item["name"], "w", encoding="utf-8") as f:
+                f.write(item["ctx"])
 
         return Solution(solution_path)
 
@@ -90,3 +97,9 @@ class SolutionManager:
                 SolutionManager._copy_contents(item, target)
             else:
                 shutil.copy2(item, target)
+
+if __name__ == "__main__":
+    manager = SolutionManager()
+    #testing
+    manager.create("test")
+    manager.delete("test")

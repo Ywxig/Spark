@@ -3,5 +3,5 @@ from .manager import SolutionManager
 
 __all__ = [
     "Solution",
-    "SolutionManager",
+    "SolutionManager"
 ]

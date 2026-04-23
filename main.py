@@ -7,6 +7,7 @@ import subprocess
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from src.Solution_Manager import SolutionManager, Solution
 from config_loader import ConfigLoader
+from src.Solution_Manager.template import Template
 
 import os
 
@@ -73,12 +74,20 @@ def create():
     if request.method == "POST":
         name = request.form.get("name", "").strip()
         description = request.form.get("description", "").strip()
+        template = request.form.get("template", "")
 
         if not name:
             return render_template("create.html", error="Имя не может быть пустым.")
 
+
+        """
+        if user use template we using template.create()
+        """
         try:
-            manager.create(Name=name, Description=description)
+            if template != None:
+                Template(template).create(name, description)
+            else:
+                manager.create(Name=name, Description=description)
             return redirect(url_for("solution_detail", name=name))
         except FileExistsError:
             return render_template("create.html", error=f"Решение «{name}» уже существует.")

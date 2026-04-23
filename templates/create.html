@@ -21,6 +21,11 @@
       <input class="input" type="text" name="description" placeholder="Лабораторная работа №2"
              value="{{ request.form.get('description', '') }}">
     </div>
+    <div>
+      <label class="label"> TEMPLATE</label>
+      <input class="input" type="text" name="template" placeholder="cli_python"
+             value="{{ request.form.get('template', '') }}">
+    </div>
     <div style="display:flex; gap:10px; margin-top:4px;">
       <button class="btn btn-primary" type="submit">Создать</button>
       <a href="/" class="btn btn-ghost">Отмена</a>

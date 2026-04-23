@@ -1,0 +1,14 @@
+{
+    "Configuration" : {
+        "language": "python",
+        "version": "1.0",
+        "author": ""
+    },
+    "name" : "cli app on python",
+    "description" : "cli app on python",
+    "Structure" : [{
+        "type" : "python",
+        "name" : "main",
+        "ctx" : "print(\"Hello World!\")"
+    }]
+}
