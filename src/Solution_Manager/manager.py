@@ -56,18 +56,27 @@ class SolutionManager:
 
         try:
             from .template import Template
-
             for item in Structure:
                 item_ctx = item["ctx"]
-                print(f"FILE: {Template.get_code_template(cfg["CODE_TEMPLATE_DIR"] + item_ctx.split()[1])}")
-                if item_ctx.split()[0] == "FILE":
-                    with open(solution_path / Solution.SRC_DIR / item["name"], "w", encoding="utf-8") as f:
-                        f.write(Template.get_code_template(cfg["CODE_TEMPLATE_DIR"] + item_ctx.split()[1]))
-
+                
+                # Защита от пустого ctx
+                parts = item_ctx.split()
+                
+                if parts and parts[0] == "FILE":
+                    file_path = solution_path / Solution.SRC_DIR / item["name"]
+                    file_path.parent.mkdir(parents=True, exist_ok=True)
+                    with open(file_path, "w", encoding="utf-8") as f:
+                        f.write(Template.get_code_template(cfg["CODE_TEMPLATE_DIR"] + parts[1]))
+                else:
+                    # ctx пустой или не начинается с "FILE" — пишем как есть
+                    file_path = solution_path / Solution.SRC_DIR / item["name"]
+                    file_path.parent.mkdir(parents=True, exist_ok=True)
+                    with open(file_path, "w", encoding="utf-8") as f:
+                        f.write(item_ctx)
+                        
         except Exception as e:
-            with open(solution_path / Solution.SRC_DIR / item["name"], "w", encoding="utf-8") as f:
-                f.write(item["ctx"])
-
+            print(f"ERROR: {e}")
+        
         return Solution(solution_path)
 
     def delete(self, Name: str) -> None:

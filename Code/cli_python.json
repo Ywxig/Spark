@@ -1,19 +1,20 @@
 {
+    "name" : "python cli",
+    "location" : "cli_python.json",
+    "description": "A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.",
+
     "Configuration" : {
         "language": "python",
         "version": "1.0",
         "author": ""
     },
-    "name" : "python cli",
-    "location" : "cli_python.json",
-    "description" : "cli app on python",
+
     "Structure" : [{
         "language" : "python",
         "type" : "file",
         "name" : "main.py",
-        "ctx" : "FILE cli_python.py"
+        "ctx" : "FILE cli_python/cli_python.py"
     },
-
     {
         "language" : "markdown",
         "type" : "file",
