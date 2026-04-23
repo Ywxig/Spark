@@ -24,7 +24,6 @@
     <div>
       <label class="label">TEMPLATE</label>
       <select class="input" name="template">
-        <option value="">— без шаблона —</option>
         {% for t in templates %}
         <option value="{{ t.file_name }}"
           {% if request.form.get('template') == t.file_name %}selected{% endif %}>
