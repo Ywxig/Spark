@@ -12,5 +12,12 @@
         "type" : "file",
         "name" : "main.py",
         "ctx" : "FILE cli_python.py"
+    },
+
+    {
+        "language" : "markdown",
+        "type" : "file",
+        "name" : "readme.md",
+        "ctx" : ""
     }]
 }

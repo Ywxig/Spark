@@ -55,7 +55,7 @@ def documentation():
 @app.route("/user")
 def user_info():
     """Statistic about user"""
-    return render_template("user.html")
+    return render_template("user.html", config=cfg)
 
 @app.route("/solution/<name>")
 def solution_detail(name):
@@ -128,7 +128,7 @@ def open_in_ide(name):
     if not ide.get("open_in_ide"):
         return jsonify({"error": "open_in_ide отключён в config.json"}), 400
 
-    cmd = ide.get("cmd", {}).get("open", "").strip()
+    cmd = ide.get("cmd", {}).get("open", "").strip() # Получение команды открытия в IDE
     if not cmd:
         return jsonify({"error": "IDE.cmd.open не задан в config.json"}), 400
 
@@ -138,7 +138,7 @@ def open_in_ide(name):
     executable = exe_path if exe_path else cmd
 
     try:
-        subprocess.Popen([executable, str(solution.path)])
+        subprocess.Popen([executable, str(solution.path) + "/" + cfg["SRC_DIR"]])
         return jsonify({"ok": True, "opened": str(solution.path)})
     except FileNotFoundError:
         return jsonify({"error": f"Редактор «{executable}» не найден. Проверь IDE.path в config.json"}), 500

@@ -14,22 +14,22 @@
 
   <header class="app-header">
     <nav>
-      <a onclick="openNav()" class="logo">{{ config.get('APP_NAME', 'solution') }}<span>mgr</span></a>
+      <a onclick="openNav()" class="logo">{{ config.get('APP_NAME', 'solution') }}</a>
       <div class="nav-links">
         <a href="/">все решения</a>
         <a href="/create">+ создать</a>
-        <div class="user_data">
           <a href="/user">
             <span>{{ config.AUTHOR.NAME }}</span>
           </a>
-        </div>
+          <a href="/user">
+            <img src="{{ config.AUTHOR.AVATAR }}" id="avatar" >
+          </a>
       </div>
     </nav>
   </header>
 
   <div id="side_menu" class="sidebar">
-    <a href="javascript:void(0)" onclick="closeNav()" class="logo">{{ config.get('APP_NAME', 'solution') }}<span>mgr</span></a>
-    <a href="/">Home</a>
+    <a href="javascript:void(0)" onclick="closeNav()" class="logo">{{ config.get('APP_NAME', 'solution') }}</a>
     <a href="/docs">Documents</a>
     <a href="/migrate">Migrate</a>
     {% if config.AUTHOR.GITHUB %}

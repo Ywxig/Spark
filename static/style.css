@@ -246,3 +246,17 @@ nav {
 .sidebar {
   z-index: 30; /* Higher than header */
 }
+
+.user_data{
+display: flex;
+    align-items: center;     /* Центрирование по вертикали */
+    justify-content: center;    /* Центрирование по горизонтали */
+    margin-left: 10px;
+}
+
+#avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 100%;
+  margin-left: 10px;
+}
