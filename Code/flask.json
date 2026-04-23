@@ -4,13 +4,13 @@
         "version": "1.0",
         "author": ""
     },
-    "name" : "python cli",
+    "name" : "flask app",
     "location" : "cli_python.json",
-    "description" : "cli app on python",
+    "description" : "python web app on flask",
     "Structure" : [{
         "language" : "python",
         "type" : "file",
         "name" : "main.py",
-        "ctx" : "FILE cli_python.py"
+        "ctx" : "print('hello world!')"
     }]
 }

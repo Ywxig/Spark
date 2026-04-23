@@ -48,12 +48,23 @@ class SolutionManager:
             "Description": Description,
             "Configuration": Configuration or {},
         }
+
         with open(solution_path / Solution.CONFIG_FILE, "w", encoding="utf-8") as f:
             json.dump(config_data, f, ensure_ascii=False, indent=4)
 
         # create files using templates
 
-        for item in Structure:
+        try:
+            from .template import Template
+
+            for item in Structure:
+                item_ctx = item["ctx"]
+                print(f"FILE: {Template.get_code_template(cfg["CODE_TEMPLATE_DIR"] + item_ctx.split()[1])}")
+                if item_ctx.split()[0] == "FILE":
+                    with open(solution_path / Solution.SRC_DIR / item["name"], "w", encoding="utf-8") as f:
+                        f.write(Template.get_code_template(cfg["CODE_TEMPLATE_DIR"] + item_ctx.split()[1]))
+
+        except Exception as e:
             with open(solution_path / Solution.SRC_DIR / item["name"], "w", encoding="utf-8") as f:
                 f.write(item["ctx"])
 
