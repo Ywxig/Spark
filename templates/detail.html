@@ -40,7 +40,7 @@
 </div>
 
 <!-- Files -->
-<div class="card">
+<div class="card" style="margin-bottom:16px;">
   <div class="section-label">SRC/ — {{ files|length }} файлов</div>
   {% if files %}
   <div style="display:flex; flex-direction:column; gap:2px;">
@@ -64,6 +64,21 @@
   {% else %}
   <div style="color:var(--muted); font-size:13px;">файлов пока нет</div>
   {% endif %}
+</div>
+
+<div class="card">
+  <div style="display:flex; flex-direction:column; gap:2px">
+    {% if readme_md %}
+    <div class="readme_md">
+      <h1 style="margin-bottom:4px;">README.md</h1>
+      
+      {{ readme_md | safe }}
+
+    </div>
+    {% else %}
+    <div style="color:var(--muted); font-size:13px;">README.md не найден</div>
+    {% endif %}
+  </div>
 </div>
 
 <!-- Toast уведомление -->

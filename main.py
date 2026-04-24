@@ -9,6 +9,8 @@ from src.Solution_Manager import SolutionManager, Solution
 from config_loader import ConfigLoader
 from src.Solution_Manager.template import Template
 
+import markdown
+
 import os
 
 import webbrowser
@@ -63,7 +65,7 @@ def solution_detail(name):
     try:
         solution = manager.get(name)
         files = solution.list_sources()
-        return render_template("detail.html", solution=solution, files=files)
+        return render_template("detail.html", solution=solution, files=files, readme_md=markdown.markdown(solution.read_source("readme.md")))
     except FileNotFoundError:
         return render_template("errors/404.html"), 404
 
@@ -77,13 +79,14 @@ def create():
         name = request.form.get("name", "").strip()
         description = request.form.get("description", "").strip()
         template = request.form.get("template", "").strip() or None
+        readme_text = request.form.get("readme", "").strip() or None
 
         if not name:
             return render_template("create.html", error="Имя не может быть пустым.", templates=templates)
 
         try:
             if template is not None:
-                Template(template).create(name, description)
+                Template(template).create(name, description, readme_text)
             else:
                 manager.create(Name=name, Description=description)
             return redirect(url_for("solution_detail", name=name))
@@ -100,6 +103,7 @@ def delete(name):
         manager.delete(name)
     except FileNotFoundError:
         pass
+
     return redirect(url_for("index"))
 
 

@@ -6,6 +6,8 @@ from config_loader import ConfigLoader
 import shutil
 from pathlib import Path
 
+import markdown # for markdown
+
 cfg = ConfigLoader("config.json").load()
 
 
@@ -28,6 +30,7 @@ class SolutionManager:
         Description: str,
         Configuration: dict | None = None,
         Structure: list[dict] | None = None,
+        Readme: str | None = None,
     ) -> Solution:
         """
         Создать окружение для нового решения и вернуть объект Solution.
@@ -67,6 +70,13 @@ class SolutionManager:
                     file_path.parent.mkdir(parents=True, exist_ok=True)
                     with open(file_path, "w", encoding="utf-8") as f:
                         f.write(Template.get_code_template(cfg["CODE_TEMPLATE_DIR"] + parts[1]))
+
+                if parts and parts[0] == "README":
+                    file_path = solution_path / Solution.SRC_DIR / item["name"]
+                    file_path.parent.mkdir(parents=True, exist_ok=True)
+                    with open(file_path, "w", encoding="utf-8") as f:
+                        f.write(Readme)
+
                 else:
                     # ctx пустой или не начинается с "FILE" — пишем как есть
                     file_path = solution_path / Solution.SRC_DIR / item["name"]

@@ -1,4 +1,4 @@
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --bg:       #0e0e10;
@@ -190,6 +190,41 @@
     h2 { font-size: 17px; font-weight: 500; }
     .page-desc { color: var(--muted); font-size: 13px; margin-bottom: 28px; }
 
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .type-commit {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .type-commit label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-family: var(--mono);
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .type-commit input[type="radio"] {
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .type-commit label:has(input:checked) {
+      color: var(--text);
+    }
+
 /* Add to style.css */
 
 .app-header {
@@ -241,6 +276,20 @@ nav {
   border-color: var(--accent);
 }
 
+#readme_text_area {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color .15s;
+  resize: vertical;
+}
+
 /* Sidebar z-index should be lower than header/nav if you want header to stay visible, 
    or higher if you want sidebar to cover header. Usually, sidebar covers everything. */
 .sidebar {
@@ -259,4 +308,75 @@ display: flex;
   height: 35px;
   border-radius: 100%;
   margin-left: 10px;
+}
+
+/* Git Section Styles */
+.git-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.git-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.git-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.git-row:hover {
+  border-color: var(--accent);
+  background: #1a1a1d;
+}
+
+.git-label {
+  font-family: var(--mono);
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.git-value {
+  color: var(--text);
+  font-family: var(--mono);
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.git-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.git-actions .btn {
+  font-size: 12px;
+  padding: 6px 12px;
+}
+
+#commit-form select,
+#commit-form input,
+#commit-form textarea {
+  font-family: var(--sans);
+}
+
+#commit-form textarea {
+  resize: vertical;
+  min-height: 60px;
 }

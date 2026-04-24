@@ -2,6 +2,7 @@
     "name" : "python cli",
     "location" : "cli_python.json",
     "description": "A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.",
+    "origin": "",
 
     "Configuration" : {
         "language": "python",
@@ -19,6 +20,6 @@
         "language" : "markdown",
         "type" : "file",
         "name" : "readme.md",
-        "ctx" : ""
+        "ctx" : "README"
     }]
 }
