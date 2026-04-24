@@ -70,7 +70,10 @@
   <div style="display:flex; flex-direction:column; gap:2px">
     {% if readme_md %}
     <div class="readme_md">
-      <h1 style="margin-bottom:4px;">README.md</h1>
+      <div class="title">
+        <div class="section-label" style="margin-bottom:4px;">README.md</div>
+      </div>
+      
       
       {{ readme_md | safe }}
 

@@ -1,4 +1,32 @@
 {% extends "base.html" %}
 {% block title %}Migrations{% endblock %}
 
+{% block content %}
+<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:28px;">
+  <div>
+    <h1>Migrations</h1>
+    <p class="page-desc" style="margin:0">История и управление миграциями</p>
+  </div>
+  <a href="/migrate/new" class="btn btn-primary">+ новая</a>
+</div>
 
+{% if migrations %}
+<div style="display:flex; flex-direction:column; gap:10px;">
+  {% for m in migrations %}
+  <div class="card" style="display:flex; align-items:center; justify-content:space-between;">
+    <div>
+      <div style="font-family:var(--mono); font-size:14px; font-weight:500; color:var(--text); margin-bottom:4px;">{{ m.name }}</div>
+      <div style="font-size:13px; color:var(--muted);">{{ m.created_at }}</div>
+    </div>
+    <span class="badge">{{ m.status }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card" style="text-align:center; padding:48px 24px;">
+  <div style="font-size:32px; margin-bottom:12px;">🔀</div>
+  <div style="color:var(--muted); font-size:14px; margin-bottom:8px;">Миграций пока нет</div>
+  <div style="color:var(--muted); font-size:12px; font-family:var(--mono);">Создайте первую миграцию для начала работы</div>
+</div>
+{% endif %}
+{% endblock %}

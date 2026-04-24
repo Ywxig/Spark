@@ -1,8 +1,16 @@
+function openNav() {
+  document.getElementById("side_menu").style.width = "200px";
+  const overlay = document.getElementById("sidebar_overlay");
+  if (overlay) overlay.classList.add("active");
+}
 
-    function openNav() {
-      document.getElementById("side_menu").style.width = "150px";
-    }
+function closeNav() {
+  document.getElementById("side_menu").style.width = "0";
+  const overlay = document.getElementById("sidebar_overlay");
+  if (overlay) overlay.classList.remove("active");
+}
 
-    function closeNav() {
-      document.getElementById("side_menu").style.width = "0";
-    }
+// Close sidebar on Escape key
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") closeNav();
+});

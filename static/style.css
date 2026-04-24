@@ -14,6 +14,12 @@
       --radius:   8px;
     }
 
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
     body {
       background: var(--bg);
       color: var(--text);
@@ -64,7 +70,7 @@
       font-weight: 500;
       cursor: pointer;
       border: none;
-      transition: opacity .15s, background .15s;
+      transition: opacity .15s, background .15s, color .15s, border-color .15s;
     }
     .btn-primary { background: var(--accent); color: #fff; }
     .btn-primary:hover { opacity: .85; }
@@ -72,8 +78,6 @@
     .btn-danger:hover  { background: var(--danger); color: #fff; }
     .btn-ghost   { background: transparent; color: var(--muted); border: 1px solid var(--border); }
     .btn-ghost:hover   { color: var(--text); border-color: var(--muted); }
-
-    /* ... existing code ... */
 
     .card {
       background: var(--surface);
@@ -114,7 +118,6 @@
       white-space: nowrap;
     }
 
-    /* Fixed class name from .ile-row to .file-row */
     .file-row {
       display: flex;
       align-items: center;
@@ -131,9 +134,8 @@
       background: rgba(255, 255, 255, 0.03);
     }
 
-    /* Optional: Style for nested files if you implement tree view */
     .file-row.nested {
-      margin-left: 20px; /* Indentation for nested items */
+      margin-left: 20px;
     }
     
     .file-row .icon {
@@ -167,6 +169,8 @@
     }
     .input:focus { border-color: var(--accent); }
 
+    /* FIX: removed conflicting .label width from side_bar.css scope;
+       this is the global label used in forms */
     .label {
       display: block;
       font-size: 12px;
@@ -225,49 +229,63 @@
       color: var(--text);
     }
 
-/* Add to style.css */
-
+/* ── App header ─────────────────────────────────────── */
 .app-header {
   position: sticky;
   top: 0;
-  z-index: 20; /* Higher than sidebar (1) and nav (10) to ensure it stays on top if needed, or match nav */
+  z-index: 20;
   background: var(--bg);
   border-bottom: 1px solid var(--border);
   width: 100%;
 }
 
 nav {
-  /* Remove previous sticky/top/z-index from nav if moved to header, 
-     but keeping them here is fine if header doesn't have background. 
-     Since header has background, we can simplify nav. */
   padding: 0 32px;
   height: 52px;
   display: flex;
   align-items: center;
   gap: 24px;
-  /* Remove position: sticky, top: 0, z-index: 10 from nav if applied in header */
-  position: relative; 
+  position: relative;
   z-index: 1;
-  background: transparent; /* Let header handle background */
+  background: transparent;
 }
 
 .nav-links {
   display: flex;
   gap: 24px;
-  margin-left: auto; /* Push links to the right if needed, or adjust as per design */
+  align-items: center;
+  margin-left: auto;
 }
 
-/* Ensure openbtn fits in nav */
+/* ── Sidebar overlay (backdrop) ─────────────────────── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 25;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transition: opacity 0.3s;
+}
+
+.sidebar-overlay.active {
+  display: block;
+}
+
+/* ── Open button in nav ─────────────────────────────── */
 .openbtn {
-  font-size: 16px; /* Adjust size to fit nav height */
+  font-size: 15px;
   cursor: pointer;
-  background-color: transparent; /* Match nav style */
+  background-color: transparent;
   color: var(--muted);
   padding: 5px 10px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  margin-left: 10px;
-  transition: all 0.3s;
+  margin-left: 4px;
+  transition: all 0.2s;
+  font-family: var(--mono);
+  line-height: 1;
 }
 
 .openbtn:hover {
@@ -276,41 +294,53 @@ nav {
   border-color: var(--accent);
 }
 
+/* ── Readme textarea ────────────────────────────────── */
 #readme_text_area {
   width: 100%;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   color: var(--text);
-  font-family: var(--sans);
-  font-size: 14px;
+  font-family: var(--mono);
+  font-size: 13px;
   padding: 9px 12px;
   outline: none;
   transition: border-color .15s;
   resize: vertical;
 }
 
-/* Sidebar z-index should be lower than header/nav if you want header to stay visible, 
-   or higher if you want sidebar to cover header. Usually, sidebar covers everything. */
+#readme_text_area:focus {
+  border-color: var(--accent);
+}
+
+/* ── Sidebar z-index ────────────────────────────────── */
 .sidebar {
-  z-index: 30; /* Higher than header */
+  z-index: 30;
 }
 
-.user_data{
-display: flex;
-    align-items: center;     /* Центрирование по вертикали */
-    justify-content: center;    /* Центрирование по горизонтали */
-    margin-left: 10px;
-}
-
-#avatar {
-  width: 35px;
-  height: 35px;
-  border-radius: 100%;
+/* ── User / avatar in nav ───────────────────────────── */
+.user_data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-left: 10px;
 }
 
-/* Git Section Styles */
+#avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-left: 8px;
+  border: 1.5px solid var(--border);
+  transition: border-color 0.2s;
+  object-fit: cover;
+}
+
+#avatar:hover {
+  border-color: var(--accent);
+}
+
+/* ── Git Section Styles ─────────────────────────────── */
 .git-section {
   display: flex;
   flex-direction: column;
