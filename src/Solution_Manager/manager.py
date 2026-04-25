@@ -6,6 +6,8 @@ from config_loader import ConfigLoader
 import shutil
 from pathlib import Path
 
+from src.loger import Logger
+
 import markdown # for markdown
 
 cfg = ConfigLoader("config.json").load()
@@ -77,7 +79,7 @@ class SolutionManager:
                     with open(file_path, "w", encoding="utf-8") as f:
                         f.write(Readme)
 
-                else:
+                elif parts and parts[0] not in ["README", "FILE"]:
                     # ctx пустой или не начинается с "FILE" — пишем как есть
                     file_path = solution_path / Solution.SRC_DIR / item["name"]
                     file_path.parent.mkdir(parents=True, exist_ok=True)
@@ -85,22 +87,26 @@ class SolutionManager:
                         f.write(item_ctx)
                         
         except Exception as e:
-            print(f"ERROR: {e}")
+            Logger.error(f"[ERROR]: {e}")
         
+        
+
         return Solution(solution_path)
 
     def delete(self, Name: str) -> None:
         """Удалить папку решения целиком."""
         solution_path = self._root / Name
         if not solution_path.exists():
-            raise FileNotFoundError(f"Решение {Name!r} не найдено.")
+            Logger.error(f"[ERROR]: Solution {Name!r} not found.")
+            raise FileNotFoundError(f"[ERROR]: Solution {Name!r} not found.")
         shutil.rmtree(solution_path)
 
     def get(self, Name: str) -> Solution:
         """Получить объект Solution для уже существующего решения."""
         solution_path = self._root / Name
         if not solution_path.exists():
-            raise FileNotFoundError(f"Решение {Name!r} не найдено.")
+            Logger.error(f"[ERROR]: Solution {Name!r} not found.")
+            raise FileNotFoundError(f"[ERROR]: Solution {Name!r} not found.")
         return Solution(solution_path)
 
     def list_solutions(self) -> list[str]:
@@ -128,8 +134,8 @@ class SolutionManager:
             else:
                 shutil.copy2(item, target)
 
-if __name__ == "__main__":
-    manager = SolutionManager()
-    #testing
-    manager.create("test")
-    manager.delete("test")
+# if __name__ == "__main__":
+#     manager = SolutionManager()
+#     #testing
+#     manager.create("test")
+#     manager.delete("test")

@@ -2,6 +2,8 @@ from .manager import SolutionManager
 from config_loader import ConfigLoader
 from pathlib import Path
 
+from src.loger import Logger
+
 cfg = ConfigLoader("config.json").load()
 
 class Template:
@@ -38,12 +40,12 @@ class Template:
                     "file_name": path.name,
                 })
             except Exception as e:
-                print(f"[index] Пропущен {path.name}: {e}")
+                Logger().error(f"[ERROR](index) {path.name}: {e}")
         return templates
     @staticmethod
     def get_code_template(file_name) -> str:
         with open(file_name, "r") as f:
             ctx = f.read()
         return ctx
-
-print(Template("cli_python.json").index())
+    
+Logger().info(f"[INFO] Template module loaded: {Template("cli_python.json").index()}")

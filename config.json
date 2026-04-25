@@ -5,10 +5,18 @@
     "CONFIG_FILE" : "config.json",
     "MIGRATION_DIR" : "Migrations",
     "CODE_TEMPLATE_DIR" : "Code/.templates/",
+    "DEBUG_MODE" : true,
+
+    "LOG" : {
+        "LEVEL" : "INFO",
+        "FILE" : "app.log"
+    },
+
     "AUTHOR" : {
         "NAME" : "SomeUser",
         "AVATAR" : "../static/avatars/avatar.png",
         "GITHUB" : "https://github.com/",
+        "LANGUAGE" : "en",
         "EMAIL" : "",
         "LINKS" : []
     },

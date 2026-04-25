@@ -214,4 +214,4 @@ if __name__ == "__main__":
             webbrowser.open(url)
     
     # Передаем порт в параметры запуска
-    app.run(host=cfg["START_OPTIONS"]["host"], port=cfg["START_OPTIONS"]["port"], debug=True)
+    app.run(host=cfg["START_OPTIONS"]["host"], port=cfg["START_OPTIONS"]["port"], debug=cfg["DEBUG_MODE"])
