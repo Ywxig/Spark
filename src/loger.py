@@ -5,7 +5,7 @@ from config_loader import ConfigLoader
 
 cfg = ConfigLoader("config.json").load()
 
-class Logger:
+class Logger():
     def __init__(self, log_file=cfg["LOG"]["FILE"], level=cfg["LOG"]["LEVEL"], debug=cfg["DEBUG_MODE"]):
         self.logger = loguru.logger
         
@@ -43,7 +43,7 @@ class Logger:
 """
 using:
 
-logger = Logger()
-logger.info("Some info")
-logger.error("Some error")
+Logger() = Logger()()
+Logger().info("Some info")
+Logger().error("Some error")
 """

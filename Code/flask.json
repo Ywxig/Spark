@@ -27,6 +27,11 @@
         "type" : "file",
         "name" : "readme.md",
         "ctx" : "README"
-    }
-]
+    }],
+
+    "Script" : [
+        "python3 -m venv .venv",
+        "source .venv/bin/activate",
+        "pip install flask"
+    ]
 }

@@ -24,6 +24,7 @@ class Template:
             Description=description,
             Configuration=self.template_cfg["Configuration"],
             Structure=self.template_cfg["Structure"],
+            Script=self.template_cfg["Script"],
             Readme=readme
         )
 

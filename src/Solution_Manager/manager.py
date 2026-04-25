@@ -32,6 +32,7 @@ class SolutionManager:
         Description: str,
         Configuration: dict | None = None,
         Structure: list[dict] | None = None,
+        Script: list[str] | None = None,
         Readme: str | None = None,
     ) -> Solution:
         """
@@ -87,9 +88,12 @@ class SolutionManager:
                         f.write(item_ctx)
                         
         except Exception as e:
-            Logger.error(f"[ERROR]: {e}")
-        
-        
+            Logger().error(f"[ERROR]: {e}")
+
+        from .skripter import CommandExecutor
+
+        if Script != []:
+            CommandExecutor(str(solution_path / Solution.SRC_DIR)).execute(Script)
 
         return Solution(solution_path)
 
@@ -97,7 +101,7 @@ class SolutionManager:
         """Удалить папку решения целиком."""
         solution_path = self._root / Name
         if not solution_path.exists():
-            Logger.error(f"[ERROR]: Solution {Name!r} not found.")
+            Logger().error(f"[ERROR]: Solution {Name!r} not found.")
             raise FileNotFoundError(f"[ERROR]: Solution {Name!r} not found.")
         shutil.rmtree(solution_path)
 
@@ -105,7 +109,7 @@ class SolutionManager:
         """Получить объект Solution для уже существующего решения."""
         solution_path = self._root / Name
         if not solution_path.exists():
-            Logger.error(f"[ERROR]: Solution {Name!r} not found.")
+            Logger().error(f"[ERROR]: Solution {Name!r} not found.")
             raise FileNotFoundError(f"[ERROR]: Solution {Name!r} not found.")
         return Solution(solution_path)
 
