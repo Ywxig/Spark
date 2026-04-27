@@ -9,3 +9,14 @@ static/** linguist-vendored
 
 # Если есть папка с шаблонами Flask/Django
 templates/** linguist-vendored
+
+# Скрываем стили (они портят статистику больше всего)
+*.css linguist-vendored
+static/css/* linguist-vendored
+
+# Скрываем шаблоны C++, которые попали в статистику
+*.cpp linguist-vendored
+*.hpp linguist-vendored
+
+# Если у тебя есть папки с примерами решений (лабораторными)
+Solutions/** linguist-vendored
