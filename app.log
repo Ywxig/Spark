@@ -134,3 +134,9 @@
  failed: 0
 2026-04-27 17:08:41 | INFO | [MIGRATE] Done. None
 2026-04-27 18:24:49 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
+2026-04-27 18:37:21 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'JS cli', 'description': '', 'file_name': 'cli_js.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}, {'name': 'C++ CLI', 'description': '', 'file_name': 'cli_cpp.json'}]
+2026-04-27 18:37:22 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'JS cli', 'description': '', 'file_name': 'cli_js.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}, {'name': 'C++ CLI', 'description': '', 'file_name': 'cli_cpp.json'}]
+2026-04-27 18:38:54 | INFO | Запуск команды: 'python3 -m venv .venv' в директории: Solutions/js_lab5/_src_
+2026-04-27 18:38:58 | INFO | Успешно выполнено: python3 -m venv .venv
+2026-04-27 18:38:58 | INFO | Запуск команды: 'source .venv/bin/activate' в директории: Solutions/js_lab5/_src_
+2026-04-27 18:38:58 | INFO | Успешно выполнено: source .venv/bin/activate
