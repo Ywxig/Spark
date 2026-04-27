@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="{{ config.AUTHOR.LANGUAGE, 'en' }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,33 +8,42 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='side_bar.css') }}">
-  <script src="{{ url_for('static', filename='side_bar.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='readme.css') }}">
+  <script src="{{ url_for('static', filename='side_bar.js') }}" defer></script>
+  {% block styles %}{% endblock %}
 </head>
 <body>
 
   <header class="app-header">
     <nav>
-      <a onclick="openNav()" class="logo">{{ config.get('APP_NAME', 'solution') }}<span>mgr</span></a>
+      <a onclick="openNav()" class="logo" style="cursor:pointer;">{{ config.get('APP_NAME', 'solution') }}</a>
       <div class="nav-links">
         <a href="/">все решения</a>
         <a href="/create">+ создать</a>
-        <div class="user_data">
           <a href="/user">
             <span>{{ config.AUTHOR.NAME }}</span>
           </a>
-        </div>
+          <a href="/user">
+            <img src="{{ config.AUTHOR.AVATAR }}" id="avatar" >
+          </a>
       </div>
     </nav>
   </header>
 
+  <!-- Overlay backdrop for sidebar -->
+  <div id="sidebar_overlay" class="sidebar-overlay" onclick="closeNav()"></div>
+
   <div id="side_menu" class="sidebar">
-    <a href="javascript:void(0)" onclick="closeNav()" class="logo">{{ config.get('APP_NAME', 'solution') }}<span>mgr</span></a>
-    <a href="/">Home</a>
-    <a href="/docs">Documents</a>
-    <a href="/migrate">Migrate</a>
+    <a href="javascript:void(0)" onclick="closeNav()" class="logo">
+      {{ config.get('APP_NAME', 'solution') }}
+      <span class="closebtn">✕</span>
+    </a>
+    <a href="/docs">📄 Documents</a>
+    <a href="/migrate">🔀 Migrate</a>
     {% if config.AUTHOR.GITHUB %}
-    <a href="{{ config.AUTHOR.GITHUB }}">
-      <img align="left" class="dev" width="50px" height="50px" src="https://upload.wikimedia.org/wikipedia/commons/c/c2/GitHub_Invertocat_Logo.svg">
+    <a href="{{ config.AUTHOR.GITHUB }}" target="_blank">
+      <img class="dev" src="https://upload.wikimedia.org/wikipedia/commons/c/c2/GitHub_Invertocat_Logo.svg">
+      GitHub
     </a>
     {% endif %}
   </div>

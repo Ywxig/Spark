@@ -6,6 +6,10 @@ from config_loader import ConfigLoader
 import shutil
 from pathlib import Path
 
+from src.loger import Logger
+
+import markdown # for markdown
+
 cfg = ConfigLoader("config.json").load()
 
 
@@ -27,6 +31,9 @@ class SolutionManager:
         Name: str,
         Description: str,
         Configuration: dict | None = None,
+        Structure: list[dict] | None = None,
+        Script: list[str] | None = None,
+        Readme: str | None = None,
     ) -> Solution:
         """
         Создать окружение для нового решения и вернуть объект Solution.
@@ -47,8 +54,47 @@ class SolutionManager:
             "Description": Description,
             "Configuration": Configuration or {},
         }
+
         with open(solution_path / Solution.CONFIG_FILE, "w", encoding="utf-8") as f:
             json.dump(config_data, f, ensure_ascii=False, indent=4)
+
+        # create files using templates
+
+        if Structure:
+            try:
+                from .template import Template
+                for item in Structure:
+                    item_ctx = item["ctx"]
+
+                    # Защита от пустого ctx
+                    parts = item_ctx.split()
+
+                    if parts and parts[0] == "FILE":
+                        file_path = solution_path / Solution.SRC_DIR / item["name"]
+                        file_path.parent.mkdir(parents=True, exist_ok=True)
+                        with open(file_path, "w", encoding="utf-8") as f:
+                            f.write(Template.get_code_template(cfg["CODE_TEMPLATE_DIR"] + parts[1]))
+
+                    if parts and parts[0] == "README":
+                        file_path = solution_path / Solution.SRC_DIR / item["name"]
+                        file_path.parent.mkdir(parents=True, exist_ok=True)
+                        with open(file_path, "w", encoding="utf-8") as f:
+                            f.write(Readme)
+
+                    elif parts and parts[0] not in ["README", "FILE"]:
+                        # ctx пустой или не начинается с "FILE" — пишем как есть
+                        file_path = solution_path / Solution.SRC_DIR / item["name"]
+                        file_path.parent.mkdir(parents=True, exist_ok=True)
+                        with open(file_path, "w", encoding="utf-8") as f:
+                            f.write(item_ctx)
+
+            except Exception as e:
+                Logger().error(f"[ERROR]: {e}")
+                raise
+
+        if Script:
+            from .skripter import CommandExecutor
+            CommandExecutor(str(solution_path / Solution.SRC_DIR)).execute(Script)
 
         return Solution(solution_path)
 
@@ -56,14 +102,16 @@ class SolutionManager:
         """Удалить папку решения целиком."""
         solution_path = self._root / Name
         if not solution_path.exists():
-            raise FileNotFoundError(f"Решение {Name!r} не найдено.")
+            Logger().error(f"[ERROR]: Solution {Name!r} not found.")
+            raise FileNotFoundError(f"[ERROR]: Solution {Name!r} not found.")
         shutil.rmtree(solution_path)
 
     def get(self, Name: str) -> Solution:
         """Получить объект Solution для уже существующего решения."""
         solution_path = self._root / Name
         if not solution_path.exists():
-            raise FileNotFoundError(f"Решение {Name!r} не найдено.")
+            Logger().error(f"[ERROR]: Solution {Name!r} not found.")
+            raise FileNotFoundError(f"[ERROR]: Solution {Name!r} not found.")
         return Solution(solution_path)
 
     def list_solutions(self) -> list[str]:
@@ -90,3 +138,9 @@ class SolutionManager:
                 SolutionManager._copy_contents(item, target)
             else:
                 shutil.copy2(item, target)
+
+# if __name__ == "__main__":
+#     manager = SolutionManager()
+#     #testing
+#     manager.create("test")
+#     manager.delete("test")

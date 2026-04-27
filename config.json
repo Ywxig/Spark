@@ -1,12 +1,22 @@
 {
-    "SOLUTION_DIR" : "Solutions", 
+    "SOLUTION_DIR" : "Solutions",
+    "APP_NAME" : "Spark",
     "SRC_DIR" : "_src_", 
     "CONFIG_FILE" : "config.json",
     "MIGRATION_DIR" : "Migrations",
+    "CODE_TEMPLATE_DIR" : "Code/.templates/",
+    "DEBUG_MODE" : true,
+
+    "LOG" : {
+        "LEVEL" : "INFO",
+        "FILE" : "app.log"
+    },
+
     "AUTHOR" : {
         "NAME" : "SomeUser",
-        "AVATAR" : "",
-        "GITHUB" : "",
+        "AVATAR" : "../static/avatars/avatar.png",
+        "GITHUB" : "https://github.com/",
+        "LANGUAGE" : "en",
         "EMAIL" : "",
         "LINKS" : []
     },
@@ -15,7 +25,7 @@
         "open_in_browser" : false,
         "check_open_in_browser" : true,
         "port" : 5000,
-        "ip" : "127.0.0.1"
+        "host" : "127.0.0.1"
     },
 
     "IDE" : {
@@ -32,8 +42,8 @@
         "Name": "",
         "Description": "",
         "Configuration": {
-            "language": "",
-            "version": "",
+            "language": "No selected",
+            "version": "1.0",
             "author": ""
         }
     }

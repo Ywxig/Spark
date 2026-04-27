@@ -10,3 +10,8 @@ class ConfigLoader:
         """Загрузить конфигурацию из файла."""
         with open(self.Config_File_Path, "r", encoding="utf-8") as f:
             return json.load(f)
+        
+    def set(self, field, value):
+        """Изменить поле в конфигурации."""
+        with open(self.Config_File_Path, "r", encoding="utf-8") as f:
+            return json.load(f)

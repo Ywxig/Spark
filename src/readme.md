@@ -22,3 +22,4 @@ src/
 | `solution.py` | Represents a single solution. Reads and writes its `config.json` and manages files in `src/` |
 | `manager.py` | Creates, deletes, and lists solutions. All solutions are stored in the `Solutions/` folder |
 | `migrate.py` | Imports existing folders into the application as solutions |
+| `template.py` | Creates a new solution from a template |

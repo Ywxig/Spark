@@ -18,6 +18,7 @@
 import sys
 import shutil
 from pathlib import Path
+from src.loger import Logger
 
 from src.Solution_Manager import SolutionManager
 
@@ -26,24 +27,24 @@ def migrate(source_dir: str) -> None:
     source = Path(source_dir)
 
     if not source.exists():
-        print(f"[ERROR] Папка не найдена: {source}")
+        Logger().error(f"[ERROR] Folder not found: {source}")
         sys.exit(1)
 
     if not source.is_dir():
-        print(f"[ERROR] Указанный путь не является папкой: {source}")
+        Logger().error(f"[ERROR] The specified path is not a folder: {source}")
         sys.exit(1)
 
     # Собираем все подпапки — каждая это одно решение
     solution_folders = [p for p in source.iterdir() if p.is_dir()]
 
     if not solution_folders:
-        print(f"[WARN] В папке {source} не найдено ни одного решения.")
+        Logger().warn(f"WARN] No solutions were found in the {source} folder.")
         return
 
     manager = SolutionManager()
 
-    print(f"Найдено решений: {len(solution_folders)}")
-    print(f"Целевая папка:   {manager._root.resolve()}\n")
+    Logger().info(f"[INFO] Count of solutions: {len(solution_folders)}")
+    Logger().info(f"[INFO] Target folder:   {manager._root.resolve()}\n")
 
     migrated = 0
     skipped = 0
@@ -59,18 +60,18 @@ def migrate(source_dir: str) -> None:
             # Копируем все файлы (рекурсивно) в src/
             _copy_contents(folder, solution.src_path)
 
-            print(f"  [OK]      {name}")
+            Logger().info(f"  [OK]      {name}")
             migrated += 1
 
         except FileExistsError:
-            print(f"  [SKIP]    {name}  (уже существует)")
+            Logger().warn(f"  [SKIP]    {name}  (just exists)")
             skipped += 1
 
         except Exception as e:
-            print(f"  [FAILED]  {name}  ({e})")
+            Logger().error(f"  [FAILED]  {name}  ({e})")
             failed += 1
 
-    print(f"\nГотово: {migrated} перенесено, {skipped} пропущено, {failed} ошибок.")
+    Logger().info(f"[INFO] Done. Migrated {migrated} solutions.\n migrated: {migrated}\n skipped: {skipped}\n failed: {failed}")
 
 
 def _copy_contents(src: Path, dst: Path) -> None:

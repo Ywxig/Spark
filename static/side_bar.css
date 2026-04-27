@@ -1,67 +1,98 @@
-.ico{
-    width: 30px;
-    height: 30px;
-}
-
-.label{
-    width: 50px;
-}
-
 .sidebar {
     height: 100%;
     width: 0;
     position: fixed;
-    z-index: 30; /* Increased to be above header */
+    z-index: 30;
     top: 0;
     left: 0;
-    background-color: #111;
+    background-color: #111113;
+    border-right: 1px solid #2a2a2e;
     overflow-x: hidden;
-    transition: 0.5s;
-    padding-top: 30px;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    padding-top: 0;
 }
 
 .sidebar .logo {
-      font-family: var(--mono);
-      font-weight: 700;
-      font-size: 14px;
-      color: var(--accent);
-      letter-spacing: 0.02em;
-    }
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    height: 52px;
+    padding: 0 20px 0 24px;
+    border-bottom: 1px solid #2a2a2e;
+    white-space: nowrap;
+    justify-content: space-between;
+}
 
 .sidebar .logo span { color: var(--accent2); }
 
-/* ... rest of the file remains the same ... */
-
 .sidebar a {
-    padding: 8px 8px 8px 32px;
+    padding: 10px 10px 10px 24px;
     text-decoration: none;
+    font-size: 13px;
+    font-family: var(--mono);
     color: #818181;
-    display: block;
-    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+    transition: color 0.2s, background 0.2s;
+    border-left: 2px solid transparent;
 }
 
 .sidebar a:hover {
-    color: #f1f1f1;
+    color: #e8e8ed;
+    background: rgba(124, 106, 247, 0.06);
+    border-left-color: var(--accent);
 }
 
+/* Close button — sits inside the logo row */
 .sidebar .closebtn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    margin-left: 50px;
+    font-size: 20px;
+    color: #6b6b76;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+    border-radius: 4px;
+    transition: color 0.2s;
+    text-decoration: none;
+    margin-left: auto;
 }
 
+.sidebar .closebtn:hover {
+    color: #e8e8ed;
+    background: transparent;
+    border: none;
+}
+
+/* Nav open button — overridden in style.css, this is a fallback */
 .openbtn {
     cursor: pointer;
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    margin-bottom: 10px;
+    background-color: transparent;
+    color: var(--muted, #6b6b76);
+    padding: 5px 10px;
+    border: 1px solid var(--border, #2a2a2e);
+    border-radius: var(--radius, 8px);
+    transition: all 0.2s;
 }
 
 .openbtn:hover {
-    background-color: #444;
+    background-color: var(--surface, #17171a);
+    color: var(--text, #e8e8ed);
+}
+
+/* Sidebar icon images */
+.sidebar a img.dev {
+    width: 20px;
+    height: 20px;
+    opacity: 0.6;
+    filter: invert(1);
+    transition: opacity 0.2s;
+}
+
+.sidebar a:hover img.dev {
+    opacity: 1;
 }

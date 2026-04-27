@@ -5,8 +5,12 @@ Flask приложение для управления решениями.
 
 import subprocess
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-from src.Solution_Manager import SolutionManager, Solution
+from src.Solution_Manager import SolutionManager, Solution, Migrations
 from config_loader import ConfigLoader
+from src.Solution_Manager.template import Template
+
+from src.loger import Logger
+import markdown
 
 import os
 
@@ -41,15 +45,27 @@ def index():
     solutions = manager.index()
     return render_template("index.html", solutions=solutions)
 
-@app.route("/migrate")
+@app.route("/migrate", methods=["GET", "POST"])
 def migrate():
     """Панель с настройкой миграции"""
-    return render_template("migration.html")
+    migrations = Migrations().index()    
+    return render_template("migration.html", migrations=migrations)
+
+@app.route("/migrate/run", methods=["GET", "POST"])
+def migrate_run():
+    migrate_msg = Migrations.migrate(source_dir=cfg["MIGRATION_DIR"])
+    Logger().info(f"[MIGRATE] Done. {migrate_msg}")
+    return redirect(url_for("index"))   
+
+@app.route("/docs")
+def documentation():
+    """Place for documentation. About all what user need to know."""
+    return render_template("docs/main.html")
 
 @app.route("/user")
 def user_info():
     """Statistic about user"""
-    return render_template("user.html")
+    return render_template("user.html", config=cfg)
 
 @app.route("/solution/<name>")
 def solution_detail(name):
@@ -57,28 +73,35 @@ def solution_detail(name):
     try:
         solution = manager.get(name)
         files = solution.list_sources()
-        return render_template("detail.html", solution=solution, files=files)
-    except FileNotFoundError:
-        return render_template("404.html"), 404
+        return render_template("detail.html", solution=solution, files=files, readme_md=markdown.markdown(solution.read_source("readme.md")))
+    except FileNotFoundError or Exception as e:
+        return render_template("errors/404.html", error=e), 404
 
 
 @app.route("/create", methods=["GET", "POST"])
 def create():
     """Создать новое решение."""
+    templates = Template.index()  # <- добавить
+
     if request.method == "POST":
         name = request.form.get("name", "").strip()
         description = request.form.get("description", "").strip()
+        template = request.form.get("template", "").strip() or None
+        readme_text = request.form.get("readme", "").strip() or None
 
         if not name:
-            return render_template("create.html", error="Имя не может быть пустым.")
+            return render_template("create.html", error="Имя не может быть пустым.", templates=templates)
 
         try:
-            manager.create(Name=name, Description=description)
+            if template is not None:
+                Template(template).create(name, description, readme_text)
+            else:
+                manager.create(Name=name, Description=description)
             return redirect(url_for("solution_detail", name=name))
         except FileExistsError:
-            return render_template("create.html", error=f"Решение «{name}» уже существует.")
+            return render_template("create.html", error=f"Решение «{name}» уже существует.", templates=templates)
 
-    return render_template("create.html")
+    return render_template("create.html", templates=templates)  # <- передать
 
 
 @app.route("/solution/<name>/delete", methods=["POST"])
@@ -88,6 +111,7 @@ def delete(name):
         manager.delete(name)
     except FileNotFoundError:
         pass
+
     return redirect(url_for("index"))
 
 
@@ -116,7 +140,7 @@ def open_in_ide(name):
     if not ide.get("open_in_ide"):
         return jsonify({"error": "open_in_ide отключён в config.json"}), 400
 
-    cmd = ide.get("cmd", {}).get("open", "").strip()
+    cmd = ide.get("cmd", {}).get("open", "").strip() # Получение команды открытия в IDE
     if not cmd:
         return jsonify({"error": "IDE.cmd.open не задан в config.json"}), 400
 
@@ -126,13 +150,11 @@ def open_in_ide(name):
     executable = exe_path if exe_path else cmd
 
     try:
-        subprocess.Popen([executable, str(solution.path)])
+        subprocess.Popen([executable, str(solution.path) + "/" + cfg["SRC_DIR"]])
         return jsonify({"ok": True, "opened": str(solution.path)})
     except FileNotFoundError:
         return jsonify({"error": f"Редактор «{executable}» не найден. Проверь IDE.path в config.json"}), 500
-
-
-
+    
 # API (JSON)
 @app.route("/api/solutions")
 def api_solutions():
@@ -143,6 +165,8 @@ def api_solutions():
         "files": s.list_sources(),
     } for s in solutions])
 
+
+# ... existing code ...
 
 @app.route("/api/solutions/<name>")
 def api_solution(name):
@@ -156,6 +180,24 @@ def api_solution(name):
         })
     except FileNotFoundError:
         return jsonify({"error": "Not found"}), 404
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    """
+    Handle 404 errors for non-existent pages.
+    
+    This error handler is triggered when a user navigates to a URL that
+    doesn't match any defined route in the application.
+    
+    Args:
+        error: The HTTP exception object containing error details.
+    
+    Returns:
+        tuple: A tuple containing the rendered 404 error template and
+               the HTTP status code 404.
+    """
+    return render_template("errors/404.html", error=error), 404
 
 if __name__ == "__main__":
     start_options = cfg["START_OPTIONS"]
@@ -178,4 +220,8 @@ if __name__ == "__main__":
             webbrowser.open(url)
     
     # Передаем порт в параметры запуска
-    app.run(host=cfg["START_OPTIONS"]["ip"], port=cfg["START_OPTIONS"]["port"], debug=True)
+    try:
+        app.run(host=cfg["START_OPTIONS"]["host"], port=cfg["START_OPTIONS"]["port"], debug=cfg["DEBUG_MODE"])
+    except Exception as e:
+        Logger().error(f"[ERROR] {e}")
+        

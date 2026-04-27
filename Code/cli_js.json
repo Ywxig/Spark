@@ -1,0 +1,27 @@
+{
+    "name" : "JS cli",
+    "location" : "cli_js.json",
+    "description": "",
+    "origin": "",
+
+    "Configuration" : {
+        "language": "js",
+        "version": "1.0",
+        "author": ""
+    },
+
+    "Structure" : [{
+        "language" : "js",
+        "type" : "file",
+        "name" : "main.js",
+        "ctx" : "console.log(\"Hello World!\")"
+    },
+    {
+        "language" : "markdown",
+        "type" : "file",
+        "name" : "readme.md",
+        "ctx" : "README"
+    }],
+
+    "Script" : []
+}
