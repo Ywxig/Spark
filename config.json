@@ -42,8 +42,8 @@
         "Name": "",
         "Description": "",
         "Configuration": {
-            "language": "",
-            "version": "",
+            "language": "No selected",
+            "version": "1.0",
             "author": ""
         }
     }

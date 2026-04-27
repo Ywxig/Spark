@@ -5,10 +5,11 @@ Flask приложение для управления решениями.
 
 import subprocess
 from flask import Flask, render_template, request, redirect, url_for, jsonify
-from src.Solution_Manager import SolutionManager, Solution
+from src.Solution_Manager import SolutionManager, Solution, Migrations
 from config_loader import ConfigLoader
 from src.Solution_Manager.template import Template
 
+from src.loger import Logger
 import markdown
 
 import os
@@ -44,10 +45,17 @@ def index():
     solutions = manager.index()
     return render_template("index.html", solutions=solutions)
 
-@app.route("/migrate")
+@app.route("/migrate", methods=["GET", "POST"])
 def migrate():
     """Панель с настройкой миграции"""
-    return render_template("migration.html")
+    migrations = Migrations().index()    
+    return render_template("migration.html", migrations=migrations)
+
+@app.route("/migrate/run", methods=["GET", "POST"])
+def migrate_run():
+    migrate_msg = Migrations.migrate(source_dir=cfg["MIGRATION_DIR"])
+    Logger().info(f"[MIGRATE] Done. {migrate_msg}")
+    return redirect(url_for("index"))   
 
 @app.route("/docs")
 def documentation():
@@ -66,8 +74,8 @@ def solution_detail(name):
         solution = manager.get(name)
         files = solution.list_sources()
         return render_template("detail.html", solution=solution, files=files, readme_md=markdown.markdown(solution.read_source("readme.md")))
-    except FileNotFoundError:
-        return render_template("errors/404.html"), 404
+    except FileNotFoundError or Exception as e:
+        return render_template("errors/404.html", error=e), 404
 
 
 @app.route("/create", methods=["GET", "POST"])
@@ -146,9 +154,7 @@ def open_in_ide(name):
         return jsonify({"ok": True, "opened": str(solution.path)})
     except FileNotFoundError:
         return jsonify({"error": f"Редактор «{executable}» не найден. Проверь IDE.path в config.json"}), 500
-
-
-
+    
 # API (JSON)
 @app.route("/api/solutions")
 def api_solutions():
@@ -191,7 +197,7 @@ def page_not_found(error):
         tuple: A tuple containing the rendered 404 error template and
                the HTTP status code 404.
     """
-    return render_template("errors/404.html"), 404
+    return render_template("errors/404.html", error=error), 404
 
 if __name__ == "__main__":
     start_options = cfg["START_OPTIONS"]
@@ -214,4 +220,8 @@ if __name__ == "__main__":
             webbrowser.open(url)
     
     # Передаем порт в параметры запуска
-    app.run(host=cfg["START_OPTIONS"]["host"], port=cfg["START_OPTIONS"]["port"], debug=cfg["DEBUG_MODE"])
+    try:
+        app.run(host=cfg["START_OPTIONS"]["host"], port=cfg["START_OPTIONS"]["port"], debug=cfg["DEBUG_MODE"])
+    except Exception as e:
+        Logger().error(f"[ERROR] {e}")
+        

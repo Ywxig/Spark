@@ -1,23 +1,136 @@
-2026-04-25 14:52:55 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
-2026-04-25 14:52:56 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
-2026-04-25 15:01:29 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
-2026-04-25 15:02:37 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
-2026-04-25 15:03:04 | INFO | Запуск команды: 'python3 -m venv .venv' в директории: Solutions/test/_src_
-2026-04-25 15:03:08 | INFO | Успешно выполнено: python3 -m venv .venv
-2026-04-25 15:03:08 | INFO | Запуск команды: 'source .venv/bin/activate' в директории: Solutions/test/_src_
-2026-04-25 15:03:08 | INFO | Успешно выполнено: source .venv/bin/activate
-2026-04-25 15:12:15 | INFO | Запуск команды: 'python3 -m venv .venv' в директории: Solutions/test/_src_
-2026-04-25 15:12:19 | INFO | Успешно выполнено: python3 -m venv .venv
-2026-04-25 15:12:19 | INFO | Запуск команды: 'source .venv/bin/activate' в директории: Solutions/test/_src_
-2026-04-25 15:12:19 | INFO | Успешно выполнено: source .venv/bin/activate
-2026-04-25 15:12:19 | INFO | Запуск команды: 'pip install flask' в директории: Solutions/test/_src_
-2026-04-25 15:12:19 | ERROR | Ошибка команды (код 127): pip install flask | Детали: /bin/sh: line 1: pip: command not found
-2026-04-25 15:12:19 | ERROR | Системная ошибка при выполнении 'pip install flask': Ошибка команды (код 127): pip install flask | Детали: /bin/sh: line 1: pip: command not found
-2026-04-25 15:15:59 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
-2026-04-25 15:16:00 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
-2026-04-25 15:16:15 | INFO | Запуск команды: 'python3 -m venv .venv' в директории: Solutions/test_2/_src_
-2026-04-25 15:16:19 | INFO | Успешно выполнено: python3 -m venv .venv
-2026-04-25 15:16:19 | INFO | Запуск команды: 'source .venv/bin/activate' в директории: Solutions/test_2/_src_
-2026-04-25 15:16:19 | INFO | Успешно выполнено: source .venv/bin/activate
-2026-04-25 15:16:19 | INFO | Запуск команды: 'pip install flask' в директории: Solutions/test_2/_src_
-2026-04-25 15:16:19 | INFO | Успешно выполнено: pip install flask
+2026-04-27 16:25:46 | INFO | [INFO] Count of solutions: 2
+2026-04-27 16:25:46 | INFO | [INFO] Target folder:   /home/dima/Documents/Solutions/Python/Spark/Solutions
+
+2026-04-27 16:25:46 | ERROR | [ERROR]: 'NoneType' object is not iterable
+2026-04-27 16:25:46 | ERROR |   [FAILED]  lab2  ('NoneType' object is not iterable)
+2026-04-27 16:25:46 | ERROR | [ERROR]: 'NoneType' object is not iterable
+2026-04-27 16:25:46 | ERROR |   [FAILED]  lab5  ('NoneType' object is not iterable)
+2026-04-27 16:25:46 | INFO | [INFO] Done. Migrated 0 solutions.
+ migrated: 0
+ skipped: 0
+ failed: 2
+2026-04-27 16:25:46 | INFO | [MIGRATE] Done. None
+2026-04-27 16:26:37 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
+2026-04-27 16:27:45 | INFO | [INFO] Count of solutions: 2
+2026-04-27 16:27:45 | INFO | [INFO] Target folder:   /home/dima/Documents/Solutions/Python/Spark/Solutions
+
+2026-04-27 16:27:45 | ERROR | [ERROR]: 'NoneType' object is not iterable
+2026-04-27 16:27:45 | ERROR |   [FAILED]  lab2  ('NoneType' object is not iterable)
+2026-04-27 16:27:45 | ERROR | [ERROR]: 'NoneType' object is not iterable
+2026-04-27 16:27:45 | ERROR |   [FAILED]  lab5  ('NoneType' object is not iterable)
+2026-04-27 16:27:45 | INFO | [INFO] Done. Migrated 0 solutions.
+ migrated: 0
+ skipped: 0
+ failed: 2
+2026-04-27 16:27:45 | INFO | [MIGRATE] Done. None
+2026-04-27 16:31:26 | ERROR | [ERROR] Folder not found: a
+2026-04-27 16:31:40 | INFO | [INFO] Count of solutions: 2
+2026-04-27 16:31:40 | INFO | [INFO] Target folder:   /home/dima/Documents/Solutions/Python/Spark/Solutions
+
+2026-04-27 16:31:40 | WARNING |   [SKIP]    lab2  (just exists)
+2026-04-27 16:31:40 | WARNING |   [SKIP]    lab5  (just exists)
+2026-04-27 16:31:40 | INFO | [INFO] Done. Migrated 0 solutions.
+ migrated: 0
+ skipped: 2
+ failed: 0
+2026-04-27 16:32:43 | WARNING | WARN] No solutions were found in the Solutions folder.
+2026-04-27 16:33:17 | WARNING | WARN] No solutions were found in the Solutions folder.
+2026-04-27 16:33:31 | INFO | [INFO] Count of solutions: 2
+2026-04-27 16:33:31 | INFO | [INFO] Target folder:   /home/dima/Documents/Solutions/Python/Spark/Solutions
+
+2026-04-27 16:33:31 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
+2026-04-27 16:33:31 | ERROR | [ERROR]: 'NoneType' object is not iterable
+2026-04-27 16:33:31 | ERROR |   [FAILED]  lab2  ('NoneType' object is not iterable)
+2026-04-27 16:33:31 | ERROR | [ERROR]: 'NoneType' object is not iterable
+2026-04-27 16:33:31 | ERROR |   [FAILED]  lab5  ('NoneType' object is not iterable)
+2026-04-27 16:33:31 | INFO | [INFO] Done. Migrated 0 solutions.
+ migrated: 0
+ skipped: 0
+ failed: 2
+2026-04-27 16:39:46 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
+2026-04-27 16:39:47 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
+2026-04-27 16:43:49 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
+2026-04-27 16:44:13 | INFO | [INFO] Count of solutions: 2
+2026-04-27 16:44:13 | INFO | [INFO] Target folder:   /home/dima/Documents/Solutions/Python/Spark/Solutions
+
+2026-04-27 16:44:13 | INFO |   [OK]      lab2
+2026-04-27 16:44:13 | INFO |   [OK]      lab5
+2026-04-27 16:44:13 | INFO | [INFO] Done. Migrated 2 solutions.
+ migrated: 2
+ skipped: 0
+ failed: 0
+2026-04-27 16:44:13 | INFO | [MIGRATE] Done. None
+2026-04-27 16:45:14 | INFO | Запуск команды: 'python3 -m venv .venv' в директории: Solutions/Test/_src_
+2026-04-27 16:45:18 | INFO | Успешно выполнено: python3 -m venv .venv
+2026-04-27 16:45:18 | INFO | Запуск команды: 'source .venv/bin/activate' в директории: Solutions/Test/_src_
+2026-04-27 16:45:18 | INFO | Успешно выполнено: source .venv/bin/activate
+2026-04-27 16:50:45 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
+2026-04-27 16:51:05 | INFO | [INFO] Count of solutions: 2
+2026-04-27 16:51:05 | INFO | [INFO] Target folder:   /home/dima/Documents/Solutions/Python/Spark/Solutions
+
+2026-04-27 16:51:05 | INFO |   [OK]      lab2
+2026-04-27 16:51:05 | INFO |   [OK]      lab5
+2026-04-27 16:51:05 | INFO | [INFO] Done. Migrated 2 solutions.
+ migrated: 2
+ skipped: 0
+ failed: 0
+2026-04-27 16:51:05 | INFO | [MIGRATE] Done. None
+2026-04-27 16:53:44 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
+2026-04-27 16:55:25 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
+2026-04-27 16:55:26 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
+2026-04-27 16:55:41 | INFO | [INFO] Count of solutions: 2
+2026-04-27 16:55:41 | INFO | [INFO] Target folder:   /home/dima/Documents/Solutions/Python/Spark/Solutions
+
+2026-04-27 16:55:41 | INFO |   [OK]      lab2
+2026-04-27 16:55:41 | INFO |   [OK]      lab5
+2026-04-27 16:55:41 | INFO | [INFO] Done. Migrated 2 solutions.
+ migrated: 2
+ skipped: 0
+ failed: 0
+2026-04-27 16:55:41 | INFO | [MIGRATE] Done. None
+2026-04-27 16:57:42 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
+2026-04-27 17:00:23 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
+2026-04-27 17:00:58 | INFO | [INFO] Count of solutions: 2
+2026-04-27 17:00:58 | INFO | [INFO] Target folder:   /home/dima/Documents/Solutions/Python/Spark/Solutions
+
+2026-04-27 17:00:58 | INFO |   [OK]      lab2
+2026-04-27 17:00:58 | INFO |   [OK]      lab5
+2026-04-27 17:00:58 | INFO | [INFO] Done. Migrated 2 solutions.
+ migrated: 2
+ skipped: 0
+ failed: 0
+2026-04-27 17:00:58 | INFO | [MIGRATE] Done. None
+2026-04-27 17:02:49 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
+2026-04-27 17:03:14 | INFO | [INFO] Count of solutions: 2
+2026-04-27 17:03:14 | INFO | [INFO] Target folder:   /home/dima/Documents/Solutions/Python/Spark/Solutions
+
+2026-04-27 17:03:14 | ERROR |   [FAILED]  lab2  (type object 'Migrations' has no attribute 'get_readme')
+2026-04-27 17:03:14 | ERROR |   [FAILED]  lab5  (type object 'Migrations' has no attribute 'get_readme')
+2026-04-27 17:03:14 | INFO | [INFO] Done. Migrated 0 solutions.
+ migrated: 0
+ skipped: 0
+ failed: 2
+2026-04-27 17:03:14 | INFO | [MIGRATE] Done. None
+2026-04-27 17:03:52 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
+2026-04-27 17:04:20 | INFO | [INFO] Count of solutions: 2
+2026-04-27 17:04:20 | INFO | [INFO] Target folder:   /home/dima/Documents/Solutions/Python/Spark/Solutions
+
+2026-04-27 17:04:21 | INFO |   [OK]      lab2
+2026-04-27 17:04:21 | INFO |   [OK]      lab5
+2026-04-27 17:04:21 | INFO | [INFO] Done. Migrated 2 solutions.
+ migrated: 2
+ skipped: 0
+ failed: 0
+2026-04-27 17:04:21 | INFO | [MIGRATE] Done. None
+2026-04-27 17:08:21 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]
+2026-04-27 17:08:41 | INFO | [INFO] Count of solutions: 2
+2026-04-27 17:08:41 | INFO | [INFO] Target folder:   /home/dima/Documents/Solutions/Python/Spark/Solutions
+
+2026-04-27 17:08:41 | INFO |   [OK]      lab2
+2026-04-27 17:08:41 | INFO |   [OK]      lab5
+2026-04-27 17:08:41 | INFO | [INFO] Done. Migrated 2 solutions.
+ migrated: 2
+ skipped: 0
+ failed: 0
+2026-04-27 17:08:41 | INFO | [MIGRATE] Done. None
+2026-04-27 18:24:49 | INFO | [INFO] Template module loaded: [{'name': 'flask app', 'description': 'Minimalist Flask web app template with routing and HTML template support.', 'file_name': 'flask.json'}, {'name': 'python cli', 'description': 'A minimal boilerplate for Python CLI applications. Includes a main entry point and a README file for documentation.', 'file_name': 'cli_python.json'}]

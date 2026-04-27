@@ -21,6 +21,9 @@
     <span class="badge">{{ m.status }}</span>
   </div>
   {% endfor %}
+<form action="/migrate/run" method="POST">
+  <button class="btn btn-primary" type="submit" name="migrate_all" value="migrate">Migrate all</button>
+</form>
 </div>
 {% else %}
 <div class="card" style="text-align:center; padding:48px 24px;">

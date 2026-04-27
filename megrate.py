@@ -85,10 +85,10 @@ def _copy_contents(src: Path, dst: Path) -> None:
             shutil.copy2(item, target)
 
 
-# if __name__ == "__main__":
-#     if len(sys.argv) != 2:
-#         print("Использование: python migrate.py <путь к папке с решениями>")
-#         print("Пример:        python migrate.py C:/Projects/my_solutions")
-#         sys.exit(1)
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Использование: python migrate.py <путь к папке с решениями>")
+        print("Пример:        python migrate.py C:/Projects/my_solutions")
+        sys.exit(1)
 
-#     migrate(sys.argv[1])
+    migrate(sys.argv[1])
