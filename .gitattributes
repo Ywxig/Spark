@@ -1,3 +1,11 @@
-*.html linguist-detectable=false
-Code/* linguist-detectable=false
-static/**.js linguist-detectable=false
+# Скрыть все HTML файлы
+*.html linguist-vendored
+
+# Скрыть содержимое папки с шаблонами/кодом (например, Code)
+Code/* linguist-vendored
+
+# Скрыть всю статику (JS, CSS и т.д.)
+static/** linguist-vendored
+
+# Если есть папка с шаблонами Flask/Django
+templates/** linguist-vendored
