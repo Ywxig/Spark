@@ -1,9 +1,0 @@
-{
-    "Name": "js_lab5",
-    "Description": "Лабараторная работа номер 5 по JS",
-    "Configuration": {
-        "language": "js",
-        "version": "1.0",
-        "author": "SomeUser"
-    }
-}
