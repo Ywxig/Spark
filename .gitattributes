@@ -17,6 +17,3 @@ static/css/* linguist-vendored
 # Скрываем шаблоны C++, которые попали в статистику
 *.cpp linguist-vendored
 *.hpp linguist-vendored
-
-# Если у тебя есть папки с примерами решений (лабораторными)
-Solutions/** linguist-vendored
