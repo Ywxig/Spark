@@ -1,9 +1,0 @@
-{
-    "Name": "C++_test",
-    "Description": "test",
-    "Configuration": {
-        "language": "C++",
-        "version": "1.0",
-        "author": "SomeUser"
-    }
-}

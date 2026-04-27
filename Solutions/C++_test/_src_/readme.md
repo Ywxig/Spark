@@ -1,1 +1,0 @@
-# test с++ cli app
