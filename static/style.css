@@ -1,0 +1,411 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0e0e10;
+      --surface:  #17171a;
+      --border:   #2a2a2e;
+      --accent:   #7c6af7;
+      --accent2:  #3ecf8e;
+      --text:     #e8e8ed;
+      --muted:    #6b6b76;
+      --danger:   #f26868;
+      --mono:     'JetBrains Mono', monospace;
+      --sans:     'Inter', sans-serif;
+      --radius:   8px;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: #a89cff; }
+
+    /* Layout */
+    nav {
+      padding: 0 32px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 10;
+    }
+    nav .logo {
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+    nav .logo span { color: var(--accent2); }
+    nav a { font-size: 13px; color: var(--muted); }
+    nav a:hover { color: var(--text); }
+
+    main { max-width: 860px; margin: 0 auto; padding: 40px 24px; }
+
+    /* Components */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 16px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-family: var(--sans);
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: opacity .15s, background .15s, color .15s, border-color .15s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { opacity: .85; }
+    .btn-danger  { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+    .btn-danger:hover  { background: var(--danger); color: #fff; }
+    .btn-ghost   { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+    .btn-ghost:hover   { color: var(--text); border-color: var(--muted); }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 24px;
+    }
+
+    .config-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      margin-bottom: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 13px;
+      transition: all 0.2s ease;
+    }
+
+    .config-row:hover {
+      border-color: var(--accent);
+      background: #1a1a1d;
+    }
+
+    .config-key {
+      font-family: var(--mono);
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .config-value {
+      color: var(--text);
+      max-width: 60%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .file-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text);
+      transition: background 0.15s;
+    }
+
+    .file-row:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .file-row.nested {
+      margin-left: 20px;
+    }
+    
+    .file-row .icon {
+      color: var(--muted);
+      width: 16px;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-family: var(--mono);
+      background: #1e1e24;
+      color: var(--accent2);
+      border: 1px solid #2a3a32;
+    }
+
+    .input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 14px;
+      padding: 9px 12px;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .input:focus { border-color: var(--accent); }
+
+    /* FIX: removed conflicting .label width from side_bar.css scope;
+       this is the global label used in forms */
+    .label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-family: var(--mono);
+      letter-spacing: 0.04em;
+    }
+
+    .error-msg {
+      background: #2a1a1a;
+      border: 1px solid var(--danger);
+      color: var(--danger);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+    h2 { font-size: 17px; font-weight: 500; }
+    .page-desc { color: var(--muted); font-size: 13px; margin-bottom: 28px; }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .type-commit {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .type-commit label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-family: var(--mono);
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .type-commit input[type="radio"] {
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .type-commit label:has(input:checked) {
+      color: var(--text);
+    }
+
+/* ── App header ─────────────────────────────────────── */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  width: 100%;
+}
+
+nav {
+  padding: 0 32px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  position: relative;
+  z-index: 1;
+  background: transparent;
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin-left: auto;
+}
+
+/* ── Sidebar overlay (backdrop) ─────────────────────── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 25;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transition: opacity 0.3s;
+}
+
+.sidebar-overlay.active {
+  display: block;
+}
+
+/* ── Open button in nav ─────────────────────────────── */
+.openbtn {
+  font-size: 15px;
+  cursor: pointer;
+  background-color: transparent;
+  color: var(--muted);
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-left: 4px;
+  transition: all 0.2s;
+  font-family: var(--mono);
+  line-height: 1;
+}
+
+.openbtn:hover {
+  background-color: var(--surface);
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+/* ── Readme textarea ────────────────────────────────── */
+#readme_text_area {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color .15s;
+  resize: vertical;
+}
+
+#readme_text_area:focus {
+  border-color: var(--accent);
+}
+
+/* ── Sidebar z-index ────────────────────────────────── */
+.sidebar {
+  z-index: 30;
+}
+
+/* ── User / avatar in nav ───────────────────────────── */
+.user_data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+}
+
+#avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-left: 8px;
+  border: 1.5px solid var(--border);
+  transition: border-color 0.2s;
+  object-fit: cover;
+}
+
+#avatar:hover {
+  border-color: var(--accent);
+}
+
+/* ── Git Section Styles ─────────────────────────────── */
+.git-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.git-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.git-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.git-row:hover {
+  border-color: var(--accent);
+  background: #1a1a1d;
+}
+
+.git-label {
+  font-family: var(--mono);
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.git-value {
+  color: var(--text);
+  font-family: var(--mono);
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.git-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.git-actions .btn {
+  font-size: 12px;
+  padding: 6px 12px;
+}
+
+#commit-form select,
+#commit-form input,
+#commit-form textarea {
+  font-family: var(--sans);
+}
+
+#commit-form textarea {
+  resize: vertical;
+  min-height: 60px;
+}

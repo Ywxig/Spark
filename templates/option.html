@@ -1,0 +1,678 @@
+{% extends "base.html" %}
+{% block title %}Options{% endblock %}
+
+{% block content %}
+<style>
+  .options-grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .options-nav {
+    position: sticky;
+    top: 76px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .options-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: var(--radius);
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--muted);
+    cursor: pointer;
+    border: 1px solid transparent;
+    background: none;
+    text-align: left;
+    transition: all 0.15s;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .options-nav-item:hover {
+    color: var(--text);
+    background: var(--surface);
+    border-color: var(--border);
+  }
+
+  .options-nav-item.active {
+    color: var(--accent);
+    background: rgba(124, 106, 247, 0.08);
+    border-color: rgba(124, 106, 247, 0.25);
+  }
+
+  .options-nav-item .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+
+  .options-nav-item.active .dot {
+    background: var(--accent);
+  }
+
+  .section {
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .section.active {
+    display: flex;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+
+  .section-header h2 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .section-header .section-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    background: rgba(124, 106, 247, 0.1);
+    color: var(--accent);
+    border: 1px solid rgba(124, 106, 247, 0.2);
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .input-with-hint {
+    position: relative;
+  }
+
+  .input-hint {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--mono);
+    margin-top: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 0.15s;
+  }
+
+  .toggle-row:hover {
+    border-color: var(--accent);
+  }
+
+  .toggle-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .toggle-title {
+    font-size: 13px;
+    color: var(--text);
+    font-family: var(--mono);
+  }
+
+  .toggle-desc {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* Toggle switch */
+  .toggle-switch {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: #2a2a2e;
+    border-radius: 22px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+
+  .toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    left: 3px;
+    top: 3px;
+    background: var(--muted);
+    border-radius: 50%;
+    transition: all 0.2s;
+  }
+
+  .toggle-switch input:checked + .toggle-slider {
+    background: rgba(124, 106, 247, 0.2);
+    border-color: var(--accent);
+  }
+
+  .toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(18px);
+    background: var(--accent);
+  }
+
+  .card-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .save-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-top: 8px;
+  }
+
+  .save-status {
+    font-size: 12px;
+    font-family: var(--mono);
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .save-status .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent2);
+    box-shadow: 0 0 6px rgba(62, 207, 142, 0.4);
+  }
+
+  .input-icon-wrapper {
+    position: relative;
+  }
+
+  .input-icon-wrapper .input {
+    padding-right: 36px;
+  }
+
+  .input-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 13px;
+    pointer-events: none;
+  }
+
+  select.input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6b76' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+    cursor: pointer;
+  }
+
+  .nested-card {
+    background: #131316;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .danger-zone {
+    border-color: rgba(242, 104, 104, 0.3);
+  }
+
+  .danger-zone .card-title {
+    color: var(--danger);
+  }
+
+  .danger-zone .card-title::after {
+    background: rgba(242, 104, 104, 0.2);
+  }
+</style>
+
+<h1>Options</h1>
+<p class="page-desc">Configure application behaviour, paths, and integrations.</p>
+
+<div class="options-grid">
+
+  <!-- Side nav -->
+  <nav class="options-nav" aria-label="Settings sections">
+    <button class="options-nav-item active" onclick="showSection('global', this)">
+      <span class="dot"></span> Global
+    </button>
+    <button class="options-nav-item" onclick="showSection('author', this)">
+      <span class="dot"></span> Author
+    </button>
+    <button class="options-nav-item" onclick="showSection('start', this)">
+      <span class="dot"></span> Startup
+    </button>
+    <button class="options-nav-item" onclick="showSection('ide', this)">
+      <span class="dot"></span> IDE
+    </button>
+    <button class="options-nav-item" onclick="showSection('log', this)">
+      <span class="dot"></span> Logging
+    </button>
+    <button class="options-nav-item" onclick="showSection('migration', this)">
+      <span class="dot"></span> Migration
+    </button>
+  </nav>
+
+  <!-- Panels -->
+  <form method="POST" action="{{ url_for('option') }}" id="options-form">
+
+    <!-- GLOBAL -->
+    <div class="section active" id="sec-global">
+      <div class="section-header">
+        <h2>Global</h2>
+        <span class="section-tag">core</span>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Directories</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+
+          <div class="form-group">
+            <label class="label" for="SOLUTION_DIR">SOLUTION_DIR</label>
+            <div class="input-with-hint">
+              <input class="input" id="SOLUTION_DIR" type="text" name="SOLUTION_DIR"
+                value="{{ config.get('SOLUTION_DIR', '') }}" placeholder="Solutions">
+              <p class="input-hint">Root folder where all solutions are stored.</p>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="label" for="SRC_DIR">SRC_DIR</label>
+              <input class="input" id="SRC_DIR" type="text" name="SRC_DIR"
+                value="{{ config.get('SRC_DIR', '') }}" placeholder="_src_">
+            </div>
+            <div class="form-group">
+              <label class="label" for="MIGRATION_DIR">MIGRATION_DIR</label>
+              <input class="input" id="MIGRATION_DIR" type="text" name="MIGRATION_DIR"
+                value="{{ config.get('MIGRATION_DIR', '') }}" placeholder="Migrations">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="label" for="CODE_TEMPLATE_DIR">CODE_TEMPLATE_DIR</label>
+            <input class="input" id="CODE_TEMPLATE_DIR" type="text" name="CODE_TEMPLATE_DIR"
+              value="{{ config.get('CODE_TEMPLATE_DIR', '') }}" placeholder="Code/.templates/">
+          </div>
+
+          <div class="form-group">
+            <label class="label" for="CONFIG_FILE">CONFIG_FILE</label>
+            <input class="input" id="CONFIG_FILE" type="text" name="CONFIG_FILE"
+              value="{{ config.get('CONFIG_FILE', '') }}" placeholder="config.json">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">App Identity</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="form-group">
+            <label class="label" for="APP_NAME">APP_NAME</label>
+            <input class="input" id="APP_NAME" type="text" name="APP_NAME"
+              value="{{ config.get('APP_NAME', '') }}" placeholder="Spark">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Debug</div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <span class="toggle-title">DEBUG_MODE</span>
+            <span class="toggle-desc">Enable Flask debug mode and hot-reload.</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" name="DEBUG_MODE" value="true"
+              {% if config.get('DEBUG_MODE') %}checked{% endif %}>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUTHOR -->
+    <div class="section" id="sec-author">
+      <div class="section-header">
+        <h2>Author</h2>
+        <span class="section-tag">profile</span>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Identity</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="label" for="AUTHOR_NAME">NAME</label>
+              <input class="input" id="AUTHOR_NAME" type="text" name="AUTHOR_NAME"
+                value="{{ config.get('AUTHOR', {}).get('NAME', '') }}" placeholder="SomeUser">
+            </div>
+            <div class="form-group">
+              <label class="label" for="AUTHOR_LANG">LANGUAGE</label>
+              <select class="input" id="AUTHOR_LANG" name="AUTHOR_LANGUAGE">
+                {% set lang = config.get('AUTHOR', {}).get('LANGUAGE', 'en') %}
+                <option value="en" {% if lang == 'en' %}selected{% endif %}>en — English</option>
+                <option value="ru" {% if lang == 'ru' %}selected{% endif %}>ru — Russian</option>
+                <option value="de" {% if lang == 'de' %}selected{% endif %}>de — German</option>
+                <option value="fr" {% if lang == 'fr' %}selected{% endif %}>fr — French</option>
+                <option value="zh" {% if lang == 'zh' %}selected{% endif %}>zh — Chinese</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="label" for="AUTHOR_EMAIL">EMAIL</label>
+            <input class="input" id="AUTHOR_EMAIL" type="email" name="AUTHOR_EMAIL"
+              value="{{ config.get('AUTHOR', {}).get('EMAIL', '') }}" placeholder="you@example.com">
+          </div>
+
+          <div class="form-group">
+            <label class="label" for="AUTHOR_GITHUB">GITHUB</label>
+            <div class="input-icon-wrapper">
+              <input class="input" id="AUTHOR_GITHUB" type="url" name="AUTHOR_GITHUB"
+                value="{{ config.get('AUTHOR', {}).get('GITHUB', '') }}" placeholder="https://github.com/username">
+              <span class="input-icon">↗</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="label" for="AUTHOR_AVATAR">AVATAR PATH</label>
+            <input class="input" id="AUTHOR_AVATAR" type="text" name="AUTHOR_AVATAR"
+              value="{{ config.get('AUTHOR', {}).get('AVATAR', '') }}" placeholder="../static/avatars/avatar.png">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STARTUP -->
+    <div class="section" id="sec-start">
+      <div class="section-header">
+        <h2>Startup</h2>
+        <span class="section-tag">server</span>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Server Binding</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="label" for="START_HOST">HOST</label>
+              <input class="input" id="START_HOST" type="text" name="START_HOST"
+                value="{{ config.get('START_OPTIONS', {}).get('host', '127.0.0.1') }}" placeholder="127.0.0.1">
+            </div>
+            <div class="form-group">
+              <label class="label" for="START_PORT">PORT</label>
+              <input class="input" id="START_PORT" type="number" name="START_PORT"
+                value="{{ config.get('START_OPTIONS', {}).get('port', 5000) }}" min="1" max="65535" placeholder="5000">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Browser Launch</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-title">open_in_browser</span>
+              <span class="toggle-desc">Auto-open the app in your browser on startup.</span>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" name="OPEN_IN_BROWSER" value="true"
+                {% if config.get('START_OPTIONS', {}).get('open_in_browser') %}checked{% endif %}>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-title">check_open_in_browser</span>
+              <span class="toggle-desc">Skip open when reloader child process is detected.</span>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" name="CHECK_OPEN_IN_BROWSER" value="true"
+                {% if config.get('START_OPTIONS', {}).get('check_open_in_browser') %}checked{% endif %}>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IDE -->
+    <div class="section" id="sec-ide">
+      <div class="section-header">
+        <h2>IDE</h2>
+        <span class="section-tag">editor</span>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Editor Settings</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="form-group">
+            <label class="label" for="IDE_NAME">EDITOR NAME</label>
+            <input class="input" id="IDE_NAME" type="text" name="IDE_NAME"
+              value="{{ config.get('IDE', {}).get('name', '') }}" placeholder="Visual Studio Code">
+          </div>
+
+          <div class="form-group">
+            <label class="label" for="IDE_PATH">EXECUTABLE PATH</label>
+            <div class="input-with-hint">
+              <input class="input" id="IDE_PATH" type="text" name="IDE_PATH"
+                value="{{ config.get('IDE', {}).get('path', '') }}" placeholder="Leave empty to use PATH">
+              <p class="input-hint">Absolute path to the editor binary. Leave blank to use the command from PATH.</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="label" for="IDE_CMD_OPEN">CMD → OPEN</label>
+            <input class="input" id="IDE_CMD_OPEN" type="text" name="IDE_CMD_OPEN"
+              value="{{ config.get('IDE', {}).get('cmd', {}).get('open', '') }}" placeholder="code">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Behaviour</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-title">open_in_ide</span>
+              <span class="toggle-desc">Enable the "Open in IDE" button on solution pages.</span>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" name="OPEN_IN_IDE" value="true"
+                {% if config.get('IDE', {}).get('open_in_ide') %}checked{% endif %}>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-title">open_in_ide_cmd</span>
+              <span class="toggle-desc">Use the shell command instead of the path.</span>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" name="OPEN_IN_IDE_CMD" value="true"
+                {% if config.get('IDE', {}).get('open_in_ide_cmd') %}checked{% endif %}>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGGING -->
+    <div class="section" id="sec-log">
+      <div class="section-header">
+        <h2>Logging</h2>
+        <span class="section-tag">diagnostics</span>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Log Config</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="form-group">
+            <label class="label" for="LOG_LEVEL">LEVEL</label>
+            <select class="input" id="LOG_LEVEL" name="LOG_LEVEL">
+              {% set level = config.get('LOG', {}).get('LEVEL', 'INFO') %}
+              <option value="DEBUG"    {% if level == 'DEBUG'    %}selected{% endif %}>DEBUG</option>
+              <option value="INFO"     {% if level == 'INFO'     %}selected{% endif %}>INFO</option>
+              <option value="WARNING"  {% if level == 'WARNING'  %}selected{% endif %}>WARNING</option>
+              <option value="ERROR"    {% if level == 'ERROR'    %}selected{% endif %}>ERROR</option>
+              <option value="CRITICAL" {% if level == 'CRITICAL' %}selected{% endif %}>CRITICAL</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="label" for="LOG_FILE">FILE</label>
+            <input class="input" id="LOG_FILE" type="text" name="LOG_FILE"
+              value="{{ config.get('LOG', {}).get('FILE', '') }}" placeholder="app.log">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MIGRATION -->
+    <div class="section" id="sec-migration">
+      <div class="section-header">
+        <h2>Migration</h2>
+        <span class="section-tag">defaults</span>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Default Migration Template</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="form-group">
+            <label class="label" for="MIG_NAME">NAME</label>
+            <input class="input" id="MIG_NAME" type="text" name="MIG_NAME"
+              value="{{ config.get('MIGRATION', {}).get('Name', '') }}" placeholder="">
+          </div>
+
+          <div class="form-group">
+            <label class="label" for="MIG_DESC">DESCRIPTION</label>
+            <input class="input" id="MIG_DESC" type="text" name="MIG_DESCRIPTION"
+              value="{{ config.get('MIGRATION', {}).get('Description', '') }}" placeholder="">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Configuration Defaults</div>
+        <div class="nested-card">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="label" for="MIG_LANG">LANGUAGE</label>
+              <input class="input" id="MIG_LANG" type="text" name="MIG_LANG"
+                value="{{ config.get('MIGRATION', {}).get('Configuration', {}).get('language', '') }}" placeholder="No selected">
+            </div>
+            <div class="form-group">
+              <label class="label" for="MIG_VER">VERSION</label>
+              <input class="input" id="MIG_VER" type="text" name="MIG_VERSION"
+                value="{{ config.get('MIGRATION', {}).get('Configuration', {}).get('version', '') }}" placeholder="1.0">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="label" for="MIG_AUTHOR">AUTHOR</label>
+            <input class="input" id="MIG_AUTHOR" type="text" name="MIG_AUTHOR"
+              value="{{ config.get('MIGRATION', {}).get('Configuration', {}).get('author', '') }}" placeholder="">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Save bar (always visible) -->
+    <div class="save-bar">
+      <div class="save-status">
+        <span class="status-dot"></span>
+        <span id="save-status-text">All changes saved to config.json</span>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <a href="{{ url_for('index') }}" class="btn btn-ghost">Cancel</a>
+        <button type="submit" class="btn btn-primary" onclick="setSaving()">Save changes</button>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<script>
+  function showSection(id, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.options-nav-item').forEach(b => b.classList.remove('active'));
+    document.getElementById('sec-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function setSaving() {
+    const el = document.getElementById('save-status-text');
+    el.textContent = 'Saving…';
+  }
+</script>
+{% endblock %}

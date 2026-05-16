@@ -1,0 +1,327 @@
+{% extends "base.html" %}
+{% block title %}{{ config.AUTHOR.NAME }} — Profile{% endblock %}
+
+{% block content %}
+<main>
+
+  <section class="profile-layout">
+
+    <!-- LEFT: Card -->
+    <aside class="profile-card">
+      <div class="avatar-wrap">
+        <img
+          src="{{ config.AUTHOR.AVATAR }}"
+          alt="{{ config.AUTHOR.NAME }}"
+          id="avatar"
+          onerror="this.src='https://ui-avatars.com/api/?name={{ config.AUTHOR.NAME }}&background=7c6af7&color=fff&size=128'"
+        />
+        <div class="avatar-ring"></div>
+      </div>
+
+      <h1 class="profile-name">{{ config.AUTHOR.NAME }}</h1>
+      <span class="badge">{{ config.APP_NAME }} User</span>
+
+      <div class="profile-links">
+        {% if config.AUTHOR.GITHUB %}
+        <a href="{{ config.AUTHOR.GITHUB }}" target="_blank" class="link-btn" title="GitHub">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577
+              0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756
+              -1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07
+              1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334
+              -5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0
+              1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404
+              2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235
+              1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222
+              0 1.606-.015 2.898-.015 3.293 0 .319.216.694.825.576C20.565 21.796 24 17.298
+              24 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          GitHub
+        </a>
+        {% endif %}
+
+        {% if config.AUTHOR.EMAIL %}
+        <a href="mailto:{{ config.AUTHOR.EMAIL }}" class="link-btn" title="Email">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="M2 7l10 7 10-7"/>
+          </svg>
+          Email
+        </a>
+        {% endif %}
+
+        {% for link in config.AUTHOR.LINKS %}
+        <a href="{{ link.url }}" target="_blank" class="link-btn">
+          {{ link.label }}
+        </a>
+        {% endfor %}
+      </div>
+
+      <div class="meta-row">
+        <span class="meta-label">Project</span>
+        <span class="meta-value mono">{{ config.APP_NAME }}</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">Port</span>
+        <span class="meta-value mono">{{ config.START_OPTIONS.port }}</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">IDE</span>
+        <span class="meta-value mono">{{ config.IDE.name }}</span>
+      </div>
+    </aside>
+
+    <!-- RIGHT: Stats placeholder -->
+    <div class="profile-content">
+
+      <!-- Stats grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-value" id="stat-solutions">—</span>
+          <span class="stat-label">Solutions</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-migrations">—</span>
+          <span class="stat-label">Migrations</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-files">—</span>
+          <span class="stat-label">Files</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-streak">—</span>
+          <span class="stat-label">Day streak</span>
+        </div>
+      </div>
+
+      <!-- Activity / history placeholder -->
+      <div class="card activity-card">
+        <div class="card-header">
+          <h2>Activity</h2>
+          <span class="badge">Coming soon</span>
+        </div>
+        <div class="activity-empty">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".3">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+          <p>Your activity history will appear here</p>
+        </div>
+      </div>
+
+      <!-- Config preview -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Configuration</h2>
+          <span class="mono muted" style="font-size:12px">{{ config.CONFIG_FILE }}</span>
+        </div>
+        <div class="config-list">
+          <div class="config-row">
+            <span class="config-key">SOLUTION_DIR</span>
+            <span class="config-value">{{ config.SOLUTION_DIR }}</span>
+          </div>
+          <div class="config-row">
+            <span class="config-key">SRC_DIR</span>
+            <span class="config-value">{{ config.SRC_DIR }}</span>
+          </div>
+          <div class="config-row">
+            <span class="config-key">MIGRATION_DIR</span>
+            <span class="config-value">{{ config.MIGRATION_DIR }}</span>
+          </div>
+          <div class="config-row">
+            <span class="config-key">open_in_browser</span>
+            <span class="config-value">{{ config.START_OPTIONS.open_in_browser }}</span>
+          </div>
+          <div class="config-row">
+            <span class="config-key">host</span>
+            <span class="config-value mono">{{ config.START_OPTIONS.ip }}:{{ config.START_OPTIONS.port }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+{% endblock %}
+
+{% block styles %}
+<style>
+  /* ── Layout ─────────────────────────────────────── */
+  .profile-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  @media (max-width: 680px) {
+    .profile-layout { grid-template-columns: 1fr; }
+  }
+
+  /* ── Profile Card ───────────────────────────────── */
+  .profile-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 72px;
+  }
+
+  .avatar-wrap {
+    position: relative;
+    width: 88px;
+    height: 88px;
+    margin-bottom: 4px;
+  }
+
+  .avatar-wrap #avatar {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    object-fit: cover;
+    position: relative;
+    z-index: 1;
+  }
+
+  .avatar-ring {
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: conic-gradient(var(--accent), var(--accent2), var(--accent));
+    z-index: 0;
+    animation: spin 6s linear infinite;
+    opacity: 0.7;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .profile-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+  }
+
+  /* ── Links ──────────────────────────────────────── */
+  .profile-links {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .link-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    background: transparent;
+    transition: all .2s;
+    text-decoration: none;
+  }
+
+  .link-btn:hover {
+    color: var(--text);
+    border-color: var(--accent);
+    background: rgba(124,106,247,.08);
+  }
+
+  /* ── Meta rows ──────────────────────────────────── */
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 6px 0;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+  }
+
+  .meta-label { color: var(--muted); }
+  .meta-value { color: var(--text); }
+  .mono { font-family: var(--mono); }
+  .muted { color: var(--muted); }
+
+  /* ── Content column ─────────────────────────────── */
+  .profile-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ── Stats grid ─────────────────────────────────── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  @media (max-width: 860px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: border-color .2s;
+  }
+
+  .stat-card:hover { border-color: var(--accent); }
+
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+
+  /* ── Card header ────────────────────────────────── */
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .card-header h2 { font-size: 14px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; }
+
+  /* ── Activity empty state ───────────────────────── */
+  .activity-card { min-height: 120px; }
+
+  .activity-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 24px 0 8px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* ── Config list ────────────────────────────────── */
+  .config-list { display: flex; flex-direction: column; gap: 4px; }
+</style>
+{% endblock %}
