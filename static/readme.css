@@ -1,0 +1,100 @@
+/* ── Readme rendered content ────────────────────────── */
+.readme_md h1,
+.readme_md h2,
+.readme_md h3 {
+  margin-top: 20px;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--text);
+}
+.readme_md h1 { font-size: 20px; }
+.readme_md h2 { font-size: 16px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+.readme_md h3 { font-size: 14px; color: var(--muted); }
+
+.readme_md p { margin-bottom: 12px; font-size: 14px; color: var(--text); }
+
+.readme_md code {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: #1e1e24;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--accent2);
+}
+
+.readme_md pre {
+  background: #131316;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  overflow-x: auto;
+  margin-bottom: 14px;
+}
+
+.readme_md pre code {
+  background: none;
+  padding: 0;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.readme_md ul,
+.readme_md ol {
+  padding-left: 20px;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.readme_md li { margin-bottom: 4px; }
+
+.readme_md a { color: var(--accent); }
+.readme_md a:hover { color: #a89cff; }
+
+.readme_md blockquote {
+  border-left: 3px solid var(--accent);
+  padding: 6px 14px;
+  margin: 12px 0;
+  color: var(--muted);
+  font-style: italic;
+  background: rgba(124,106,247,0.05);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.readme_md hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 20px 0;
+}
+
+.readme_md table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.readme_md th,
+.readme_md td {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.readme_md th {
+  background: #1e1e24;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.readme_md tr:hover td {
+  background: rgba(255,255,255,0.02);
+}
+
+.readme_md .title { 
+    font-size: 16px;
+    font-size: 16px;
+    border-bottom: 1px solid #2b2b30;
+}
