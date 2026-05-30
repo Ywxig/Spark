@@ -1,5 +1,7 @@
 # Spark
 
+**Spark** — a web-based manager for your code solutions. Organize projects, manage files, and launch your IDE without leaving the app. 
+
 ## Start-up
 
 ```bash
