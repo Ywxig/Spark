@@ -28,7 +28,7 @@ def cli(ctx):
     """Spark — утилита запуска Flask-приложения."""
     # Если команда не указана — запускаем run по умолчанию
     if ctx.invoked_subcommand is None:
-        ctx.invoke(info)
+        ctx.invoke(version)
 
 
 @cli.command()
@@ -91,7 +91,7 @@ def run():
         g("\nПриложение остановлено.")
 
 @cli.command()
-def info():
+def version():
     y(CFG["VERSION"])
 
 if __name__ == "__main__":
