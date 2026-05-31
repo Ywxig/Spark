@@ -181,12 +181,21 @@ def open_in_explorer(name):
     try:
         solution = manager.get(name)
     except FileNotFoundError:
-        return jsonify({"error": "Решение не найдено"}), 404
+        return jsonify({"error": "Solution not find"}), 404
 
-    if sys.platform == "linux":
-        subprocess.Popen(["xdg-open", str(solution.path)])
-    elif sys.platform == "win32":
-        subprocess.Popen(["explorer", str(solution.path)])
+    try:
+        if sys.platform == "linux":
+            subprocess.Popen(["xdg-open", str(solution.path)])
+        elif sys.platform == "win32":
+            subprocess.Popen(["explorer", str(solution.path)])
+        elif sys.platform == "darwin":
+            subprocess.Popen(["open", str(solution.path)])
+        else:
+            return jsonify({"error": f"unknown platform: {sys.platform}"}), 400
+        
+        return jsonify({"ok": True, "opened": str(solution.path)}), 200
+    except Exception as e:
+        return jsonify({"error": f"Error! can not open folder: {str(e)}"}), 500
 
 # API (JSON)
 @app.route("/api/solutions")

@@ -12,7 +12,7 @@
     <p class="page-desc" style="margin:0">{{ solution.Description or 'No description' }}</p>
   </div>
   <div style="display:flex; gap:8px;">
-    <button class="btn btn-ghost" id="btn-ide" onclick="openInExplorer('{{ solution.Name }}')">
+    <button class="btn btn-ghost" id="btn-explorer" onclick="openInExplorer('{{ solution.Name }}')">
       open in explorer
     </button>
     <button class="btn btn-ghost" id="btn-ide" onclick="openInIde('{{ solution.Name }}')">
@@ -128,8 +128,15 @@ function openInExplorer(name) {
     .then(data => {
       if (data.ok) {
         showToast('Open in Explorer', 'success');
-      } else {}
+      } else {
+        showToast(data.error || 'Ошибка', 'error');
+      }
     })
+    .catch(() => showToast('Fail to connection', 'error'))
+    .finally(() => {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+    });
 }
 
 function showToast(msg, type) {
