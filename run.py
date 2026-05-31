@@ -94,5 +94,149 @@ def run():
 def version():
     y(CFG["VERSION"])
 
+
+@cli.command()
+@click.option("--branch", default="master", help="Branch to pull from (default: master).")
+@click.option("--force", is_flag=True, default=False, help="Discard local changes before updating.")
+def update(branch, force):
+    """Pull latest updates from the remote GitHub repository."""
+    script_dir = Path(__file__).parent.resolve()
+    os.chdir(script_dir)
+
+    g("=== Spark Update ===\n")
+
+    # ── Check git is available
+    if subprocess.run(["git", "--version"], capture_output=True).returncode != 0:
+        r("Error: git is not installed or not in PATH.")
+        sys.exit(1)
+
+    # ── Check this is a git repo
+    if not (script_dir / ".git").is_dir():
+        r("Error: this directory is not a git repository.")
+        r(f"Run 'git init' and add a remote, or clone the repo into: {script_dir}")
+        sys.exit(1)
+
+    # ── Determine remote
+    remote_result = subprocess.run(
+        ["git", "remote"],
+        capture_output=True, text=True, cwd=str(script_dir)
+    )
+    remotes = remote_result.stdout.strip().splitlines()
+    if not remotes:
+        r("Error: no git remote configured.")
+        r("Add one with: git remote add origin https://github.com/user/repo.git")
+        sys.exit(1)
+    remote = "origin" if "origin" in remotes else remotes[0]
+
+    y(f"Remote : {remote}")
+    y(f"Branch : {branch}\n")
+
+    # ── Save local version before update
+    version_before = CFG.get("VERSION", "unknown")
+
+    # ── Handle local changes
+    status_result = subprocess.run(
+        ["git", "status", "--porcelain"],
+        capture_output=True, text=True, cwd=str(script_dir)
+    )
+    has_changes = bool(status_result.stdout.strip())
+
+    stashed = False
+    if has_changes:
+        if force:
+            y("--force flag set. Discarding local changes...")
+            subprocess.run(["git", "checkout", "--", "."], cwd=str(script_dir))
+            subprocess.run(["git", "clean", "-fd"], cwd=str(script_dir), capture_output=True)
+        else:
+            y("Local changes detected. Stashing them temporarily...")
+            stash_result = subprocess.run(
+                ["git", "stash", "push", "-m", "spark-update-autostash"],
+                capture_output=True, text=True, cwd=str(script_dir)
+            )
+            if stash_result.returncode != 0:
+                r("Error: could not stash local changes.")
+                r(stash_result.stderr.strip())
+                sys.exit(1)
+            stashed = True
+
+    # ── Fetch & pull
+    g(f"Fetching from {remote}...")
+    fetch_result = subprocess.run(
+        ["git", "fetch", remote],
+        cwd=str(script_dir)
+    )
+    if fetch_result.returncode != 0:
+        r("Error: git fetch failed. Check your internet connection and remote URL.")
+        if stashed:
+            subprocess.run(["git", "stash", "pop"], cwd=str(script_dir))
+        sys.exit(1)
+
+    g(f"Pulling {remote}/{branch}...")
+    pull_result = subprocess.run(
+        ["git", "pull", remote, branch],
+        capture_output=True, text=True, cwd=str(script_dir)
+    )
+    if pull_result.returncode != 0:
+        r("Error: git pull failed.")
+        r(pull_result.stderr.strip())
+        if stashed:
+            y("Restoring stashed changes...")
+            subprocess.run(["git", "stash", "pop"], cwd=str(script_dir))
+        sys.exit(1)
+
+    pull_output = pull_result.stdout.strip()
+
+    # ── Restore stash
+    if stashed:
+        y("Restoring stashed local changes...")
+        pop_result = subprocess.run(
+            ["git", "stash", "pop"],
+            capture_output=True, text=True, cwd=str(script_dir)
+        )
+        if pop_result.returncode != 0:
+            y("Warning: stash pop had conflicts. Resolve manually with 'git stash pop'.")
+
+    # ── Re-install dependencies if requirements.txt changed
+    req = script_dir / "requirements.txt"
+    if "requirements.txt" in pull_output and req.is_file():
+        venv_dir = script_dir / ".venv"
+        pip_bin  = venv_dir / "bin" / "pip"
+        if pip_bin.is_file():
+            y("requirements.txt changed — updating dependencies...")
+            subprocess.run([str(pip_bin), "install", "-q", "--upgrade", "pip"])
+            result = subprocess.run([str(pip_bin), "install", "-q", "-r", str(req)])
+            if result.returncode != 0:
+                r("Warning: some dependencies failed to install.")
+
+    # ── Report result
+    if pull_output == "Already up to date.":
+        g("Already up to date. No changes pulled.")
+    else:
+        # Reload config to get new version
+        try:
+            new_cfg = ConfigLoader(f"{script_dir}/config.json").load()
+            version_after = new_cfg.get("VERSION", "unknown")
+        except Exception:
+            version_after = "unknown"
+
+        g("\n=== Update complete ===\n")
+        if version_before != version_after:
+            y(f"Version: {version_before}  →  {version_after}")
+        else:
+            y(f"Version: {version_after}")
+
+        # Show a compact changelog (last commits pulled)
+        log_result = subprocess.run(
+            ["git", "log", "--oneline", "-10", f"HEAD@{{1}}..HEAD"],
+            capture_output=True, text=True, cwd=str(script_dir)
+        )
+        if log_result.stdout.strip():
+            g("\nWhat's new:")
+            for line in log_result.stdout.strip().splitlines():
+                click.echo(f"  • {line}")
+
+    click.echo()
+
+
 if __name__ == "__main__":
     cli()

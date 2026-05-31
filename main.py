@@ -299,7 +299,8 @@ if __name__ == "__main__":
             webbrowser.open(url)
     
     try:
-        threading.Thread(target=watchdog, daemon=True).start() # launc watchdog thread
+        if cfg["WATCHDOG_ENABLED"] == True:
+            threading.Thread(target=watchdog, daemon=True).start() # launc watchdog thread
         app.run(host=cfg["START_OPTIONS"]["host"], port=cfg["START_OPTIONS"]["port"], debug=cfg["DEBUG_MODE"])
     except Exception as e:
         Logger().error(f"[ERROR] {e}")
