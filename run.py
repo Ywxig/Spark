@@ -25,15 +25,15 @@ def r(msg): click.echo(f"{RED}{msg}{NC}")
 @click.group(invoke_without_command=True)
 @click.pass_context
 def cli(ctx):
-    """Spark — утилита запуска Flask-приложения."""
-    # Если команда не указана — запускаем run по умолчанию
+    """Spark — Flask application launch utility."""
+    # If no command is specified — run 'run' by default
     if ctx.invoked_subcommand is None:
         ctx.invoke(version)
 
 
 @cli.command()
 def run():
-    """Запустить Flask-приложение (аналог spark.sh)."""
+    """Launch Flask application (equivalent to spark.sh)."""
     script_dir = Path(__file__).parent.resolve()
     os.chdir(script_dir)
 
@@ -43,39 +43,39 @@ def run():
     python_bin = venv_dir / "bin" / "python"
     pip_bin    = venv_dir / "bin" / "pip"
 
-    # ── Виртуальное окружение ──────────────────────────────────────────────
+    # ── Virtual environment
     if not venv_dir.is_dir():
-        y(".venv не найден. Создаю...")
+        y(".venv not found. Creating...")
         result = subprocess.run([sys.executable, "-m", "venv", str(venv_dir)])
         if result.returncode != 0:
-            r("Ошибка: не удалось создать venv")
+            r("Error: failed to create venv")
             sys.exit(1)
 
-    g("Активирую venv...")
+    g("Activating venv...")
 
-    # ── Зависимости ───────────────────────────────────────────────────────
+    # ── Dependencies
     req = script_dir / "requirements.txt"
     if req.is_file():
-        g("Проверяю зависимости...")
+        g("Checking dependencies...")
         subprocess.run([str(pip_bin), "install", "-q", "--upgrade", "pip"])
         result = subprocess.run([str(pip_bin), "install", "-q", "-r", str(req)])
         if result.returncode != 0:
-            r("Ошибка при установке зависимостей из requirements.txt")
+            r("Error with installing packages from requirements.txt")
             sys.exit(1)
     else:
-        y("Файл requirements.txt не найден")
+        y("File requirements.txt not found!")
 
-    # ── Проверка main.py ──────────────────────────────────────────────────
+    # ── Check main.py
     main_py = script_dir / "main.py"
     if not main_py.is_file():
-        r("Файл main.py не найден!")
+        r("File main.py not found!")
         sys.exit(1)
 
-    # ── Запуск ────────────────────────────────────────────────────────────
+    # ── Launch
     click.clear()
     g("=== App started ===\n")
-    y("Доступно по адресу: http://127.0.0.1:8000\n")
-    y("Для остановки нажмите Ctrl+C\n")
+    y(f"Available at: {CFG["START_OPTIONS"]["host"]}/{CFG["START_OPTIONS"]["port"]}\n")
+    y("To stop, press Ctrl+C\n")
     g("=" * 40 + "\n")
 
     env = os.environ.copy()
@@ -88,7 +88,7 @@ def run():
     try:
         subprocess.run([str(python_bin), str(main_py)], env=env, cwd=str(main_py.parent))
     except KeyboardInterrupt:
-        g("\nПриложение остановлено.")
+        g("\nApplication stopped.")
 
 @cli.command()
 def version():
