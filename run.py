@@ -85,9 +85,18 @@ def run():
         "FLASK_DEBUG": "1",
     })
 
+    proc = None
     try:
-        subprocess.run([str(python_bin), str(main_py)], env=env, cwd=str(main_py.parent))
+        proc = subprocess.Popen([str(python_bin), str(main_py)], env=env, cwd=str(main_py.parent))
+        proc.wait()
     except KeyboardInterrupt:
+        if proc and proc.poll() is None:
+            proc.terminate()
+            try:
+                proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                proc.wait()
         g("\nApplication stopped.")
 
 @cli.command()
@@ -134,32 +143,20 @@ def update(branch, force):
     # ── Save local version before update
     version_before = CFG.get("VERSION", "unknown")
 
-    # ── Handle local changes
-    status_result = subprocess.run(
-        ["git", "status", "--porcelain"],
+    # ── Capture current HEAD hash to detect changes later
+    head_before = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
         capture_output=True, text=True, cwd=str(script_dir)
-    )
-    has_changes = bool(status_result.stdout.strip())
+    ).stdout.strip()
 
-    stashed = False
-    if has_changes:
-        if force:
-            y("--force flag set. Discarding local changes...")
-            subprocess.run(["git", "checkout", "--", "."], cwd=str(script_dir))
-            subprocess.run(["git", "clean", "-fd"], cwd=str(script_dir), capture_output=True)
-        else:
-            y("Local changes detected. Stashing them temporarily...")
-            stash_result = subprocess.run(
-                ["git", "stash", "push", "-m", "spark-update-autostash"],
-                capture_output=True, text=True, cwd=str(script_dir)
-            )
-            if stash_result.returncode != 0:
-                r("Error: could not stash local changes.")
-                r(stash_result.stderr.strip())
-                sys.exit(1)
-            stashed = True
 
-    # ── Fetch & pull
+    # ── Check if repo has any commits yet
+    has_commits = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        capture_output=True, cwd=str(script_dir)
+    ).returncode == 0
+
+    # ── Fetch
     g(f"Fetching from {remote}...")
     fetch_result = subprocess.run(
         ["git", "fetch", remote],
@@ -167,34 +164,23 @@ def update(branch, force):
     )
     if fetch_result.returncode != 0:
         r("Error: git fetch failed. Check your internet connection and remote URL.")
-        if stashed:
-            subprocess.run(["git", "stash", "pop"], cwd=str(script_dir))
         sys.exit(1)
 
-    g(f"Pulling {remote}/{branch}...")
-    pull_result = subprocess.run(
-        ["git", "pull", remote, branch],
+    # ── Reset to remote (discards local changes cleanly without needing index write)
+    g(f"Applying {remote}/{branch}...")
+    reset_result = subprocess.run(
+        ["git", "reset", "--hard", f"{remote}/{branch}"],
         capture_output=True, text=True, cwd=str(script_dir)
     )
-    if pull_result.returncode != 0:
-        r("Error: git pull failed.")
-        r(pull_result.stderr.strip())
-        if stashed:
-            y("Restoring stashed changes...")
-            subprocess.run(["git", "stash", "pop"], cwd=str(script_dir))
+    if reset_result.returncode != 0:
+        r("Error: git reset failed.")
+        r(reset_result.stderr.strip())
         sys.exit(1)
 
-    pull_output = pull_result.stdout.strip()
+    # ── Remove untracked files
+    subprocess.run(["git", "clean", "-fd"], capture_output=True, cwd=str(script_dir))
 
-    # ── Restore stash
-    if stashed:
-        y("Restoring stashed local changes...")
-        pop_result = subprocess.run(
-            ["git", "stash", "pop"],
-            capture_output=True, text=True, cwd=str(script_dir)
-        )
-        if pop_result.returncode != 0:
-            y("Warning: stash pop had conflicts. Resolve manually with 'git stash pop'.")
+    pull_output = reset_result.stdout.strip()
 
     # ── Re-install dependencies if requirements.txt changed
     req = script_dir / "requirements.txt"
@@ -209,7 +195,13 @@ def update(branch, force):
                 r("Warning: some dependencies failed to install.")
 
     # ── Report result
-    if pull_output == "Already up to date.":
+    # Compare HEAD before/after to detect if anything changed
+    head_after = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        capture_output=True, text=True, cwd=str(script_dir)
+    ).stdout.strip()
+
+    if pull_output == "Already up to date." or (has_commits and head_before == head_after):
         g("Already up to date. No changes pulled.")
     else:
         # Reload config to get new version
