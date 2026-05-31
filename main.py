@@ -12,6 +12,10 @@ from src.Solution_Manager.template import Template
 from src.loger import Logger
 import markdown
 
+import signal
+import time
+import threading
+
 import os
 import sys
 
@@ -207,8 +211,41 @@ def api_solutions():
         "files": s.list_sources(),
     } for s in solutions])
 
+@app.route("/api/user-session-end", methods=["POST"])
+def user_session_end():
+    """
+    Handle user session end.
+    
+    This endpoint is used to handle the user session end event.
+    It can be used to perform any necessary cleanup tasks or actions
+    when a user session ends.
+    
+    Returns:
+        tuple: A tuple containing the rendered "user_session_end.html" template
+               and the HTTP status code 200.
+    """
+    os.kill(os.getpid(), signal.SIGINT)
 
-# ... existing code ...
+# Saving time of last ping
+LAST_HEARTBEAT = time.time()
+
+def watchdog():
+    '''Background thread, which watchdogs user activity'''
+    global LAST_HEARTBEAT
+    while True:
+        time.sleep(1)
+        # If pings are less than `cfg["WATCHDOG_TIMEOUT"]` seconds — continue
+        if time.time() - LAST_HEARTBEAT > cfg["WATCHDOG_TIMEOUT"]:
+            print("ALL TABS ARE CLOUSED, KILL PROCESS...")
+            os.kill(os.getpid(), signal.SIGINT)
+            break
+
+@app.route('/api/ping', methods=['POST'])
+def ping():
+    """Endpoin, where frontend will send signals"""
+    global LAST_HEARTBEAT
+    LAST_HEARTBEAT = time.time()
+    return jsonify({"status": "ok"})
 
 @app.route("/api/solutions/<name>")
 def api_solution(name):
@@ -261,8 +298,8 @@ if __name__ == "__main__":
         if should_open:
             webbrowser.open(url)
     
-    # Передаем порт в параметры запуска
     try:
+        threading.Thread(target=watchdog, daemon=True).start() # launc watchdog thread
         app.run(host=cfg["START_OPTIONS"]["host"], port=cfg["START_OPTIONS"]["port"], debug=cfg["DEBUG_MODE"])
     except Exception as e:
         Logger().error(f"[ERROR] {e}")
