@@ -12,10 +12,10 @@
     <p class="page-desc" style="margin:0">{{ solution.Description or 'No description' }}</p>
   </div>
   <div style="display:flex; gap:8px;">
-      <a href="/solution/{{ solution.Name }}/git"><button class="btn btn-ghost" id="btn-git">
+      <!-- <a href="/solution/{{ solution.Name }}/git"><button class="btn btn-ghost" id="btn-git">
         git
       </button>
-    </a>
+    </a> -->
     <button class="btn btn-ghost" id="btn-explorer" onclick="openInExplorer('{{ solution.Name }}')">
       open in explorer
     </button>
