@@ -1,0 +1,9 @@
+{
+    "Name": "test",
+    "Description": "te",
+    "Configuration": {
+        "language": "python",
+        "version": "1.0",
+        "author": "SomeUser"
+    }
+}

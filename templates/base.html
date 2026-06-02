@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="{{ config.AUTHOR.LANGUAGE, 'en' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ config.get('APP_NAME', 'Solutions') }}{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='side_bar.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='readme.css') }}">
+  <script src="{{ url_for('static', filename='side_bar.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='base.js') }}" defer></script>
+  {% block styles %}{% endblock %}
+</head>
+<body>
+
+  <header class="app-header">
+    <nav>
+      <a onclick="openNav()" class="logo" style="cursor:pointer;">{{ config.get('APP_NAME', 'solution') }}</a>
+      <div class="nav-links">
+        <a href="/">All solutions</a>
+        <a href="/create">+ create</a>
+        {% if config.AUTHOR.GITHUb %}
+          <a href="/user">
+            <span>{{ config.AUTHOR.NAME }}</span>
+          </a>
+          
+          <a href="/user">
+            <img src="{{ config.AUTHOR.AVATAR }}" id="avatar" >
+          </a>
+        {% endif %}
+      </div>
+    </nav>
+  </header>
+
+  <!-- Overlay backdrop for sidebar -->
+  <div id="sidebar_overlay" class="sidebar-overlay" onclick="closeNav()"></div>
+
+  <div id="side_menu" class="sidebar">
+    <a href="javascript:void(0)" onclick="closeNav()" class="logo">
+      {{ config.get('APP_NAME', 'solution') }}
+      <span class="closebtn">✕</span>
+    </a>
+    <a href="/">🚀 Solutions</a>
+    <a href="/docs">📄 Documents</a>
+    <a href="/migrate">🔀 Migrate</a>
+    <a href="/option">⚙️ Options</a>
+    {% if config.AUTHOR.GITHUB %}
+    <a href="{{ config.AUTHOR.GITHUB }}" target="_blank">
+      <img class="dev" src="https://upload.wikimedia.org/wikipedia/commons/c/c2/GitHub_Invertocat_Logo.svg">
+      GitHub
+    </a>
+    {% endif %}
+  </div>
+  
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+</body>
+</html>

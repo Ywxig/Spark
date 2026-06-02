@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block title %}{{ solution.Name }}{% endblock %}
+
+{% block content %}
+<div style="margin-bottom:28px;">
+  <a href="/" style="font-size:13px; color:var(--muted);">← back</a>
+</div>
+
+<div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:28px; gap:16px;">
+  <div>
+    <h1 style="font-family:var(--mono);">{{ solution.Name }}</h1>
+    <p class="page-desc" style="margin:0">{{ solution.Description or 'No description' }}</p>
+  </div>
+  <div style="display:flex; gap:8px;">
+      <a href="/solution/{{ solution.Name }}/git"><button class="btn btn-ghost" id="btn-git">
+        git
+      </button>
+    </a>
+    <button class="btn btn-ghost" id="btn-explorer" onclick="openInExplorer('{{ solution.Name }}')">
+      open in explorer
+    </button>
+    <button class="btn btn-ghost" id="btn-ide" onclick="openInIde('{{ solution.Name }}')">
+      ⌨ open in ide
+    </button>
+    <form method="POST" action="/solution/{{ solution.Name }}/delete"
+          onsubmit="return confirm('delete «{{ solution.Name }}»? This action can`t be undone.')">
+      <button class="btn btn-danger" type="submit">delete</button>
+    </form>
+  </div>
+</div>
+
+<!-- Config -->
+<div class="card" style="margin-bottom:16px;">
+  <div class="section-label">CONFIG.JSON</div>
+  {% if solution.Configuration %}
+  <div class="config-list">
+    {% for key, val in solution.Configuration.items() %}
+    <div class="config-row">
+      <span class="config-key">{{ key }}</span>
+      <span class="config-value">{{ val }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="color:var(--muted); font-size:13px; padding: 8px 0;">config is empty</div>
+  {% endif %}
+</div>
+
+<!-- Files -->
+<div class="card" style="margin-bottom:16px;">
+  <div class="section-label">SRC/ — {{ files|length }} files</div>
+  {% if files %}
+  <div style="display:flex; flex-direction:column; gap:2px;">
+    {% for f in files %}
+      <!-- If f is a string (flat list) -->
+      {% if f is string %}
+        <div class="file-row">
+          <span class="icon">📄</span>
+          <span>{{ f }}</span>
+        </div>
+      <!-- If f is a dict (nested structure from previous step) -->
+      {% else %}
+        <div class="file-row">
+          <span class="icon">{{ '📁' if f.type == 'dir' else '📄' }}</span>
+          <span>{{ f.name }}</span>
+        </div>
+        <!-- Note: Recursive rendering requires more complex HTML structure than just a loop here -->
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="color:var(--muted); font-size:13px;">No files yet</div>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div style="display:flex; flex-direction:column; gap:2px">
+    {% if readme_md %}
+    <div class="readme_md">
+      <div class="title">
+        <div class="section-label" style="margin-bottom:4px;">README.md</div>
+      </div>
+      
+      
+      {{ readme_md | safe }}
+
+    </div>
+    {% else %}
+    <div style="color:var(--muted); font-size:13px;">README.md not found</div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Toast уведомление -->
+<div id="toast" style="
+  position: fixed; bottom: 28px; right: 28px;
+  padding: 10px 18px; border-radius: 8px;
+  font-size: 13px; font-family: var(--mono);
+  opacity: 0; transition: opacity .2s;
+  pointer-events: none; z-index: 100;
+"></div>
+
+<script>
+function openInIde(name) {
+  const btn = document.getElementById('btn-ide');
+  btn.disabled = true;
+  btn.style.opacity = '0.5';
+
+  fetch(`/solution/${name}/open`, { method: 'POST' })
+    .then(r => r.json())
+    .then(data => {
+      if (data.ok) {
+        showToast('Open in IDE', 'success');
+      } else {
+        showToast(data.error || 'Ошибка', 'error');
+      }
+    })
+    .catch(() => showToast('Fail to connection', 'error'))
+    .finally(() => {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+    });
+}
+
+function openInExplorer(name) {
+  const btn = document.getElementById('btn-explorer');
+  btn.disabled = true;
+  btn.style.opacity = '0.5';
+
+  fetch(`/solution/${name}/explorer`, { method: 'POST' })
+    .then(r => r.json())
+    .then(data => {
+      if (data.ok) {
+        showToast('Open in Explorer', 'success');
+      } else {
+        showToast(data.error || 'Ошибка', 'error');
+      }
+    })
+    .catch(() => showToast('Fail to connection', 'error'))
+    .finally(() => {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+    });
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = type === 'success' ? '#1a2a1e' : '#2a1a1a';
+  t.style.color      = type === 'success' ? 'var(--accent2)' : 'var(--danger)';
+  t.style.border     = `1px solid ${type === 'success' ? '#2a3a32' : 'var(--danger)'}`;
+  t.style.opacity    = '1';
+  setTimeout(() => t.style.opacity = '0', 3000);
+}
+</script>
+{% endblock %}

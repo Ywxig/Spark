@@ -1,0 +1,27 @@
+{
+    "name" : "C++ CLI",
+    "location" : "cli_cpp.json",
+    "description": "",
+    "origin": "",
+
+    "Configuration" : {
+        "language": "C++",
+        "version": "1.0",
+        "author": ""
+    },
+
+    "Structure" : [{
+        "language" : "c++",
+        "type" : "file",
+        "name" : "main.cpp",
+        "ctx" : "FILE cli_cpp/main.cpp"
+    },
+    {
+        "language" : "markdown",
+        "type" : "file",
+        "name" : "readme.md",
+        "ctx" : "README"
+    }],
+
+    "Script" : []
+}

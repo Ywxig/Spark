@@ -1,0 +1,37 @@
+{
+    "name" : "flask app",
+    "location" : "cli_python.json",
+    "description": "Minimalist Flask web app template with routing and HTML template support.",
+    "origin" : "",
+
+    "Configuration" : {
+        "language": "python",
+        "version": "1.0",
+        "author": ""
+    },
+
+    "Structure" : [{
+        "language" : "python",
+        "type" : "file",
+        "name" : "main.py",
+        "ctx" : "FILE flask/flask.py"
+    },
+    {
+        "language" : "html",
+        "type" : "file",
+        "name" : "templates/index.html",
+        "ctx" : "FILE flask/index.html"
+    },
+    {
+        "language" : "markdown",
+        "type" : "file",
+        "name" : "readme.md",
+        "ctx" : "README"
+    }],
+
+    "Script" : [
+        "python3 -m venv .venv",
+        "source .venv/bin/activate",
+        "pip install flask"
+    ]
+}
