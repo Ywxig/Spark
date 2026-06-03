@@ -11,6 +11,10 @@ __pycache__/
 # config
 config.json
 
+#solutions and migrations
+Solutions/*
+Migrations/*
+
 # Если используете виртуальное окружение, тоже скроем его
 venv/
 .venv/
