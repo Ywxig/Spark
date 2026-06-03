@@ -3,4 +3,4 @@ Code/* linguist-detectable=false
 static/**.js linguist-detectable=false
 static/**.css linguist-detectable=false
 static/**.png linguist-detectable=false
-Code/.templates/* linguist-detectable=false
+Code/.templates/** linguist-detectable=false
