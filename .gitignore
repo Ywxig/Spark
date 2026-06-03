@@ -5,6 +5,12 @@ __pycache__/
 # Настройки VS Code
 .vscode/
 
+# logs
+*.log
+
+# config
+config.json
+
 # Если используете виртуальное окружение, тоже скроем его
 venv/
 .venv/

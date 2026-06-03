@@ -1,9 +1,0 @@
-{
-    "Name": "t2",
-    "Description": "first solution for the test",
-    "Configuration": {
-        "language": "js",
-        "version": "1.0",
-        "author": "SomeUser"
-    }
-}
