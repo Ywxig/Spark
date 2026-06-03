@@ -7,5 +7,5 @@ Code/.templates/** linguist-detectable=false
 Code/.templates/**.html linguist-detectable=false
 Code/.templates/**.css linguist-detectable=false
 Code/.templates/**.js linguist-detectable=false
-Code/.templates/**.cpp linguist-detectable=false
-Code/.templates/**.h linguist-detectable=false
+Code/.templates/cli_cpp/**.cpp linguist-detectable=false
+Code/.templates/cli_cpp/**.h linguist-detectable=false
