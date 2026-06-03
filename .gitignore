@@ -1,0 +1,34 @@
+# solution and project files
+Solutions/*
+Migrations/*
+
+# config
+config.json
+
+# logs and cache files
+*.log
+.eslintcache
+<ignore>
+*.sln
+*.csproj
+*.csproj.user
+*.csproj.nuget.g.cs
+*.csproj.nuget.g.i.cs
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.dll
+*.pdb
+*.exe
+*.lib
+*.so
+*.dylib
+*.a
+*.exp
+*.manifest
+*.cache
+*.o
+*.obj
+*.ilk
+*.iobj
