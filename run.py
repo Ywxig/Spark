@@ -231,4 +231,19 @@ def update(branch, force):
 
 
 if __name__ == "__main__":
+    # Check if Solutions and Migrations directories exist
+    # #solutions and migrations
+    # Solutions/*
+    # Migrations/*
+
+    if not (LOACTION_OF_SKRIPT / "Solutions").is_dir():
+        r("Error: Solutions directory does not exist.")
+        os.mkdir(LOACTION_OF_SKRIPT / "Solutions")
+
+    # Check if migrations directory exists
+    if not (LOACTION_OF_SKRIPT / "Migrations").is_dir():
+        r("Error: Migrations directory does not exist.")
+        os.mkdir(LOACTION_OF_SKRIPT / "Migrations")
+    
+    # Start the CLI    
     cli()
