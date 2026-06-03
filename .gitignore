@@ -1,34 +1,11 @@
-# solution and project files
-Solutions/*
-Migrations/*
+# Python кэш (те самые .pyc файлы)
+__pycache__/
+*.pyc
 
-# config
-config.json
+# Настройки VS Code
+.vscode/
 
-# logs and cache files
-*.log
-.eslintcache
-<ignore>
-*.sln
-*.csproj
-*.csproj.user
-*.csproj.nuget.g.cs
-*.csproj.nuget.g.i.cs
-*.suo
-*.user
-*.userprefs
-*.pidb
-*.dll
-*.pdb
-*.exe
-*.lib
-*.so
-*.dylib
-*.a
-*.exp
-*.manifest
-*.cache
-*.o
-*.obj
-*.ilk
-*.iobj
+# Если используете виртуальное окружение, тоже скроем его
+venv/
+.venv/
+env/
