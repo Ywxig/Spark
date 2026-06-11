@@ -44,7 +44,37 @@ def setup():
     if not Path(f"{LOACTION_OF_SKRIPT}/Migrations").is_dir():
         os.mkdir(f"{LOACTION_OF_SKRIPT}/Migrations")
 
-    
+@cli.command()
+@click.argument('location', required=False, default=None)
+def explorer(location):
+    """
+        Open Spark dir in file manager.
+        Or open a specific solution directory.
+    """
+
+    target_location = LOACTION_OF_SKRIPT
+
+    if not Path(f"{LOACTION_OF_SKRIPT}/Solutions").is_dir():
+        r("Error: Solutions directory not found.")
+        return
+
+    if location is not None:
+        target_location = f"{LOACTION_OF_SKRIPT}/Solutions/{location}"
+        if not Path(target_location).exists():
+            r(f"Error: Location '{location}' not found.")
+            return
+
+    try:
+        if sys.platform == "linux":
+            subprocess.Popen(["xdg-open", str(target_location)])
+        elif sys.platform == "win32":
+            os.startfile(str(target_location))
+        elif sys.platform == "darwin":
+            subprocess.Popen(["open", str(target_location)])
+        else:
+            r(f"Error: Unsupported platform '{sys.platform}'.")
+    except Exception as e:
+        r(f"Error opening directory: {str(e)}")
 
 @cli.command()
 def run():
