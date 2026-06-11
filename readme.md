@@ -53,7 +53,7 @@ To stop — press `Ctrl+C`.
 | `spark update` | Update Spark from GitHub (branch `master`) |
 | `spark version` | Show current version |
 | `spark setup` |  |
-| `spark explorer [LOCATION]|  |
+| `spark explorer [LOCATION]`|  |
 
 ### `spark update`
 
