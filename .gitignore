@@ -5,6 +5,9 @@ __pycache__/
 # Настройки VS Code
 .vscode/
 
+# Git
+.git/*
+
 # logs
 *.log
 
