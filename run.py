@@ -30,6 +30,21 @@ def cli(ctx):
     if ctx.invoked_subcommand is None:
         ctx.invoke(version)
 
+@cli.command()
+def setup():
+    """
+        Setup virtual environment and install dependencies.
+        Check for all directories and files. like Solution and Migration
+        and create them if they don't exist.
+    """
+
+    if not Path(f"{LOACTION_OF_SKRIPT}/Solutions").is_dir():
+        os.mkdir(f"{LOACTION_OF_SKRIPT}/Solutions")
+    
+    if not Path(f"{LOACTION_OF_SKRIPT}/Migrations").is_dir():
+        os.mkdir(f"{LOACTION_OF_SKRIPT}/Migrations")
+
+    
 
 @cli.command()
 def run():
@@ -236,14 +251,14 @@ if __name__ == "__main__":
     # Solutions/*
     # Migrations/*
 
-    if not (LOACTION_OF_SKRIPT / "Solutions").is_dir():
+    if not Path(f"{LOACTION_OF_SKRIPT}/Solutions").is_dir():
         r("Error: Solutions directory does not exist.")
-        os.mkdir(LOACTION_OF_SKRIPT / "Solutions")
+        os.mkdir(f"{LOACTION_OF_SKRIPT}/Solutions")
 
     # Check if migrations directory exists
-    if not (LOACTION_OF_SKRIPT / "Migrations").is_dir():
+    if not Path(f"{LOACTION_OF_SKRIPT}/Migrations").is_dir():
         r("Error: Migrations directory does not exist.")
-        os.mkdir(LOACTION_OF_SKRIPT / "Migrations")
+        os.mkdir(f"{LOACTION_OF_SKRIPT}/Migrations")
     
     # Start the CLI    
     cli()

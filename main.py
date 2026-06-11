@@ -256,10 +256,7 @@ def watchdog():
             os.kill(os.getpid(), signal.SIGINT)
             break
 
-# --------------------------------------------------------------------------- #
-#  /api/git/status/<name>  —  статус репозитория решения                       #
-# --------------------------------------------------------------------------- #
- 
+
 @app.route("/api/git/status/<name>", methods=["GET"])
 def git_status(name):
     """
@@ -284,11 +281,6 @@ def git_status(name):
         return jsonify({"error": "Не является git-репозиторием"}), 400
  
     return jsonify(git.status())
- 
- 
-# --------------------------------------------------------------------------- #
-#  /api/git/commit/<name>  —  создать коммит                                   #
-# --------------------------------------------------------------------------- #
  
 @app.route("/api/git/commit/<name>", methods=["POST"])
 def git_commit(name):

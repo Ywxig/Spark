@@ -11,8 +11,6 @@ __pycache__/
 # logs
 *.log
 
-# config
-config.json
 
 #solutions and migrations
 Solutions/*
