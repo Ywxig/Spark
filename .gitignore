@@ -5,11 +5,12 @@ __pycache__/
 # Настройки VS Code
 .vscode/
 
+# Git
+.git/*
+
 # logs
 *.log
 
-# config
-config.json
 
 #solutions and migrations
 Solutions/*

@@ -9,8 +9,9 @@
 <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:28px; gap:16px;">
   <div>
     <h1 style="font-family:var(--mono);">{{ solution.Name }}</h1>
-    <p class="page-desc" style="margin:0">{{ solution.Description or 'No description' }}</p>
+    <p class="page-desc" style="margin:0; word-break: break-all;">{{ solution.Description or 'No description' }}</p>
   </div>
+  <br>
   <div style="display:flex; gap:8px;">
       <!-- <a href="/solution/{{ solution.Name }}/git"><button class="btn btn-ghost" id="btn-git">
         git
