@@ -1,7 +1,7 @@
 {
     "name" : "C++ CLI",
     "location" : "cli_cpp.json",
-    "description": "",
+    "description": "A minimal boilerplate for C++ CLI applications. Includes a main entry point and a README file for documentation.",
     "origin": "",
 
     "Configuration" : {

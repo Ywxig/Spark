@@ -1,7 +1,7 @@
 {
     "name" : "JS cli",
     "location" : "cli_js.json",
-    "description": "",
+    "description": "A minimal boilerplate for JavaScript CLI applications. Includes a main entry point and a README file for documentation.",
     "origin": "",
 
     "Configuration" : {
