@@ -23,14 +23,48 @@
     </div>
     <div>
       <label class="label">TEMPLATE</label>
-      <select class="input" name="template">
+      <div class="template-grid">
         {% for t in templates %}
-        <option value="{{ t.file_name }}"
-          {% if request.form.get('template') == t.file_name %}selected{% endif %}>
-          {{ t.name }}{% if t.description %} — {{ t.description }}{% endif %}
-        </option>
+        {% set _fn = (t.file_name ~ ' ' ~ t.name) | lower %}
+        {% if 'python' in _fn or '.py' in _fn or 'flask' in _fn or 'django' in _fn or 'fastapi' in _fn %}
+          {% set lang_info = ('Python', '#dbeafe', '#1e40af') %}
+        {% elif 'cpp' in _fn or 'c++' in _fn or '.cpp' in _fn %}
+          {% set lang_info = ('C++', '#fee2e2', '#991b1b') %}
+        {% elif 'typescript' in _fn or '.ts' in _fn %}
+          {% set lang_info = ('TS', '#eff6ff', '#1d4ed8') %}
+        {% elif 'javascript' in _fn or '.js' in _fn or ' js ' in (' ' ~ _fn ~ ' ') %}
+          {% set lang_info = ('JS', '#fef3c7', '#92400e') %}
+        {% elif 'golang' in _fn or '.go' in _fn %}
+          {% set lang_info = ('Go', '#d1fae5', '#065f46') %}
+        {% elif 'rust' in _fn or '.rs' in _fn %}
+          {% set lang_info = ('Rust', '#ffedd5', '#7c2d12') %}
+        {% elif 'ruby' in _fn or '.rb' in _fn %}
+          {% set lang_info = ('Ruby', '#fce7f3', '#9d174d') %}
+        {% elif 'csharp' in _fn or 'c#' in _fn or '.cs' in _fn %}
+          {% set lang_info = ('C#', '#f3e8ff', '#6b21a8') %}
+        {% elif 'html' in _fn %}
+          {% set lang_info = ('HTML', '#fff7ed', '#c2410c') %}
+        {% elif 'shell' in _fn or 'bash' in _fn or '.sh' in _fn %}
+          {% set lang_info = ('Shell', '#f0fdf4', '#14532d') %}
+        {% else %}
+          {% set lang_info = ('', '#f3f4f6', '#374151') %}
+        {% endif %}
+        {% set is_selected = loop.first if not request.form.get('template') else request.form.get('template') == t.file_name %}
+        <label class="template-card {% if is_selected %}selected{% endif %}">
+          <input type="radio" name="template" value="{{ t.file_name }}"
+                 {% if is_selected %}checked{% endif %}>
+          {% if lang_info[0] %}
+          <span class="lang-badge"style="background: {{ lang_info[1] }} ; color: {{ lang_info[2] }} ;">
+            {{ lang_info[0] }}
+          </span>
+          {% endif %}
+          <div class="tpl-name">{{ t.name }}</div>
+          {% if t.description %}
+          <div class="tpl-desc">{{ t.description }}</div>
+          {% endif %}
+        </label>
         {% endfor %}
-      </select>
+      </div>
     </div>
     <div>
       <label class="label">README.MD</label>
@@ -42,4 +76,16 @@
     </div>
   </form>
 </div>
+
+<script>
+document.querySelectorAll('.template-card').forEach(function(card) {
+  card.addEventListener('click', function() {
+    document.querySelectorAll('.template-card').forEach(function(c) {
+      c.classList.remove('selected');
+    });
+    card.classList.add('selected');
+    card.querySelector('input[type="radio"]').checked = true;
+  });
+});
+</script>
 {% endblock %}

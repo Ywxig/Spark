@@ -410,3 +410,49 @@ nav {
   resize: vertical;
   min-height: 60px;
 }
+
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+  margin-top: 6px;
+}
+.template-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  padding: 12px 12px 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  user-select: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+.template-card input[type="radio"] {
+  display: none;
+}
+.template-card:hover {
+  border-color: rgba(0,0,0,0.2);
+}
+.template-card.selected {
+  border: 2px solid #7F77DD;
+  background: var(--surface);
+}
+.lang-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 99px;
+  width: fit-content;
+}
+.tpl-name {
+  font-size: 13px;
+  font-weight: 500;
+}
+.tpl-desc {
+  font-size: 11px;
+  opacity: 0.6;
+  line-height: 1.4;
+}
