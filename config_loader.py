@@ -14,4 +14,4 @@ class ConfigLoader:
     def set(self, field, value):
         """Изменить поле в конфигурации."""
         with open(self.Config_File_Path, "r", encoding="utf-8") as f:
-            return json.load(f)
+            return json.dump(f, {field: value}, indent=4)

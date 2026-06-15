@@ -48,5 +48,3 @@ class Template:
         with open(file_name, "r") as f:
             ctx = f.read()
         return ctx
-    
-Logger().info(f"[INFO] Template module loaded: {Template("cli_python.json").index()}")

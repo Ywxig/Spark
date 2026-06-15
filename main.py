@@ -394,7 +394,7 @@ def api_solution(name):
             "configuration": s.Configuration,
             "files": s.list_sources(),
         })
-    except FileNotFoundError:
+    except (FileNotFoundError, Exception) as e:
         return jsonify({"error": "Not found"}), 404
 
 

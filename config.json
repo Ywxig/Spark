@@ -16,7 +16,7 @@
     },
 
     "AUTHOR" : {
-        "NAME" : "SomeUser",
+        "NAME" : "",
         "AVATAR" : "../static/avatars/avatar.png",
         "GITHUB" : "https://github.com/",
         "LANGUAGE" : "en",
