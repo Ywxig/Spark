@@ -7,4 +7,5 @@ __all__ = [
     "Solution",
     "SolutionManager",
     "Template",
+    "Migrations",
 ]
