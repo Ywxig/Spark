@@ -21,8 +21,6 @@ import threading
 import os
 import sys
 
-import webbrowser
-
 app = Flask(__name__)
 manager = SolutionManager()
 cfg = ConfigLoader("config.json").load()
@@ -130,7 +128,7 @@ def build_config_from_form(form, current_cfg):
             get("WATCHDOG_TIMEOUT", str(current_cfg.get("WATCHDOG_TIMEOUT", 60))),
             current_cfg.get("WATCHDOG_TIMEOUT", 60),
         ),
-        "VERSION" : "1.0.8",
+        "VERSION" : current_cfg.get("VERSION", "unknown"),
     }
 
     # Раздел MIGRATION не редактируется на странице настроек — сохраняем как есть
@@ -532,25 +530,7 @@ def page_not_found(error):
     return render_template("errors/404.html", error=error), 404
 
 if __name__ == "__main__":
-    start_options = cfg["START_OPTIONS"]
-    
-    if start_options["open_in_browser"]:
-        ip = start_options["host"]
-        port = start_options["port"]
-        url = f"http://{ip}:{port}"
-        
-        should_open = False
-        
-        if not start_options["check_open_in_browser"]:
-            should_open = True
-        else:
-            # Only open if not running as the reloader child process
-            if not os.environ.get("WERKZEUG_RUN_MAIN"):
-                should_open = True
-        
-        if should_open:
-            webbrowser.open(url)
-    
+
     try:
         if cfg["WATCHDOG_ENABLED"] == True:
             threading.Thread(target=watchdog, daemon=True).start() # launc watchdog thread

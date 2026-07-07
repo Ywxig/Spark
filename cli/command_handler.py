@@ -4,6 +4,10 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+import webbrowser
+from config_loader import ConfigLoader
+
+cfg = ConfigLoader("config.json").load()
 
 # ANSI colours
 GREEN  = '\033[0;32m'
@@ -102,23 +106,45 @@ class CommandHandler:
         env = os.environ.copy()
         env.update({
             "FLASK_APP":   "main.py",
-            "FLASK_ENV":   "development",
+            "FLASK_ENV":   "development", 
             "FLASK_DEBUG": "1",
         })
 
-        proc = None
+        # Open browser BEFORE starting server
+        start_options = cfg["START_OPTIONS"]
+
+        if start_options["open_in_browser"]:
+            ip = start_options["host"]
+            port = start_options["port"] 
+            url = f"http://{ip}:{port}"
+            should_open = False
+
+            if not start_options["check_open_in_browser"]:
+                should_open = True
+            else:
+                # Only open if not running as the reloader child process
+                if not os.environ.get("WERKZEUG_RUN_MAIN"):
+                    should_open = True
+
+            if should_open:
+                # Add a small delay to ensure server has time to start
+                import threading
+                import time
+
+                def open_browser_delayed():
+                    time.sleep(2)  # Wait 2 seconds for server to start
+                    webbrowser.open(url)
+
+                thread = threading.Thread(target=open_browser_delayed)
+                thread.daemon = True
+                thread.start()
+
+        # Start the server AFTER browser opening is scheduled
         try:
             proc = subprocess.Popen([str(self.python_bin), str(main_py)], env=env, cwd=str(main_py.parent))
             proc.wait()
         except KeyboardInterrupt:
-            if proc and proc.poll() is None:
-                proc.terminate()
-                try:
-                    proc.wait(timeout=5)
-                except subprocess.TimeoutExpired:
-                    proc.kill()
-                    proc.wait()
-            g("\nApplication stopped.")
+            g("Application stopped.")
 
     def update(self, branch="master", force=False):
         """Pull latest updates from the remote GitHub repository."""
