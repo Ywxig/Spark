@@ -5,6 +5,6 @@ from .migrate import *
 
 __all__ = [
     "Solution",
-    "SolutionManager"
-    "Template"
+    "SolutionManager",
+    "Template",
 ]

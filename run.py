@@ -116,13 +116,6 @@ def run():
         r("File main.py not found!")
         sys.exit(1)
 
-    # ── Launch
-    click.clear()
-    g("=== App started ===\n")
-    y(f"Available at: {CFG["START_OPTIONS"]["host"]}/{CFG["START_OPTIONS"]["port"]}\n")
-    y("To stop, press Ctrl+C\n")
-    g("=" * 40 + "\n")
-
     env = os.environ.copy()
     env.update({
         "FLASK_APP":   "main.py",

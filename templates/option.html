@@ -1,106 +1,309 @@
 {% extends "base.html" %}
 {% block title %}Options{% endblock %}
 
+{% block styles %}
+<style>
+  /* Local styles only for settings page - don't touch global files */
+  .options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .options-grid .card + .card { margin-top: 0; }
+
+  .field-row {
+    margin-bottom: 14px;
+  }
+  .field-row:last-child { margin-bottom: 0; }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  @media (max-width: 640px) {
+    .field-grid { grid-template-columns: 1fr; }
+  }
+
+  .checkbox-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .checkbox-field input[type="checkbox"] {
+    accent-color: var(--accent);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+
+  .checkbox-field label {
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .success-msg {
+    background: #16261e;
+    border: 1px solid var(--accent2);
+    color: var(--accent2);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  .options-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 4px;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
 
-<!--
-{
-    "SOLUTION_DIR" : "Solutions",
-    "APP_NAME" : "Spark",
-    "SRC_DIR" : "_src_", 
-    "CONFIG_FILE" : "config.json",
-    "MIGRATION_DIR" : "Migrations",
-    "CODE_TEMPLATE_DIR" : "Code/.templates/",
-    "DEBUG_MODE" : true,
+<h1>Settings</h1>
+<p class="page-desc">Configuration of application {{ config.get('APP_NAME', 'Spark') }}. Changes are saved to {{ config.get('CONFIG_FILE', 'config.json') }}.</p>
 
-    "LOG" : {
-        "LEVEL" : "INFO",
-        "FILE" : "app.log"
-    },
+{% if error %}
+<div class="error-msg">{{ error }}</div>
+{% endif %}
 
-    "AUTHOR" : {
-        "NAME" : "SomeUser",
-        "AVATAR" : "../static/avatars/avatar.png",
-        "GITHUB" : "https://github.com/",
-        "LANGUAGE" : "en",
-        "EMAIL" : "",
-        "LINKS" : []
-    },
+{% if success %}
+<div class="success-msg">{{ success }}</div>
+{% endif %}
 
-    "START_OPTIONS" : {
-        "open_in_browser" : false,
-        "check_open_in_browser" : true,
-        "port" : 5000,
-        "host" : "127.0.0.1"
-    },
+<form action="{{ url_for('option') }}" method="post">
+  <div class="options-grid">
 
-    "IDE" : {
-        "open_in_ide" : true,
-        "open_in_ide_cmd" : true,
-        "name" : "Visual Studio Code",
-        "path" : "",
-        "cmd" : {
-            "open" : "code"
-        }
-    },
-
-    "MIGRATION" : {
-        "Name": "",
-        "Description": "",
-        "Configuration": {
-            "language": "No selected",
-            "version": "1.0",
-            "author": ""
-        }
-    }
-}
--->
-
-<form action="config">
+    <!-- GLOBAL -->
     <div class="card">
-        <h2>GLOBAL</h2>
-        <div>
-            <label class="label">SOLUTION_DIR</label>
-            <input class="input" type="text" name="SOLUTION_DIR" placeholder=""
-            value="{{ request.form.get('SOLUTION_DIR', '') }}">
+      <h2>General</h2>
+      <p class="section-label">GLOBAL</p>
+
+      <div class="field-grid">
+        <div class="field-row">
+          <label class="label">SOLUTION_DIR</label>
+          <input class="input" type="text" name="SOLUTION_DIR"
+                 value="{{ config.get('SOLUTION_DIR', '') }}">
         </div>
 
-        <div>
-            <label class="label">APP_NAME</label>
-            <input class="input" type="text" name="SOLUTION_DIR" placeholder=" "
-            value="{{ request.form.get('SOLUTION_DIR', '') }}">
+        <div class="field-row">
+          <label class="label">APP_NAME</label>
+          <input class="input" type="text" name="APP_NAME"
+                 value="{{ config.get('APP_NAME', '') }}">
         </div>
 
-        <div>
-            <label class="label">SRC_DIR</label>
-            <input class="input" type="text" name="SOLUTION_DIR" placeholder=" "
-            value="{{ request.form.get('SOLUTION_DIR', '') }}">
+        <div class="field-row">
+          <label class="label">SRC_DIR</label>
+          <input class="input" type="text" name="SRC_DIR"
+                 value="{{ config.get('SRC_DIR', '') }}">
         </div>
 
-        <div>
-            <label class="label">CONFIG_FILE</label>
-            <input class="input" type="text" name="SOLUTION_DIR" placeholder=" "
-            value="{{ request.form.get('SOLUTION_DIR', '') }}">
+        <div class="field-row">
+          <label class="label">CONFIG_FILE</label>
+          <input class="input" type="text" name="CONFIG_FILE"
+                 value="{{ config.get('CONFIG_FILE', '') }}">
         </div>
 
-        <div>
-            <label class="label">MIGRATION_DIR</label>
-            <input class="input" type="text" name="SOLUTION_DIR" placeholder=" "
-            value="{{ request.form.get('SOLUTION_DIR', '') }}">
+        <div class="field-row">
+          <label class="label">MIGRATION_DIR</label>
+          <input class="input" type="text" name="MIGRATION_DIR"
+                 value="{{ config.get('MIGRATION_DIR', '') }}">
         </div>
 
-        <div>
-            <label class="label">CODE_TEMPLATE_DIR</label>
-            <input class="input" type="text" name="SOLUTION_DIR" placeholder=" "
-            value="{{ request.form.get('SOLUTION_DIR', '') }}">
+        <div class="field-row">
+          <label class="label">CODE_TEMPLATE_DIR</label>
+          <input class="input" type="text" name="CODE_TEMPLATE_DIR"
+                 value="{{ config.get('CODE_TEMPLATE_DIR', '') }}">
         </div>
+      </div>
 
-        <div>
-            <label class="label">DEBUG_MODE</label>
-            <input class="input" type="text" name="SOLUTION_DIR" placeholder=" "
-            value="{{ request.form.get('SOLUTION_DIR', '') }}">
+      <div class="field-row" style="margin-top: 14px;">
+        <div class="checkbox-field">
+          <input type="checkbox" id="DEBUG_MODE" name="DEBUG_MODE"
+                 {% if config.get('DEBUG_MODE') %}checked{% endif %}>
+          <label for="DEBUG_MODE">DEBUG_MODE</label>
         </div>
+      </div>
     </div>
+
+    <!-- LOG -->
+    <div class="card">
+      <h2>Logging</h2>
+      <p class="section-label">LOG</p>
+
+      <div class="field-grid">
+        <div class="field-row">
+          <label class="label">LEVEL</label>
+          <select class="input" name="LOG.LEVEL">
+            {% set current_level = config.LOG.LEVEL if config.LOG else 'INFO' %}
+            {% for level in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'] %}
+            <option value="{{ level }}" {% if current_level == level %}selected{% endif %}>{{ level }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="field-row">
+          <label class="label">FILE</label>
+          <input class="input" type="text" name="LOG.FILE"
+                 value="{{ config.LOG.FILE if config.LOG else '' }}">
+        </div>
+      </div>
+    </div>
+
+    <!-- AUTHOR -->
+    <div class="card">
+      <h2>Author</h2>
+      <p class="section-label">AUTHOR</p>
+
+      <div class="field-grid">
+        <div class="field-row">
+          <label class="label">NAME</label>
+          <input class="input" type="text" name="AUTHOR.NAME"
+                 value="{{ config.AUTHOR.NAME if config.AUTHOR else '' }}">
+        </div>
+
+        <div class="field-row">
+          <label class="label">EMAIL</label>
+          <input class="input" type="email" name="AUTHOR.EMAIL"
+                 value="{{ config.AUTHOR.EMAIL if config.AUTHOR else '' }}">
+        </div>
+
+        <div class="field-row">
+          <label class="label">AVATAR</label>
+          <input class="input" type="text" name="AUTHOR.AVATAR"
+                 value="{{ config.AUTHOR.AVATAR if config.AUTHOR else '' }}">
+        </div>
+
+        <div class="field-row">
+          <label class="label">GITHUB</label>
+          <input class="input" type="text" name="AUTHOR.GITHUB"
+                 value="{{ config.AUTHOR.GITHUB if config.AUTHOR else '' }}">
+        </div>
+
+        <div class="field-row">
+          <label class="label">LANGUAGE</label>
+          <input class="input" type="text" name="AUTHOR.LANGUAGE"
+                 value="{{ config.AUTHOR.LANGUAGE if config.AUTHOR else 'en' }}">
+        </div>
+
+        <div class="field-row">
+          <label class="label">LINKS (comma separated)</label>
+          <input class="input" type="text" name="AUTHOR.LINKS"
+                 value="{{ config.AUTHOR.LINKS | join(', ') if config.AUTHOR and config.AUTHOR.LINKS else '' }}">
+        </div>
+      </div>
+    </div>
+
+    <!-- START_OPTIONS -->
+    <div class="card">
+      <h2>Launch</h2>
+      <p class="section-label">START_OPTIONS</p>
+
+      <div class="field-grid">
+        <div class="field-row">
+          <label class="label">HOST</label>
+          <input class="input" type="text" name="START_OPTIONS.host"
+                 value="{{ config.START_OPTIONS.host if config.START_OPTIONS else '127.0.0.1' }}">
+        </div>
+
+        <div class="field-row">
+          <label class="label">PORT</label>
+          <input class="input" type="number" name="START_OPTIONS.port"
+                 value="{{ config.START_OPTIONS.port if config.START_OPTIONS else 5000 }}">
+        </div>
+      </div>
+
+      <div class="field-grid" style="margin-top: 14px;">
+        <div class="checkbox-field">
+          <input type="checkbox" id="open_in_browser" name="START_OPTIONS.open_in_browser"
+                 {% if config.START_OPTIONS and config.START_OPTIONS.open_in_browser %}checked{% endif %}>
+          <label for="open_in_browser">open_in_browser</label>
+        </div>
+
+        <div class="checkbox-field">
+          <input type="checkbox" id="check_open_in_browser" name="START_OPTIONS.check_open_in_browser"
+                 {% if config.START_OPTIONS and config.START_OPTIONS.check_open_in_browser %}checked{% endif %}>
+          <label for="check_open_in_browser">check_open_in_browser</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- IDE -->
+    <div class="card">
+      <h2>IDE</h2>
+      <p class="section-label">IDE</p>
+
+      <div class="field-grid">
+        <div class="field-row">
+          <label class="label">name</label>
+          <input class="input" type="text" name="IDE.name"
+                 value="{{ config.IDE.name if config.IDE else '' }}">
+        </div>
+
+        <div class="field-row">
+          <label class="label">path</label>
+          <input class="input" type="text" name="IDE.path"
+                 value="{{ config.IDE.path if config.IDE else '' }}">
+        </div>
+
+        <div class="field-row">
+          <label class="label">cmd.open</label>
+          <input class="input" type="text" name="IDE.cmd.open"
+                 value="{{ config.IDE.cmd.open if config.IDE and config.IDE.cmd else 'code' }}">
+        </div>
+      </div>
+
+      <div class="field-grid" style="margin-top: 14px;">
+        <div class="checkbox-field">
+          <input type="checkbox" id="open_in_ide" name="IDE.open_in_ide"
+                 {% if config.IDE and config.IDE.open_in_ide %}checked{% endif %}>
+          <label for="open_in_ide">open_in_ide</label>
+        </div>
+
+        <div class="checkbox-field">
+          <input type="checkbox" id="open_in_ide_cmd" name="IDE.open_in_ide_cmd"
+                 {% if config.IDE and config.IDE.open_in_ide_cmd %}checked{% endif %}>
+          <label for="open_in_ide_cmd">open_in_ide_cmd</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- WATCHDOG -->
+    <div class="card">
+      <h2>Watchdog</h2>
+      <p class="section-label">WATCHDOG</p>
+
+      <div class="field-grid">
+        <div class="checkbox-field">
+          <input type="checkbox" id="WATCHDOG_ENABLED" name="WATCHDOG_ENABLED"
+                 {% if config.get('WATCHDOG_ENABLED') %}checked{% endif %}>
+          <label for="WATCHDOG_ENABLED">WATCHDOG_ENABLED</label>
+        </div>
+
+        <div class="field-row">
+          <label class="label">WATCHDOG_TIMEOUT (sec)</label>
+          <input class="input" type="number" name="WATCHDOG_TIMEOUT"
+                 value="{{ config.get('WATCHDOG_TIMEOUT', 60) }}">
+        </div>
+      </div>
+    </div>
+
+    <div class="options-actions">
+      <button type="submit" class="btn btn-primary">Save Settings</button>
+    </div>
+
+  </div>
 </form>
 
 {% endblock %}

@@ -6,6 +6,10 @@
 
 ## Installation
 
+### 0. Needed things
+- Python 3.14+
+- Git
+
 ### 1. Clone the repository
 
 ```bash
@@ -92,7 +96,7 @@ After starting, open your browser at the address configured in `config.json` (de
   "START_OPTIONS": {
     "host": "0.0.0.0",
     "ip": "127.0.0.1",
-    "port": 5000,
+    "port": 8000,
     "open_in_browser": true,
     "check_open_in_browser": true   // don't reopen on hot-reload
   },

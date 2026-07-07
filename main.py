@@ -4,6 +4,7 @@ Flask приложение для управления решениями.
 """
 
 import subprocess
+import json
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from src.Solution_Manager import SolutionManager, Solution, Migrations
 from config_loader import ConfigLoader
@@ -42,6 +43,108 @@ def inject_config():
               as 'config' variable in templates.
     """
     return dict(config=cfg)
+
+
+def _to_bool(value):
+    """Приводит значение чекбокса из формы к bool."""
+    return str(value).strip().lower() in ("true", "1", "on", "yes")
+
+
+def _to_int(value, default):
+    """Безопасно приводит строку из формы к int, при ошибке — default."""
+    try:
+        return int(str(value).strip())
+    except (TypeError, ValueError):
+        return default
+
+
+def build_config_from_form(form, current_cfg):
+    """
+    Собирает новый словарь конфигурации на основе данных формы страницы настроек.
+
+    Чекбоксы, которые не были отмечены, отсутствуют в form — для них
+    подставляется False. Поля, не представленные на странице настроек
+    (например MIGRATION), переносятся из текущего конфига без изменений.
+
+    Args:
+        form: request.form (ImmutableMultiDict) со страницы /option.
+        current_cfg: текущий загруженный конфиг (для значений по умолчанию).
+
+    Returns:
+        dict: новый конфиг, готовый для сохранения в config.json.
+    """
+    def get(key, default=""):
+        return form.get(key, default).strip()
+
+    log_cfg = current_cfg.get("LOG", {}) or {}
+    author_cfg = current_cfg.get("AUTHOR", {}) or {}
+    start_cfg = current_cfg.get("START_OPTIONS", {}) or {}
+    ide_cfg = current_cfg.get("IDE", {}) or {}
+    ide_cmd_cfg = ide_cfg.get("cmd", {}) or {}
+
+    links_raw = get("AUTHOR.LINKS", ", ".join(author_cfg.get("LINKS", []) or []))
+    links = [link.strip() for link in links_raw.split(",") if link.strip()]
+
+    new_cfg = {
+        "SOLUTION_DIR": get("SOLUTION_DIR", current_cfg.get("SOLUTION_DIR", "")),
+        "APP_NAME": get("APP_NAME", current_cfg.get("APP_NAME", "")),
+        "SRC_DIR": get("SRC_DIR", current_cfg.get("SRC_DIR", "")),
+        "CONFIG_FILE": get("CONFIG_FILE", current_cfg.get("CONFIG_FILE", "config.json")),
+        "MIGRATION_DIR": get("MIGRATION_DIR", current_cfg.get("MIGRATION_DIR", "")),
+        "CODE_TEMPLATE_DIR": get("CODE_TEMPLATE_DIR", current_cfg.get("CODE_TEMPLATE_DIR", "")),
+        "DEBUG_MODE": _to_bool(form.get("DEBUG_MODE")),
+
+        "LOG": {
+            "LEVEL": get("LOG.LEVEL", log_cfg.get("LEVEL", "INFO")),
+            "FILE": get("LOG.FILE", log_cfg.get("FILE", "app.log")),
+        },
+
+        "AUTHOR": {
+            "NAME": get("AUTHOR.NAME", author_cfg.get("NAME", "")),
+            "AVATAR": get("AUTHOR.AVATAR", author_cfg.get("AVATAR", "")),
+            "GITHUB": get("AUTHOR.GITHUB", author_cfg.get("GITHUB", "")),
+            "LANGUAGE": get("AUTHOR.LANGUAGE", author_cfg.get("LANGUAGE", "en")),
+            "EMAIL": get("AUTHOR.EMAIL", author_cfg.get("EMAIL", "")),
+            "LINKS": links,
+        },
+
+        "START_OPTIONS": {
+            "open_in_browser": _to_bool(form.get("START_OPTIONS.open_in_browser")),
+            "check_open_in_browser": _to_bool(form.get("START_OPTIONS.check_open_in_browser")),
+            "port": _to_int(get("START_OPTIONS.port", str(start_cfg.get("port", 5000))), start_cfg.get("port", 5000)),
+            "host": get("START_OPTIONS.host", start_cfg.get("host", "127.0.0.1")),
+        },
+
+        "IDE": {
+            "open_in_ide": _to_bool(form.get("IDE.open_in_ide")),
+            "open_in_ide_cmd": _to_bool(form.get("IDE.open_in_ide_cmd")),
+            "name": get("IDE.name", ide_cfg.get("name", "")),
+            "path": get("IDE.path", ide_cfg.get("path", "")),
+            "cmd": {
+                "open": get("IDE.cmd.open", ide_cmd_cfg.get("open", "code")),
+            },
+        },
+
+        "WATCHDOG_ENABLED": _to_bool(form.get("WATCHDOG_ENABLED", current_cfg.get("WATCHDOG_ENABLED"))),
+        "WATCHDOG_TIMEOUT": _to_int(
+            get("WATCHDOG_TIMEOUT", str(current_cfg.get("WATCHDOG_TIMEOUT", 60))),
+            current_cfg.get("WATCHDOG_TIMEOUT", 60),
+        ),
+        "VERSION" : "1.0.8",
+    }
+
+    # Раздел MIGRATION не редактируется на странице настроек — сохраняем как есть
+    if "MIGRATION" in current_cfg:
+        new_cfg["MIGRATION"] = current_cfg["MIGRATION"]
+
+    return new_cfg
+
+
+def save_config(data, path):
+    """Сохраняет словарь конфигурации в JSON-файл (с отступами, UTF-8)."""
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
+
 
 # Страницы
 
@@ -86,7 +189,20 @@ def solution_detail(name):
 @app.route("/option", methods=["GET", "POST"])
 def option():
     """Панель настроек"""
-    return render_template("option.html", config=cfg)
+    global cfg
+    error = None
+    success = None
+
+    if request.method == "POST":
+        try:
+            new_cfg = build_config_from_form(request.form, cfg)
+            save_config(new_cfg, cfg.get("CONFIG_FILE", "config.json"))
+            cfg = ConfigLoader(cfg.get("CONFIG_FILE", "config.json")).load()
+            success = "Настройки успешно сохранены."
+        except Exception as e:
+            error = f"Не удалось сохранить настройки: {e}"
+
+    return render_template("option.html", config=cfg, error=error, success=success)
 
 @app.route("/create", methods=["GET", "POST"])
 def create():
@@ -441,4 +557,3 @@ if __name__ == "__main__":
         app.run(host=cfg["START_OPTIONS"]["host"], port=cfg["START_OPTIONS"]["port"], debug=cfg["DEBUG_MODE"])
     except Exception as e:
         Logger().error(f"[ERROR] {e}")
-        
