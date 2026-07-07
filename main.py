@@ -535,7 +535,7 @@ if __name__ == "__main__":
     start_options = cfg["START_OPTIONS"]
     
     if start_options["open_in_browser"]:
-        ip = start_options["ip"]
+        ip = start_options["host"]
         port = start_options["port"]
         url = f"http://{ip}:{port}"
         
