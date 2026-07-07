@@ -7,8 +7,6 @@ from pathlib import Path
 import webbrowser
 from config_loader import ConfigLoader
 
-cfg = ConfigLoader("config.json").load()
-
 # ANSI colours
 GREEN  = '\033[0;32m'
 YELLOW = '\033[1;33m'
@@ -32,6 +30,7 @@ class CommandHandler:
         self.venv_dir = self.script_dir / ".venv"
         self.python_bin = self.venv_dir / "bin" / "python"
         self.pip_bin = self.venv_dir / "bin" / "pip"
+        self.cfg = ConfigLoader(f"{script_dir}/config.json").load()
         
     def setup(self):
         """Setup virtual environment and install dependencies."""
@@ -111,7 +110,7 @@ class CommandHandler:
         })
 
         # Open browser BEFORE starting server
-        start_options = cfg["START_OPTIONS"]
+        start_options = self.cfg["START_OPTIONS"]
 
         if start_options["open_in_browser"]:
             ip = start_options["host"]
