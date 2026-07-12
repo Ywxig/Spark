@@ -212,13 +212,14 @@ def create():
         description = request.form.get("description", "").strip()
         template = request.form.get("template", "").strip() or None
         readme_text = request.form.get("readme", "").strip() or None
+        origin = request.form.get("origin", "")
 
         if not name:
             return render_template("create.html", error="Имя не может быть пустым.", templates=templates)
 
         try:
             if template is not None:
-                Template(template).create(name, description, readme_text)
+                Template(template).create(name, description, readme_text, origin)
             else:
                 manager.create(Name=name, Description=description)
             return redirect(url_for("solution_detail", name=name))

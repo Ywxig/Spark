@@ -34,6 +34,7 @@ class SolutionManager:
         Structure: list[dict] | None = None,
         Script: list[str] | None = None,
         Readme: str | None = None,
+        Origin: str | None = None
     ) -> Solution:
         """
         Создать окружение для нового решения и вернуть объект Solution.
@@ -52,6 +53,7 @@ class SolutionManager:
         config_data = {
             "Name": Name,
             "Description": Description,
+            "Origin" : Origin,
             "Configuration": Configuration or {},
         }
 

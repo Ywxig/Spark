@@ -12,7 +12,7 @@ class Template:
         # load template .josn file
         self.template_cfg = ConfigLoader(f"Code/{name_template}").load()
 
-    def create(self, name, description, readme):
+    def create(self, name, description, readme, origin):
         """
         Создание решения
         """
@@ -25,7 +25,8 @@ class Template:
             Configuration=self.template_cfg["Configuration"],
             Structure=self.template_cfg["Structure"],
             Script=self.template_cfg["Script"],
-            Readme=readme
+            Readme=readme,
+            Origin=origin
         )
 
     @staticmethod

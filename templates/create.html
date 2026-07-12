@@ -70,6 +70,11 @@
       <label class="label">README.MD</label>
       <textarea name="readme" id="readme_text_area" rows="10" placeholder="readme.md of solution"></textarea>
     </div>
+    <div>
+      <label class="label">REMOUTE ORIGIN</label>
+      <input class="input" type="text" name="remoute" placeholder="path to remoute origin..."
+             autofocus autocomplete="off" value="{{ request.form.get('origin', '') }}">
+    </div>
     <div style="display:flex; gap:10px; margin-top:4px;">
       <button class="btn btn-primary" type="submit">Create</button>
       <a href="/" class="btn btn-ghost">Cancel</a>
