@@ -91,6 +91,7 @@ class Template:
                     "name": data.get("name", path.stem),
                     "description": data.get("description", ""),
                     "file_name": path.name,
+                    "language": data.get("CONFIGURATION", {}).get("language", "other"),
                 })
             except Exception as e:
                 Logger().error(f"[ERROR](index) {path.name}: {e}")

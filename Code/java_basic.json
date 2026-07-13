@@ -1,0 +1,22 @@
+{
+    "name": "Java Basic",
+    "description": "Minimal Java project",
+
+    "CONFIGURATION": {
+        "language": "java",
+        "version": "1.0",
+        "author": ""
+    },
+
+    "TREE": {
+        "Main.java": {},
+        "readme.md": {},
+        ".gitignore": {}
+    },
+
+    "FILES": [
+        { "name": "Main.java", "ctx": "public class Main {\n    public static void main(String[] args) {\n        System.out.println(\"hello world\");\n    }\n}" },
+        { "name": "readme.md", "ctx": "# Java Basic\n\nМинимальный шаблон Java-проекта.\n\n## Запуск\n\n```\njavac Main.java\njava Main\n```" },
+        { "name": ".gitignore", "ctx": "*.class\n/out/\n/target/" }
+    ]
+}

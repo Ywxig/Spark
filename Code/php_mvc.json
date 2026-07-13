@@ -1,0 +1,45 @@
+{
+    "name": "PHP MVC",
+    "description": "Простая MVC-структура на чистом PHP (без фреймворка)",
+
+    "CONFIGURATION": {
+        "language": "php",
+        "version": "1.0",
+        "author": ""
+    },
+
+    "TREE": {
+        "composer.json": {},
+        "readme.md": {},
+        ".gitignore": {},
+        "public": {
+            "index.php": {},
+            ".htaccess": {}
+        },
+        "src": {
+            "Controllers": {
+                "HomeController.php": {}
+            },
+            "Models": {
+                "Model.php": {}
+            },
+            "Core": {
+                "Router.php": {}
+            }
+        },
+        "views": {
+            "home.php": {}
+        }
+    },
+
+    "FILES": [
+        { "name": "composer.json", "ctx": "{\n    \"name\": \"example/mvc-app\",\n    \"type\": \"project\",\n    \"require\": {\n        \"php\": \">=8.1\"\n    },\n    \"autoload\": {\n        \"psr-4\": {\n            \"App\\\\\": \"src/\"\n        }\n    }\n}" },
+        { "name": "index.php", "ctx": "<?php\n\nrequire __DIR__ . '/../vendor/autoload.php';\n\nuse App\\Core\\Router;\nuse App\\Controllers\\HomeController;\n\n$router = new Router();\n$router->get('/', [HomeController::class, 'index']);\n$router->dispatch($_SERVER['REQUEST_URI']);\n" },
+        { "name": ".htaccess", "ctx": "RewriteEngine On\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteRule ^ index.php [QSA,L]\n" },
+        { "name": "HomeController.php", "ctx": "<?php\n\nnamespace App\\Controllers;\n\nclass HomeController\n{\n    public function index(): void\n    {\n        $title = 'Home';\n        require __DIR__ . '/../../views/home.php';\n    }\n}" },
+        { "name": "Model.php", "ctx": "<?php\n\nnamespace App\\Models;\n\nabstract class Model\n{\n    // общая логика для моделей, например подключение к БД\n}" },
+        { "name": "Router.php", "ctx": "<?php\n\nnamespace App\\Core;\n\nclass Router\n{\n    private array $routes = [];\n\n    public function get(string $path, callable|array $handler): void\n    {\n        $this->routes['GET'][$path] = $handler;\n    }\n\n    public function dispatch(string $uri): void\n    {\n        $path = parse_url($uri, PHP_URL_PATH);\n        $handler = $this->routes['GET'][$path] ?? null;\n\n        if ($handler === null) {\n            http_response_code(404);\n            echo '404 Not Found';\n            return;\n        }\n\n        if (is_array($handler)) {\n            [$class, $method] = $handler;\n            (new $class())->$method();\n        } else {\n            $handler();\n        }\n    }\n}" },
+        { "name": "home.php", "ctx": "<!DOCTYPE html>\n<html>\n<head>\n    <title><?= htmlspecialchars($title) ?></title>\n</head>\n<body>\n    <h1>Hello, PHP MVC!</h1>\n</body>\n</html>" },
+        { "name": "readme.md", "ctx": "# PHP MVC\n\nПростая MVC-структура на чистом PHP без фреймворка.\n\n## Установка\n\n```\ncomposer install\n```\n\n## Запуск\n\n```\nphp -S localhost:8000 -t public\n```\n\n## Структура\n\n- `src/Controllers` — контроллеры\n- `src/Models` — модели\n- `src/Core` — ядро (роутер и т.д.)\n- `views` — шаблоны страниц" }
+    ]
+}

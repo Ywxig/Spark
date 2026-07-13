@@ -1,0 +1,34 @@
+{
+    "name": "PHP Composer",
+    "description": "PHP-проект с Composer и автозагрузкой (PSR-4)",
+
+    "CONFIGURATION": {
+        "language": "php",
+        "version": "1.0",
+        "author": ""
+    },
+
+    "TREE": {
+        "composer.json": {},
+        "readme.md": {},
+        ".gitignore": {},
+        "src": {
+            "App.php": {}
+        },
+        "public": {
+            "index.php": {}
+        },
+        "tests": {
+            "AppTest.php": {}
+        }
+    },
+
+    "FILES": [
+        { "name": "composer.json", "ctx": "{\n    \"name\": \"example/app\",\n    \"description\": \"My PHP app\",\n    \"type\": \"project\",\n    \"require\": {\n        \"php\": \">=8.1\"\n    },\n    \"require-dev\": {\n        \"phpunit/phpunit\": \"^10.0\"\n    },\n    \"autoload\": {\n        \"psr-4\": {\n            \"App\\\\\": \"src/\"\n        }\n    },\n    \"autoload-dev\": {\n        \"psr-4\": {\n            \"Tests\\\\\": \"tests/\"\n        }\n    }\n}" },
+        { "name": "App.php", "ctx": "<?php\n\nnamespace App;\n\nclass App\n{\n    public function run(): string\n    {\n        return \"hello world\";\n    }\n}" },
+        { "name": "index.php", "ctx": "<?php\n\nrequire __DIR__ . '/../vendor/autoload.php';\n\nuse App\\App;\n\n$app = new App();\necho $app->run();\n" },
+        { "name": "AppTest.php", "ctx": "<?php\n\nnamespace Tests;\n\nuse App\\App;\nuse PHPUnit\\Framework\\TestCase;\n\nclass AppTest extends TestCase\n{\n    public function testRun(): void\n    {\n        $app = new App();\n        $this->assertSame('hello world', $app->run());\n    }\n}" },
+        { "name": "readme.md", "ctx": "# PHP Composer\n\nШаблон PHP-проекта с Composer и автозагрузкой PSR-4.\n\n## Установка\n\n```\ncomposer install\n```\n\n## Запуск\n\n```\nphp -S localhost:8000 -t public\n```\n\n## Тесты\n\n```\ncomposer install\nvendor/bin/phpunit tests\n```" },
+        { "name": ".gitignore", "ctx": "vendor/\n.env\n*.log\ncomposer.lock" }
+    ]
+}

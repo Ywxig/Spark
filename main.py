@@ -169,11 +169,6 @@ def documentation():
     """Place for documentation. About all what user need to know."""
     return render_template("docs/main.html")
 
-@app.route("/user")
-def user_info():
-    """Statistic about user"""
-    return render_template("user.html", config=cfg)
-
 @app.route("/solution/<name>")
 def solution_detail(name):
     """Детальная страница решения."""
