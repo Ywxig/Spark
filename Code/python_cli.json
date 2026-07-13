@@ -8,14 +8,14 @@
     "TREE" : {
         "main.py" : {},
         "readme.md" : {},
-        "templates" : {
-            "index.html" : {}
-        }
+        ".gitignore" : {},
+        "requirements.txt" : {}
     },
 
     "FILES": [
         { "name": "main.py", "ctx": "print('hello world')" },
-        { "name": "readme.md", "ctx": "# My template" },
-        { "name": "index.html", "ctx": "<html></html>" }
+        { "name": "requirements.txt", "ctx": "" },
+        { "name": ".gitignore", "ctx": ""},
+        { "name": "readme.md", "ctx": "# My template" }
     ]
 }
