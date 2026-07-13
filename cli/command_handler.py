@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 import webbrowser
 from config_loader import ConfigLoader
-
+LOCATION_OF_SCRIPT = os.path.dirname(os.path.realpath(__file__))
 cfg = ConfigLoader("config.json").load()
 
 # ANSI colours
