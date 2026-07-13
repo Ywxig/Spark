@@ -35,7 +35,7 @@
     },
     "WATCHDOG_ENABLED": false,
     "WATCHDOG_TIMEOUT": 10,
-    "VERSION": "1.0.9",
+    "VERSION": "1.0.10",
     "MIGRATION": {
         "Name": "",
         "Description": "",
