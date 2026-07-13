@@ -3,6 +3,8 @@ import click
 import os
 from pathlib import Path
 
+from src.Solution_Manager.template import Template
+
 from cli.command_handler import CommandHandler, g, y, r
 from config_loader import ConfigLoader
 LOCATION_OF_SCRIPT = os.path.dirname(os.path.realpath(__file__))
@@ -18,6 +20,17 @@ def cli(ctx):
     # If no command is specified — run 'version' by default
     if ctx.invoked_subcommand is None:
         ctx.invoke(version)
+        try:
+            os.rmdir("test")
+        except:
+            pass
+        template = Template("python_cli.json")
+        template.create(
+            name="test",
+            description="test",
+            readme="test",
+            origin="test"
+        )
 
 @cli.command()
 def setup():

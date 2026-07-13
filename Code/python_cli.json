@@ -1,0 +1,15 @@
+{
+    "TREE" : {
+        "main.py" : {},
+        "readme.md" : {},
+        "templates" : {
+            "index.html" : {}
+        }
+    },
+
+    "FILES": [
+        { "name": "main.py", "ctx": "print('hello world')" },
+        { "name": "readme.md", "ctx": "# My template" },
+        { "name": "index.html", "ctx": "<html></html>" }
+    ]
+}

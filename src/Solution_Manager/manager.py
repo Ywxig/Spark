@@ -31,9 +31,7 @@ class SolutionManager:
         Name: str,
         Description: str,
         Configuration: dict | None = None,
-        Structure: list[dict] | None = None,
         Script: list[str] | None = None,
-        Readme: str | None = None,
         Origin: str | None = None
     ) -> Solution:
         """
@@ -59,40 +57,6 @@ class SolutionManager:
 
         with open(solution_path / Solution.CONFIG_FILE, "w", encoding="utf-8") as f:
             json.dump(config_data, f, ensure_ascii=False, indent=4)
-
-        # create files using templates
-
-        if Structure:
-            try:
-                from .template import Template
-                for item in Structure:
-                    item_ctx = item["ctx"]
-
-                    # Защита от пустого ctx
-                    parts = item_ctx.split()
-
-                    if parts and parts[0] == "FILE":
-                        file_path = solution_path / Solution.SRC_DIR / item["name"]
-                        file_path.parent.mkdir(parents=True, exist_ok=True)
-                        with open(file_path, "w", encoding="utf-8") as f:
-                            f.write(Template.get_code_template(cfg["CODE_TEMPLATE_DIR"] + parts[1]))
-
-                    if parts and parts[0] == "README":
-                        file_path = solution_path / Solution.SRC_DIR / item["name"]
-                        file_path.parent.mkdir(parents=True, exist_ok=True)
-                        with open(file_path, "w", encoding="utf-8") as f:
-                            f.write(Readme)
-
-                    elif parts and parts[0] not in ["README", "FILE"]:
-                        # ctx пустой или не начинается с "FILE" — пишем как есть
-                        file_path = solution_path / Solution.SRC_DIR / item["name"]
-                        file_path.parent.mkdir(parents=True, exist_ok=True)
-                        with open(file_path, "w", encoding="utf-8") as f:
-                            f.write(item_ctx)
-
-            except Exception as e:
-                Logger().error(f"[ERROR]: {e}")
-                raise
 
         if Script:
             from .skripter import CommandExecutor
