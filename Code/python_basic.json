@@ -1,0 +1,24 @@
+{
+    "name": "Python Basic",
+    "description": "Minimal Python script",
+    
+    "CONFIGURATION" : {
+        "language": "python",
+        "version": "1.0",
+        "author": ""
+    },
+
+    "TREE" : {
+        "main.py" : {},
+        "readme.md" : {},
+        ".gitignore" : {},
+        "requirements.txt" : {}
+    },
+
+    "FILES": [
+        { "name": "main.py", "ctx": "print('hello world')" },
+        { "name": "requirements.txt", "ctx": "" },
+        { "name": ".gitignore", "ctx": ""},
+        { "name": "readme.md", "ctx": "# My template" }
+    ]
+}

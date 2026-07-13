@@ -21,54 +21,49 @@
       <input class="input" type="text" name="description" placeholder="Description of my solution"
              value="{{ request.form.get('description', '') }}">
     </div>
+
     <div>
       <label class="label">TEMPLATE</label>
-      <div class="template-grid">
-        {% for t in templates %}
-        {% set _fn = (t.file_name ~ ' ' ~ t.name) | lower %}
-        {% if 'python' in _fn or '.py' in _fn or 'flask' in _fn or 'django' in _fn or 'fastapi' in _fn %}
-          {% set lang_info = ('Python', '#dbeafe', '#1e40af') %}
-        {% elif 'cpp' in _fn or 'c++' in _fn or '.cpp' in _fn %}
-          {% set lang_info = ('C++', '#fee2e2', '#991b1b') %}
-        {% elif 'typescript' in _fn or '.ts' in _fn %}
-          {% set lang_info = ('TS', '#eff6ff', '#1d4ed8') %}
-        {% elif 'javascript' in _fn or '.js' in _fn or ' js ' in (' ' ~ _fn ~ ' ') %}
-          {% set lang_info = ('JS', '#fef3c7', '#92400e') %}
-        {% elif 'golang' in _fn or '.go' in _fn %}
-          {% set lang_info = ('Go', '#d1fae5', '#065f46') %}
-        {% elif 'rust' in _fn or '.rs' in _fn %}
-          {% set lang_info = ('Rust', '#ffedd5', '#7c2d12') %}
-        {% elif 'ruby' in _fn or '.rb' in _fn %}
-          {% set lang_info = ('Ruby', '#fce7f3', '#9d174d') %}
-        {% elif 'csharp' in _fn or 'c#' in _fn or '.cs' in _fn %}
-          {% set lang_info = ('C#', '#f3e8ff', '#6b21a8') %}
-        {% elif 'html' in _fn %}
-          {% set lang_info = ('HTML', '#fff7ed', '#c2410c') %}
-        {% elif 'shell' in _fn or 'bash' in _fn or '.sh' in _fn %}
-          {% set lang_info = ('Shell', '#f0fdf4', '#14532d') %}
-        {% else %}
-          {% set lang_info = ('', '#f3f4f6', '#374151') %}
-        {% endif %}
-        {% set is_selected = loop.first if not request.form.get('template') else request.form.get('template') == t.file_name %}
-        <label class="template-card {% if is_selected %}selected{% endif %}">
-          <input type="radio" name="template" value="{{ t.file_name }}"
-                 {% if is_selected %}checked{% endif %}>
-          {% if lang_info[0] %}
-          <span class="lang-badge"style="background: {{ lang_info[1] }} ; color: {{ lang_info[2] }} ;">
-            {{ lang_info[0] }}
-          </span>
-          {% endif %}
-          <div class="tpl-name">{{ t.name }}</div>
-          {% if t.description %}
-          <div class="tpl-desc">{{ t.description }}</div>
-          {% endif %}
-        </label>
-        {% endfor %}
+
+      <!-- скрытое поле для формы -->
+      <input type="hidden" name="template" id="template_input"
+             value="{{ request.form.get('template', templates[0].file_name if templates else '') }}">
+
+      <div class="tpl-dropdown" id="tpl_dropdown">
+        <button type="button" class="tpl-dropdown-btn" id="tpl_dropdown_btn">
+          <span class="tpl-badge" id="tpl_selected_badge"></span>
+          <span id="tpl_selected_text">Select template</span>
+          <span class="tpl-arrow">▾</span>
+        </button>
+
+        <div class="tpl-dropdown-list" id="tpl_dropdown_list">
+          {% set langs = templates | groupby('language') %}
+          {% for lang, items in langs %}
+          <div class="tpl-group-label">{{ lang | upper }}</div>
+          {% for t in items %}
+          <div class="tpl-option" data-value="{{ t.file_name }}" data-lang="{{ t.language }}">
+            <span class="tpl-badge tpl-badge-{{ t.language }}">{{ t.language[:2] | upper }}</span>
+            <div class="tpl-option-text">
+              <div class="tpl-option-name">{{ t.name }}</div>
+              {% if t.description %}
+              <div class="tpl-option-desc">{{ t.description }}</div>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+          {% endfor %}
+        </div>
       </div>
     </div>
+
     <div>
       <label class="label">README.MD</label>
       <textarea name="readme" id="readme_text_area" rows="10" placeholder="readme.md of solution"></textarea>
+    </div>
+    <div>
+      <label class="label">REMOUTE ORIGIN</label>
+      <input class="input" type="text" name="remoute" placeholder="path to remoute origin..."
+             autofocus autocomplete="off" value="{{ request.form.get('origin', '') }}">
     </div>
     <div style="display:flex; gap:10px; margin-top:4px;">
       <button class="btn btn-primary" type="submit">Create</button>
@@ -77,15 +72,160 @@
   </form>
 </div>
 
+<style>
+.tpl-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.tpl-dropdown-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--input-bg, #1a1a1a);
+  border: 1px solid var(--input-border, #333);
+  border-radius: 8px;
+  color: inherit;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: left;
+}
+
+.tpl-dropdown-btn:hover {
+  border-color: #555;
+}
+
+.tpl-arrow {
+  margin-left: auto;
+  opacity: 0.6;
+  transition: transform 0.15s ease;
+}
+
+.tpl-dropdown.open .tpl-arrow {
+  transform: rotate(180deg);
+}
+
+.tpl-dropdown-list {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 320px;
+  overflow-y: auto;
+  background: var(--input-bg, #1a1a1a);
+  border: 1px solid var(--input-border, #333);
+  border-radius: 8px;
+  z-index: 20;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+
+.tpl-dropdown.open .tpl-dropdown-list {
+  display: block;
+}
+
+.tpl-group-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  opacity: 0.5;
+  padding: 10px 14px 4px;
+}
+
+.tpl-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.tpl-option:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+.tpl-option.selected {
+  background: rgba(99, 102, 241, 0.15);
+}
+
+.tpl-option-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.tpl-option-desc {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.tpl-badge {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 6px;
+  border-radius: 5px;
+  background: #f3f4f6;
+  color: #374151;
+  min-width: 24px;
+  text-align: center;
+}
+
+.tpl-badge-python   { background: #dbeafe; color: #1e40af; }
+.tpl-badge-cpp       { background: #fee2e2; color: #991b1b; }
+.tpl-badge-typescript{ background: #eff6ff; color: #1d4ed8; }
+.tpl-badge-javascript{ background: #ffea98; color: #92400e; }
+.tpl-badge-go        { background: #d1fae5; color: #065f46; }
+.tpl-badge-rust      { background: #ffedd5; color: #7c2d12; }
+.tpl-badge-ruby      { background: #fce7f3; color: #9d174d; }
+.tpl-badge-csharp    { background: #f3e8ff; color: #6b21a8; }
+.tpl-badge-html      { background: #fff7ed; color: #c2410c; }
+.tpl-badge-shell     { background: #f0fdf4; color: #14532d; }
+</style>
+
 <script>
-document.querySelectorAll('.template-card').forEach(function(card) {
-  card.addEventListener('click', function() {
-    document.querySelectorAll('.template-card').forEach(function(c) {
-      c.classList.remove('selected');
-    });
-    card.classList.add('selected');
-    card.querySelector('input[type="radio"]').checked = true;
+(function() {
+  const dropdown = document.getElementById('tpl_dropdown');
+  const btn = document.getElementById('tpl_dropdown_btn');
+  const list = document.getElementById('tpl_dropdown_list');
+  const input = document.getElementById('template_input');
+  const selectedText = document.getElementById('tpl_selected_text');
+  const selectedBadge = document.getElementById('tpl_selected_badge');
+  const options = list.querySelectorAll('.tpl-option');
+
+  function selectOption(opt) {
+    options.forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+
+    input.value = opt.dataset.value;
+    selectedText.textContent = opt.querySelector('.tpl-option-name').textContent;
+
+    selectedBadge.className = 'tpl-badge tpl-badge-' + opt.dataset.lang;
+    selectedBadge.textContent = opt.dataset.lang.slice(0, 2).toUpperCase();
+
+    dropdown.classList.remove('open');
+  }
+
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    dropdown.classList.toggle('open');
   });
-});
+
+  options.forEach(opt => {
+    opt.addEventListener('click', () => selectOption(opt));
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!dropdown.contains(e.target)) {
+      dropdown.classList.remove('open');
+    }
+  });
+
+  // выбираем текущее значение при загрузке (первый пункт или сохранённый из формы)
+  const currentValue = input.value;
+  const preselected = Array.from(options).find(o => o.dataset.value === currentValue) || options[0];
+  if (preselected) selectOption(preselected);
+})();
 </script>
 {% endblock %}

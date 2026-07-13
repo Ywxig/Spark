@@ -169,11 +169,6 @@ def documentation():
     """Place for documentation. About all what user need to know."""
     return render_template("docs/main.html")
 
-@app.route("/user")
-def user_info():
-    """Statistic about user"""
-    return render_template("user.html", config=cfg)
-
 @app.route("/solution/<name>")
 def solution_detail(name):
     """Детальная страница решения."""
@@ -182,6 +177,7 @@ def solution_detail(name):
         files = solution.list_sources()
         return render_template("detail.html", solution=solution, files=files, readme_md=markdown.markdown(solution.read_source("readme.md"), extensions=["extra"]))
     except FileNotFoundError or Exception as e:
+        print(f"[ERROR](solution_detail) {name}: {e}")
         return render_template("errors/404.html", error=e), 404
 
 @app.route("/option", methods=["GET", "POST"])
@@ -212,13 +208,14 @@ def create():
         description = request.form.get("description", "").strip()
         template = request.form.get("template", "").strip() or None
         readme_text = request.form.get("readme", "").strip() or None
+        origin = request.form.get("origin", "")
 
         if not name:
             return render_template("create.html", error="Имя не может быть пустым.", templates=templates)
 
         try:
             if template is not None:
-                Template(template).create(name, description, readme_text)
+                Template(template).create(name, description, readme_text, origin)
             else:
                 manager.create(Name=name, Description=description)
             return redirect(url_for("solution_detail", name=name))

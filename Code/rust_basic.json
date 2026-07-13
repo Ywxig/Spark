@@ -1,0 +1,26 @@
+{
+    "name": "Rust Basic",
+    "description": "Minimal Rust project (cargo)",
+
+    "CONFIGURATION": {
+        "language": "rust",
+        "version": "1.0",
+        "author": ""
+    },
+
+    "TREE": {
+        "Cargo.toml": {},
+        "readme.md": {},
+        ".gitignore": {},
+        "src": {
+            "main.rs": {}
+        }
+    },
+
+    "FILES": [
+        { "name": "Cargo.toml", "ctx": "[package]\nname = \"my_app\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[dependencies]\n" },
+        { "name": "main.rs", "ctx": "fn main() {\n    println!(\"hello world\");\n}" },
+        { "name": "readme.md", "ctx": "# Rust Basic\n\nMinimal Rust project template (cargo).\n\n## Running\n\n```\ncargo run\n```" },
+        { "name": ".gitignore", "ctx": "/target\nCargo.lock" }
+    ]
+}

@@ -1,0 +1,54 @@
+{
+    "name": "Java Gradle",
+    "description": "Java-проект со стандартной структурой Gradle",
+
+    "CONFIGURATION": {
+        "language": "java",
+        "version": "1.0",
+        "author": ""
+    },
+
+    "TREE": {
+        "build.gradle": {},
+        "settings.gradle": {},
+        "readme.md": {},
+        ".gitignore": {},
+        "src": {
+            "main": {
+                "java": {
+                    "com": {
+                        "example": {
+                            "app": {
+                                "App.java": {}
+                            }
+                        }
+                    }
+                },
+                "resources": {
+                    "application.properties": {}
+                }
+            },
+            "test": {
+                "java": {
+                    "com": {
+                        "example": {
+                            "app": {
+                                "AppTest.java": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    "FILES": [
+        { "name": "build.gradle", "ctx": "plugins {\n    id 'application'\n}\n\ngroup = 'com.example'\nversion = '1.0.0'\n\nrepositories {\n    mavenCentral()\n}\n\ndependencies {\n    testImplementation platform('org.junit:junit-bom:5.10.2')\n    testImplementation 'org.junit.jupiter:junit-jupiter'\n}\n\napplication {\n    mainClass = 'com.example.app.App'\n}\n\ntest {\n    useJUnitPlatform()\n}" },
+        { "name": "settings.gradle", "ctx": "rootProject.name = 'app'" },
+        { "name": "App.java", "ctx": "package com.example.app;\n\npublic class App {\n    public static void main(String[] args) {\n        System.out.println(\"hello world\");\n    }\n}" },
+        { "name": "AppTest.java", "ctx": "package com.example.app;\n\nimport org.junit.jupiter.api.Test;\nimport static org.junit.jupiter.api.Assertions.assertTrue;\n\nclass AppTest {\n\n    @Test\n    void placeholderTest() {\n        assertTrue(true);\n    }\n}" },
+        { "name": "application.properties", "ctx": "# application properties\napp.name=app" },
+        { "name": "readme.md", "ctx": "# Java Gradle\n\nШаблон Java-проекта со стандартной структурой Gradle.\n\n## Сборка и запуск\n\n```\n./gradlew run\n```\n\n## Тесты\n\n```\n./gradlew test\n```" },
+        { "name": ".gitignore", "ctx": "/.gradle/\n/build/\n*.class\n.idea/\n*.iml\n.vscode/" }
+    ]
+}
