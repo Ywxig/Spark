@@ -4,7 +4,7 @@
     "SRC_DIR": "_src_",
     "CONFIG_FILE": "config.json",
     "MIGRATION_DIR": "Migrations",
-    "CODE_TEMPLATE_DIR": "Code/.templates/",
+    "CODE_TEMPLATE_DIR": "Code/",
     "DEBUG_MODE": true,
     "LOG": {
         "LEVEL": "INFO",

@@ -1,4 +1,10 @@
 {
+    "CONFIGURATION" : {
+        "language": "python",
+        "version": "1.0",
+        "author": ""
+    },
+
     "TREE" : {
         "main.py" : {},
         "readme.md" : {},

@@ -20,9 +20,10 @@ class Template:
         """
 
         # шаг 0: подготовка данных
-        solution_dir = Path(cfg["SOLUTION_DIR"]) / name / Path(cfg["SRC_DIR"]) / name
+        solution_dir = Path(cfg["SOLUTION_DIR"]) / name / Path(cfg["SRC_DIR"])
         tree = self.template_cfg["TREE"]  # структура решения
         files_list = self.template_cfg.get("FILES", [])
+        configuration =  self.template_cfg.get("CONFIGURATION", {})
 
         # превращаем список [{name, ctx}, ...] в словарь {name: ctx} для быстрого поиска
         files = {item["name"]: item.get("ctx", "") for item in files_list}
@@ -31,7 +32,7 @@ class Template:
         SolutionManager().create(
             Name=name,
             Description=description,
-            Configuration=None,
+            Configuration=configuration,
             Script=None,
             Origin=origin
         )

@@ -182,6 +182,7 @@ def solution_detail(name):
         files = solution.list_sources()
         return render_template("detail.html", solution=solution, files=files, readme_md=markdown.markdown(solution.read_source("readme.md"), extensions=["extra"]))
     except FileNotFoundError or Exception as e:
+        print(f"[ERROR](solution_detail) {name}: {e}")
         return render_template("errors/404.html", error=e), 404
 
 @app.route("/option", methods=["GET", "POST"])

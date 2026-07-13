@@ -112,6 +112,7 @@ class Solution:
         """Прочитать файл из src/."""
         file = self._src_path / filename
         if not file.exists():
+            print(f"[ERROR] File not found: {file}")
             raise FileNotFoundError(f"Файл {filename!r} не найден в src/.")
         return file.read_text(encoding="utf-8")
 

@@ -20,17 +20,19 @@ def cli(ctx):
     # If no command is specified — run 'version' by default
     if ctx.invoked_subcommand is None:
         ctx.invoke(version)
+        print(Template.index())
         try:
             os.rmdir("test")
-        except:
-            pass
-        template = Template("python_cli.json")
-        template.create(
-            name="test",
-            description="test",
-            readme="test",
-            origin="test"
-        )
+            template = Template("python_cli.json")
+            template.create(
+                name="test",
+                description="test",
+                readme="test",
+                origin="test"
+            )
+        except Exception as e:
+            print(f"Error: {e}")
+
 
 @cli.command()
 def setup():
