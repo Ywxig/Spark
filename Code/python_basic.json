@@ -1,4 +1,7 @@
 {
+    "name": "Python Basic",
+    "description": "Minimal Python script",
+    
     "CONFIGURATION" : {
         "language": "python",
         "version": "1.0",
