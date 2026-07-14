@@ -150,7 +150,6 @@ class CommandHandler:
 
     def update(self, branch="master", force=False):
         """Pull latest updates from the remote GitHub repository."""
-        from ..config_loader import ConfigLoader
         
         os.chdir(self.script_dir)
 
