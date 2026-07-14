@@ -7,6 +7,9 @@ from pathlib import Path
 import webbrowser
 from config_loader import ConfigLoader
 
+LOCATION_OF_SCRIPT = '/home/dima/Documents/Spark/Spark'
+cfg = ConfigLoader(f"{LOCATION_OF_SCRIPT}/config.json").load()
+
 # ANSI colours
 GREEN  = '\033[0;32m'
 YELLOW = '\033[1;33m'
@@ -147,7 +150,6 @@ class CommandHandler:
 
     def update(self, branch="master", force=False):
         """Pull latest updates from the remote GitHub repository."""
-        from config_loader import ConfigLoader
         
         os.chdir(self.script_dir)
 
