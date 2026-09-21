@@ -1,0 +1,22 @@
+{
+    "name": "PHP Basic",
+    "description": "Минимальный PHP-скрипт",
+
+    "CONFIGURATION": {
+        "language": "php",
+        "version": "1.0",
+        "author": ""
+    },
+
+    "TREE": {
+        "index.php": {},
+        "readme.md": {},
+        ".gitignore": {}
+    },
+
+    "FILES": [
+        { "name": "index.php", "ctx": "<?php\n\necho \"hello world\";\n" },
+        { "name": "readme.md", "ctx": "# PHP Basic\n\nМинимальный шаблон PHP-скрипта.\n\n## Запуск\n\n```\nphp -S localhost:8000\n```\n\nи открыть http://localhost:8000 в браузере." },
+        { "name": ".gitignore", "ctx": "vendor/\n.env\n*.log" }
+    ]
+}

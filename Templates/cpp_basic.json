@@ -1,0 +1,24 @@
+{
+    "name": "C++ Basic",
+    "description": "Minimal C++ project",
+
+    "CONFIGURATION": {
+        "language": "cpp",
+        "version": "1.0",
+        "author": ""
+    },
+
+    "TREE": {
+        "main.cpp": {},
+        "readme.md": {},
+        ".gitignore": {},
+        "Makefile": {}
+    },
+
+    "FILES": [
+        { "name": "main.cpp", "ctx": "#include <iostream>\n\nint main() {\n    std::cout << \"hello world\" << std::endl;\n    return 0;\n}" },
+        { "name": "readme.md", "ctx": "# C++ Basic\n\nMinimal C++ project template." },
+        { "name": ".gitignore", "ctx": "*.o\n*.out\nbuild/" },
+        { "name": "Makefile", "ctx": "all:\n\tg++ main.cpp -o main\n\nrun: all\n\t./main" }
+    ]
+}

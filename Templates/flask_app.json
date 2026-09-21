@@ -1,0 +1,32 @@
+{
+    "name": "Flask App",
+    "description": "Simple Flask application with one route",
+
+    "CONFIGURATION": {
+        "language": "python",
+        "version": "1.0",
+        "author": ""
+    },
+
+    "TREE": {
+        "app.py": {},
+        "readme.md": {},
+        ".gitignore": {},
+        "requirements.txt": {},
+        "templates": {
+            "index.html": {}
+        },
+        "static": {
+            "style.css": {}
+        }
+    },
+
+    "FILES": [
+        { "name": "app.py", "ctx": "from flask import Flask, render_template\n\napp = Flask(__name__)\n\n@app.route('/')\ndef index():\n    return render_template('index.html')\n\nif __name__ == '__main__':\n    app.run(debug=True)" },
+        { "name": "requirements.txt", "ctx": "flask" },
+        { "name": ".gitignore", "ctx": "__pycache__/\n*.pyc\nvenv/\n.env" },
+        { "name": "readme.md", "ctx": "# Flask App\n\nBasic Flask application template." },
+        { "name": "index.html", "ctx": "<!DOCTYPE html>\n<html>\n<head>\n    <title>Flask App</title>\n</head>\n<body>\n    <h1>Hello, Flask!</h1>\n</body>\n</html>" },
+        { "name": "style.css", "ctx": "body { font-family: sans-serif; }" }
+    ]
+}

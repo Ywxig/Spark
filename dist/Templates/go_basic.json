@@ -1,0 +1,24 @@
+{
+    "name": "Go Basic",
+    "description": "Minimal Go project",
+
+    "CONFIGURATION": {
+        "language": "go",
+        "version": "1.0",
+        "author": ""
+    },
+
+    "TREE": {
+        "main.go": {},
+        "go.mod": {},
+        "readme.md": {},
+        ".gitignore": {}
+    },
+
+    "FILES": [
+        { "name": "main.go", "ctx": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"hello world\")\n}" },
+        { "name": "go.mod", "ctx": "module myapp\n\ngo 1.21" },
+        { "name": "readme.md", "ctx": "# Go Basic\n\nMinimal Go project template." },
+        { "name": ".gitignore", "ctx": "*.exe\n*.test\n/bin/" }
+    ]
+}
