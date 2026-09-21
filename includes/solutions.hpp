@@ -15,7 +15,7 @@ private:
     std::filesystem::path safe_path(const std::filesystem::path& base,
                                     const std::string& relative) const;
     void build_tree(const nlohmann::json& tree, const std::filesystem::path& base);
-    
+
 public:
     explicit Solution(const std::string& name);
 
@@ -25,6 +25,7 @@ public:
     void createDirectory(const std::string& path);
     void createFile(const std::string& path, const std::string& content);
     void open_in_ide();
+    static void delete_solution(const std::string& solution_name);
 
     // Статические методы для работы без создания объекта класса:
     static nlohmann::json load_app_config();

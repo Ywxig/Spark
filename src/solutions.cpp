@@ -162,7 +162,6 @@ void Solution::create() {
 void Solution::open_in_ide() {
     fs::path solution_dir = app_config["SOLUTION_DIR"].get<std::string>();
     fs::path target_path = solution_dir / name / "_src_";
-    print("Opening solution in IDE...", "white");
     std::string cmd = app_config["OPEN_IN_IDE_CMD"].get<std::string>() + " " + target_path.string();
     std::cout << cmd << std::endl;
     system(cmd.c_str());
@@ -216,4 +215,19 @@ std::vector<std::string> Solution::index_tmpl() {
     }
 
     return result;
+}
+
+ void Solution::delete_solution(const std::string& solution_name) {
+    json app_config = load_app_config();
+
+    if (!app_config.contains("SOLUTION_DIR") || !app_config["SOLUTION_DIR"].is_string()) {
+        throw std::runtime_error("CONFIG_MISSING_SOLUTION_DIR");
+    }
+
+    fs::path dir_path = app_config["SOLUTION_DIR"].get<std::string>();
+
+    fs::path solution_path = dir_path / solution_name;
+    if (fs::exists(solution_path)) {
+        fs::remove_all(solution_path);
+    }
 }

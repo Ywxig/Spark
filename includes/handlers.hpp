@@ -7,3 +7,4 @@ void handler_create(const std::string& solution_name, const std::string& tmpl_na
 void handler_open(const std::string& solution_name);
 void handler_solution_index();
 void handler_template_index();
+void handler_delete(const std::string& solution_name);

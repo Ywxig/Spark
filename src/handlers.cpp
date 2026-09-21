@@ -2,7 +2,7 @@
 #include <string>
 #include "handlers.hpp"
 #include "solutions.hpp"
-#include "colorise.hpp"
+#include "../includes/colorise.hpp"
 
 void handler_create(const std::string& solution_name, const std::string& tmpl_name) {
     try {
@@ -11,18 +11,18 @@ void handler_create(const std::string& solution_name, const std::string& tmpl_na
         solution.loadTemplate(tmpl_name);
         solution.build();
     } catch (const std::exception& e) {
-        print(e.what(), "white", true);
+        std::cout << echo(e.what());
 
     }
 }
 
 void handler_open(const std::string& solution_name) {
-    print("Opening " + solution_name + " in IDE... handlers.cpp");
+    std::cout << echo("Opening " + solution_name + " in IDE... handlers.cpp");
     try {
         Solution solution(solution_name);
         solution.open_in_ide();
     } catch (const std::exception& e) {
-        print(e.what(), "white", true);
+        std::cout << echo(e.what());
     }
 }
 
@@ -32,7 +32,7 @@ void handler_solution_index() {
             std::cout << solution_name << std::endl;
         }
     } catch (const std::exception& e) {
-        print(e.what(), "white", true);
+        std::cout << echo(e.what());
     }
 }
 
@@ -42,6 +42,14 @@ void handler_template_index() {
             std::cout << tmpl_name << std::endl;
         }
     } catch (const std::exception& e) {
-        print(e.what(), "white", true);
+        std::cout << echo(e.what());
+    }
+}
+
+void handler_delete(const std::string& solution_name) {
+    try {
+        Solution::delete_solution(solution_name);
+    } catch (const std::exception& e) {
+        std::cout << echo(e.what());
     }
 }

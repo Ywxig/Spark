@@ -19,10 +19,6 @@ deps: | $(INCL_DIR)
 		echo "Скачиваем json.hpp..."; \
 		curl -L -o $(JSON_HPP) https://github.com/nlohmann/json/releases/download/v3.11.3/json.hpp; \
 	fi
-	# @if [ ! -f $(CLI11_HPP) ]; then \
-	# 	echo "Скачиваем CLI11.hpp..."; \
-	# 	curl -L -o $(CLI11_HPP) https://github.com/CLIUtils/CLI11/releases/download/v2.4.2/CLI11.hpp; \
-	# fi
 
 $(INCL_DIR):
 	mkdir -p $(INCL_DIR)
