@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <vector>
 #include <ranges>
+#include <sstream>
 #include "colorise.hpp"
 #include "util.hpp"
 
@@ -13,7 +14,7 @@ namespace fs = std::filesystem;
 
 json Solution::load_app_config() {
     std::ifstream file(get_parent_dir_path_str() + "config.json");
-    //print( get_parent_dir_path_str() + "config.json", "white" );
+
 
     if (!file.is_open())
         throw std::runtime_error("CONFIG_NOT_FOUND");
@@ -162,9 +163,25 @@ void Solution::create() {
 void Solution::open_in_ide() {
     fs::path solution_dir = app_config["SOLUTION_DIR"].get<std::string>();
     fs::path target_path = solution_dir / name / "_src_";
+    std::cout << echo("Opening solution in IDE...") << std::endl;
     std::string cmd = app_config["OPEN_IN_IDE_CMD"].get<std::string>() + " " + target_path.string();
     std::cout << cmd << std::endl;
     system(cmd.c_str());
+}
+
+void Solution::delete_solution(const std::string& solution_name) {
+    json app_config = load_app_config();
+
+    if (!app_config.contains("SOLUTION_DIR") || !app_config["SOLUTION_DIR"].is_string()) {
+        throw std::runtime_error("CONFIG_MISSING_SOLUTION_DIR");
+    }
+
+    fs::path dir_path = app_config["SOLUTION_DIR"].get<std::string>();
+
+    fs::path solution_path = dir_path / solution_name;
+    if (fs::exists(solution_path)) {
+        fs::remove_all(solution_path);
+    }
 }
 
 std::vector<std::string> Solution::index_sons() {
@@ -217,7 +234,34 @@ std::vector<std::string> Solution::index_tmpl() {
     return result;
 }
 
- void Solution::delete_solution(const std::string& solution_name) {
+std::string Solution::get_template_description(const std::string& tmpl_name) {
+    json app_config = load_app_config();
+
+    if (!app_config.contains("CODE_TEMPLATE_DIR") || !app_config["CODE_TEMPLATE_DIR"].is_string()) {
+        throw std::runtime_error("CONFIG_MISSING_CODE_TEMPLATE_DIR");
+    }
+
+    fs::path dir_path = app_config["CODE_TEMPLATE_DIR"].get<std::string>();
+    fs::path tmpl_path = dir_path / tmpl_name;
+
+    if (!fs::exists(tmpl_path)) {
+        return "Template not found";
+    }
+
+    try {
+        std::ifstream tmpl_file(tmpl_path);
+        json j;
+        tmpl_file >> j;
+        if (j.contains("description") && j["description"].is_string()) {
+            return j["description"].get<std::string>();
+        }
+        return "No description";
+    } catch (const std::exception& e) {
+        return "Error parsing description";
+    }
+}
+
+std::string Solution::get_solution_description(const std::string& solution_name) {
     json app_config = load_app_config();
 
     if (!app_config.contains("SOLUTION_DIR") || !app_config["SOLUTION_DIR"].is_string()) {
@@ -225,9 +269,21 @@ std::vector<std::string> Solution::index_tmpl() {
     }
 
     fs::path dir_path = app_config["SOLUTION_DIR"].get<std::string>();
+    fs::path solution_config_path = dir_path / solution_name / "config.json";
 
-    fs::path solution_path = dir_path / solution_name;
-    if (fs::exists(solution_path)) {
-        fs::remove_all(solution_path);
+    if (!fs::exists(solution_config_path)) {
+        return "Solution config not found";
+    }
+
+    try {
+        std::ifstream cfg_file(solution_config_path);
+        json j;
+        cfg_file >> j;
+        if (j.contains("Description") && j["Description"].is_string()) {
+            return j["Description"].get<std::string>();
+        }
+        return "No description";
+    } catch (const std::exception& e) {
+        return "Error parsing description";
     }
 }

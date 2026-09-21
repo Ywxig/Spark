@@ -26,6 +26,7 @@ int main(int argc, char *argv[]) {
     if (opt == "open") {
         if (argc < 3) {
             std::cout << "Error: open requires a solution name." << std::endl;
+            handler_solution_index();
             return 1;
         }
         handler_open(argv[2]);

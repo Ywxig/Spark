@@ -29,7 +29,7 @@ void handler_open(const std::string& solution_name) {
 void handler_solution_index() {
     try {
         for (const auto& solution_name : Solution::index_sons()) {
-            std::cout << solution_name << std::endl;
+            std::cout << echo(" <cyan> " + solution_name + " <reset> - " + Solution::get_solution_description(solution_name)) << std::endl;
         }
     } catch (const std::exception& e) {
         std::cout << echo(e.what());
@@ -39,7 +39,7 @@ void handler_solution_index() {
 void handler_template_index() {
     try {
         for (const auto& tmpl_name : Solution::index_tmpl()) {
-            std::cout << tmpl_name << std::endl;
+            std::cout << echo(" <cyan> " + tmpl_name + " <reset> - " + Solution::get_template_description(tmpl_name)) << std::endl;
         }
     } catch (const std::exception& e) {
         std::cout << echo(e.what());
