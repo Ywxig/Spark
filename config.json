@@ -1,5 +1,5 @@
 {
-    "SOLUTION_DIR" : "palace/for/local/with/solutions",
-    "CODE_TEMPLATE_DIR" : "palce/for/local/with/tempalte",
-    "OPEN_IN_IDE_CMD" : "YOUR_IDE"
+    "SOLUTION_DIR" : "/home/dima/Documents/Spark/Spark/Solutions/",
+    "CODE_TEMPLATE_DIR" : "/home/dima/Documents/Spark/Spark/Code/",
+    "OPEN_IN_IDE_CMD" : "dev.zed.Zed"
 }

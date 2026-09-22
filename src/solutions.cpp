@@ -152,7 +152,7 @@ void Solution::create() {
         throw std::runtime_error("CONFIG_MISSING_SOLUTION_DIR");
 
     fs::path solution_dir = app_config["SOLUTION_DIR"].get<std::string>();
-    fs::path solution_path = solution_dir / name;
+    fs::path solution_path = solution_dir / name / "_src_";
 
     if (fs::exists(solution_path))
         throw std::runtime_error("ERROR_SOLUTION_ALREADY_EXISTS");
@@ -165,7 +165,6 @@ void Solution::open_in_ide() {
     fs::path target_path = solution_dir / name / "_src_";
     std::cout << echo("Opening solution in IDE...") << std::endl;
     std::string cmd = app_config["OPEN_IN_IDE_CMD"].get<std::string>() + " " + target_path.string();
-    std::cout << cmd << std::endl;
     system(cmd.c_str());
 }
 

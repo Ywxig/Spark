@@ -41,10 +41,17 @@ int main(int argc, char *argv[]) {
             std::cout << "Error: delete requires a solution name." << std::endl;
             return 1;
         }
+        char confirm = 'n';
+        std::cout << "Are you sure you want to delete " << argv[2] << "? (y/N)" << std::endl;
+        std::cin >> confirm;
+        if (confirm != 'Y' && confirm != 'y') {
+            return 0;
+        }
         handler_delete(argv[2]);
     } else if (opt == "create") {
         if (argc < 4) {
             std::cout << "Error: create requires <solution_name> and <template_name>." << std::endl;
+            handler_template_index();
             return 1;
         }
         std::string solution_name = argv[2];
