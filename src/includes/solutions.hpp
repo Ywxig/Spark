@@ -12,6 +12,11 @@ struct AppConfig {
     std::string open_cmd;
 };
 
+// Объявляем пространство имен Config в заголовке
+namespace Config {
+    std::filesystem::path executable_dir();
+}
+
 AppConfig load_app_config();
 
 std::vector<std::string> list_solutions(const AppConfig& config);

@@ -1,6 +1,7 @@
 #include <exception>
 #include <iostream>
 #include <string>
+#include <fstream>
 
 #include "src/includes/colorise.hpp"
 #include "src/includes/solutions.hpp"
@@ -23,6 +24,27 @@ int main(int argc, char* argv[]) {
     }
 
     const std::string option = argv[1];
+
+    // инициализация
+    // пока что просто добавления аляса по адресу второго аргумента
+    if (option == "init") {
+            std::cout << "init spark to: " << (argc > 2 ? argv[2] : "default") << std::endl;
+
+            // Пример добавления алиаса в файл (например, в example.txt или ваш конфиг оболочки)
+            std::ofstream file(argv[2], std::ios::app);
+
+            // Вызываем функцию executable_dir() из пространства имен Config и переводим в string
+            std::cout << Config::executable_dir().string() << std::endl;
+
+            if (file.is_open()) {
+                // Исправлено экранирование кавычек для алиаса
+                file << "alias spark=\"" << Config::executable_dir().string() << "/main\"\n";
+                file.close();
+                std::cout << "SUCCES!" << std::endl;
+            } else {
+                std::cerr << "Err!!!." << std::endl;
+            }
+        }
 
     if (option != "open" && option != "ls" && option != "create" && option != "del") {
         std::cout << "Unknown option: " << option << '\n';

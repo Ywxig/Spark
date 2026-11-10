@@ -11,101 +11,103 @@
 namespace fs = std::filesystem;
 using json = nlohmann::json;
 
-namespace {
+namespace Config {
 
-fs::path executable_dir() {
-    std::error_code ec;
-    fs::path exe = fs::canonical("/proc/self/exe", ec);
-    if (ec)
-        throw std::runtime_error("ERROR_EXECUTABLE_PATH");
-    return exe.parent_path();
-}
-
-json read_json(const fs::path& path, const char* not_found_error, const char* parse_error) {
-    std::ifstream file(path);
-    if (!file)
-        throw std::runtime_error(not_found_error);
-
-    json data;
-    try {
-        file >> data;
-    } catch (const json::parse_error&) {
-        throw std::runtime_error(parse_error);
+    fs::path executable_dir() {
+        std::error_code ec;
+        fs::path exe = fs::canonical("/proc/self/exe", ec);
+        if (ec)
+            throw std::runtime_error("ERROR_EXECUTABLE_PATH");
+        return exe.parent_path();
     }
-    return data;
-}
 
-void validate_name(const std::string& name) {
-    fs::path path(name);
-    if (name.empty() || path.filename() != path)
-        throw std::runtime_error("ERROR_NAME_IS_NOT_CORRECT");
-}
+    json read_json(const fs::path& path, const char* not_found_error, const char* parse_error) {
+        std::ifstream file(path);
+        if (!file)
+            throw std::runtime_error(not_found_error);
 
-fs::path solution_dir(const AppConfig& config, const std::string& name) {
-    validate_name(name);
-    return config.solutions_dir / name;
-}
+        json data;
+        try {
+            file >> data;
+        } catch (const json::parse_error&) {
+            throw std::runtime_error(parse_error);
+        }
+        return data;
+    }
 
-fs::path safe_path(const fs::path& base, const std::string& relative) {
-    fs::path result = fs::weakly_canonical(base / relative);
-    fs::path root = fs::weakly_canonical(base);
+    void validate_name(const std::string& name) {
+        fs::path path(name);
+        if (name.empty() || path.filename() != path)
+            throw std::runtime_error("ERROR_NAME_IS_NOT_CORRECT");
+    }
 
-    auto mismatch = std::mismatch(root.begin(), root.end(), result.begin());
-    if (mismatch.first != root.end())
-        throw std::runtime_error("ERROR_PATH_IS_NOT_CORRECT");
+    fs::path solution_dir(const AppConfig& config, const std::string& name) {
+        validate_name(name);
+        return config.solutions_dir / name;
+    }
 
-    return result;
-}
+    fs::path safe_path(const fs::path& base, const std::string& relative) {
+        fs::path result = fs::weakly_canonical(base / relative);
+        fs::path root = fs::weakly_canonical(base);
 
-void build_tree(const json& tree, const fs::path& base) {
-    for (const auto& [name, node] : tree.items()) {
-        fs::path current = base / name;
+        auto mismatch = std::mismatch(root.begin(), root.end(), result.begin());
+        if (mismatch.first != root.end())
+            throw std::runtime_error("ERROR_PATH_IS_NOT_CORRECT");
 
-        if (node.empty()) {
-            fs::create_directories(current.parent_path());
-            std::ofstream file(current);
-        } else {
-            fs::create_directories(current);
-            build_tree(node, current);
+        return result;
+    }
+
+    void build_tree(const json& tree, const fs::path& base) {
+        for (const auto& [name, node] : tree.items()) {
+            fs::path current = base / name;
+
+            if (node.empty()) {
+                fs::create_directories(current.parent_path());
+                std::ofstream file(current);
+            } else {
+                fs::create_directories(current);
+                build_tree(node, current);
+            }
         }
     }
-}
 
-std::vector<std::string> list_entries(const fs::path& dir, bool directories) {
-    std::error_code ec;
-    if (!fs::is_directory(dir, ec))
-        return {};
+    std::vector<std::string> list_entries(const fs::path& dir, bool directories) {
+        std::error_code ec;
+        if (!fs::is_directory(dir, ec))
+            return {};
 
-    std::vector<std::string> names;
-    for (const auto& entry : fs::directory_iterator(dir, fs::directory_options::skip_permission_denied, ec)) {
-        std::error_code entry_error;
-        bool matches = directories ? entry.is_directory(entry_error) : entry.is_regular_file(entry_error);
-        if (matches)
-            names.push_back(entry.path().filename().string());
+        std::vector<std::string> names;
+        for (const auto& entry : fs::directory_iterator(dir, fs::directory_options::skip_permission_denied, ec)) {
+            std::error_code entry_error;
+            bool matches = directories ? entry.is_directory(entry_error) : entry.is_regular_file(entry_error);
+            if (matches)
+                names.push_back(entry.path().filename().string());
+        }
+
+        std::sort(names.begin(), names.end());
+        return names;
     }
 
-    std::sort(names.begin(), names.end());
-    return names;
-}
+    std::string read_description(const fs::path& path, const char* key, const char* not_found) {
+        if (!fs::exists(path))
+            return not_found;
 
-std::string read_description(const fs::path& path, const char* key, const char* not_found) {
-    if (!fs::exists(path))
-        return not_found;
+        try {
+            std::ifstream file(path);
+            json data;
+            file >> data;
 
-    try {
-        std::ifstream file(path);
-        json data;
-        file >> data;
-
-        if (data.contains(key) && data[key].is_string())
-            return data[key].get<std::string>();
-        return "No description";
-    } catch (const std::exception&) {
-        return "Error parsing description";
+            if (data.contains(key) && data[key].is_string())
+                return data[key].get<std::string>();
+            return "No description";
+        } catch (const std::exception&) {
+            return "Error parsing description";
+        }
     }
-}
 
 } // namespace
+
+using namespace Config;
 
 AppConfig load_app_config() {
     json data = read_json(executable_dir() / "config.json", "CONFIG_NOT_FOUND", "CONFIG_PARSE_ERROR");
