@@ -2,7 +2,7 @@
 
 CXX      := g++
 INCL_DIR := src/includes
-CXXFLAGS := -Wall -Wextra -std=c++17 -I$(INCL_DIR)
+CXXFLAGS := -Wall -Wextra -std=c++17
 
 DIST_DIR := dist
 TARGET   := $(DIST_DIR)/main

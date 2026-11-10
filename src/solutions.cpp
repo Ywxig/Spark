@@ -1,4 +1,4 @@
-#include "solutions.hpp"
+#include "includes/solutions.hpp"
 
 #include <algorithm>
 #include <cstdlib>
@@ -6,7 +6,7 @@
 #include <iostream>
 #include <stdexcept>
 
-#include "colorise.hpp"
+#include "includes/colorise.hpp"
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;

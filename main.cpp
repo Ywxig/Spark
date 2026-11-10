@@ -2,8 +2,8 @@
 #include <iostream>
 #include <string>
 
-#include "colorise.hpp"
-#include "solutions.hpp"
+#include "src/includes/colorise.hpp"
+#include "src/includes/solutions.hpp"
 
 // spark open <target>            - открыть решение
 // spark ls [t]                   - показать решения или шаблоны
