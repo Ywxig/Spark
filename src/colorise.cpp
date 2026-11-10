@@ -1,55 +1,33 @@
-// Твой основной код на C++ (оставляем как есть, только убираем дублирование)
+#include "colorise.hpp"
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <unordered_map>
-#include "../includes/utils.hpp"
-#include <cstdarg>
+#include <utility>
 
-// хэш-таблица для хранения цветовых кодов ANSI
-inline const std::unordered_map<std::string, std::string>& getColors() {
-    static const std::unordered_map<std::string, std::string> COLORS = {
-        {"<red>", "\033[31m"},
-        {"<green>", "\033[32m"},
-        {"<yellow>", "\033[33m"},
-        {"<blue>", "\033[34m"},
-        {"<magenta>", "\033[35m"},
-        {"<cyan>", "\033[36m"},
-        {"<white>", "\033[37m"},
-        {"<reset>", "\033[0m"},
-        {"<enc>", "\033[33m Encrypt: \033[0m"},
-        {"<dec>", "\033[33m Decrypt: \033[0m"},
-        {"<key>", "\033[33m Key: \033[0m"}
-    };
-    return COLORS;
+namespace {
+
+const std::pair<const char*, const char*> COLORS[] = {
+    {"<red>", "\033[31m"},
+    {"<green>", "\033[32m"},
+    {"<yellow>", "\033[33m"},
+    {"<blue>", "\033[34m"},
+    {"<magenta>", "\033[35m"},
+    {"<cyan>", "\033[36m"},
+    {"<white>", "\033[37m"},
+    {"<reset>", "\033[0m"},
+    {"<enc>", "\033[33m Encrypt: \033[0m"},
+    {"<dec>", "\033[33m Decrypt: \033[0m"},
+    {"<key>", "\033[33m Key: \033[0m"},
+};
+
+void replace_all(std::string& text, const std::string& from, const std::string& to) {
+    for (std::size_t pos = 0; (pos = text.find(from, pos)) != std::string::npos; pos += to.size())
+        text.replace(pos, from.size(), to);
 }
 
-void color(const std::string& colorCode) {
-    std::cout << colorCode;
-}
-
-void resetColor() {
-    std::cout << "\033[0m" << std::endl;
-}
-
+} // namespace
 
 std::string echo(const std::string& message) {
-    std::string result = "";
-    const auto& COLORS = getColors();
-    std::vector<std::string> tokens = split(message.c_str());
-
-    for (size_t i = 0; i < tokens.size(); i++) {
-        auto it = COLORS.find(tokens[i]);
-        if (it != COLORS.end()) {
-            result += it->second;
-        } else {
-            result += tokens[i];
-        }
-        if (i + 1 < tokens.size()) {
-            result += " ";
-        }
-    }
-    result += "\033[0m";
-    return result;
+    std::string result = message;
+    for (const auto& [tag, code] : COLORS)
+        replace_all(result, tag, code);
+    return result + "\033[0m";
 }

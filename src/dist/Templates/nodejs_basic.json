@@ -1,0 +1,24 @@
+{
+    "name": "Node.js Basic",
+    "description": "Simple Node.js script",
+
+    "CONFIGURATION": {
+        "language": "javascript",
+        "version": "1.0",
+        "author": ""
+    },
+
+    "TREE": {
+        "index.js": {},
+        "package.json": {},
+        "readme.md": {},
+        ".gitignore": {}
+    },
+
+    "FILES": [
+        { "name": "index.js", "ctx": "console.log('hello world');" },
+        { "name": "package.json", "ctx": "{\n  \"name\": \"my-app\",\n  \"version\": \"1.0.0\",\n  \"main\": \"index.js\"\n}" },
+        { "name": "readme.md", "ctx": "# Node.js Basic\n\nMinimal Node.js project template." },
+        { "name": ".gitignore", "ctx": "node_modules/\n.env" }
+    ]
+}

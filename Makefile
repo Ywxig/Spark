@@ -1,18 +1,20 @@
 .PHONY: all run clean deps
 
 CXX      := g++
-INCL_DIR := includes
-# Добавляем -I$(INCL_DIR) — это указывает путь к вашим hpp файлам
+INCL_DIR := src/includes
 CXXFLAGS := -Wall -Wextra -std=c++17 -I$(INCL_DIR)
 
 DIST_DIR := dist
 TARGET   := $(DIST_DIR)/main
 SRCS     := main.cpp $(wildcard src/*.cpp)
+HDRS     := $(wildcard $(INCL_DIR)/*.hpp)
 
-JSON_HPP  := $(INCL_DIR)/json.hpp
-CLI11_HPP := $(INCL_DIR)/CLI11.hpp
+JSON_HPP := $(INCL_DIR)/json.hpp
 
-all: deps $(TARGET) copy_config
+all: deps $(TARGET)
+	@mkdir -p $(DIST_DIR)/Templates
+	@cp src/config.json $(DIST_DIR)/
+	@cp -r Templates/. $(DIST_DIR)/Templates/
 
 deps: | $(INCL_DIR)
 	@if [ ! -f $(JSON_HPP) ]; then \
@@ -26,13 +28,8 @@ $(INCL_DIR):
 $(DIST_DIR):
 	mkdir -p $(DIST_DIR)
 
-# Сборка проекта
-$(TARGET): $(SRCS) | $(DIST_DIR)
+$(TARGET): $(SRCS) $(HDRS) | $(DIST_DIR)
 	$(CXX) $(CXXFLAGS) $(SRCS) -o $(TARGET)
-
-copy_config: config.json | $(DIST_DIR)
-	@cp config.json $(DIST_DIR)/
-	@cp -r Templates $(DIST_DIR)/
 
 run: all
 	@echo "Building is done"

@@ -1,0 +1,28 @@
+{
+    "name": "TypeScript Basic",
+    "description": "Minimal Node.js project in TypeScript",
+
+    "CONFIGURATION": {
+        "language": "typescript",
+        "version": "1.0",
+        "author": ""
+    },
+
+    "TREE": {
+        "package.json": {},
+        "tsconfig.json": {},
+        "readme.md": {},
+        ".gitignore": {},
+        "src": {
+            "index.ts": {}
+        }
+    },
+
+    "FILES": [
+        { "name": "package.json", "ctx": "{\n  \"name\": \"my-app\",\n  \"version\": \"1.0.0\",\n  \"main\": \"dist/index.js\",\n  \"scripts\": {\n    \"build\": \"tsc\",\n    \"start\": \"node dist/index.js\",\n    \"dev\": \"ts-node src/index.ts\"\n  },\n  \"devDependencies\": {\n    \"typescript\": \"^5.4.0\",\n    \"ts-node\": \"^10.9.0\",\n    \"@types/node\": \"^20.0.0\"\n  }\n}" },
+        { "name": "tsconfig.json", "ctx": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2020\",\n    \"module\": \"CommonJS\",\n    \"outDir\": \"dist\",\n    \"rootDir\": \"src\",\n    \"strict\": true,\n    \"esModuleInterop\": true,\n    \"skipLibCheck\": true\n  },\n  \"include\": [\"src\"]\n}" },
+        { "name": "index.ts", "ctx": "const message: string = 'hello world';\nconsole.log(message);" },
+        { "name": "readme.md", "ctx": "# TypeScript Basic\n\nMinimal Node.js project template in TypeScript.\n\n## Running\n\n```\nnpm install\nnpm run dev\n```" },
+        { "name": ".gitignore", "ctx": "node_modules/\ndist/\n.env" }
+    ]
+}

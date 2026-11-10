@@ -1,0 +1,52 @@
+{
+    "name": "Java Maven",
+    "description": "Java-проект со стандартной структурой Maven",
+
+    "CONFIGURATION": {
+        "language": "java",
+        "version": "1.0",
+        "author": ""
+    },
+
+    "TREE": {
+        "pom.xml": {},
+        "readme.md": {},
+        ".gitignore": {},
+        "src": {
+            "main": {
+                "java": {
+                    "com": {
+                        "example": {
+                            "app": {
+                                "Main.java": {}
+                            }
+                        }
+                    }
+                },
+                "resources": {
+                    "application.properties": {}
+                }
+            },
+            "test": {
+                "java": {
+                    "com": {
+                        "example": {
+                            "app": {
+                                "MainTest.java": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+
+    "FILES": [
+        { "name": "pom.xml", "ctx": "<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <modelVersion>4.0.0</modelVersion>\n\n    <groupId>com.example</groupId>\n    <artifactId>app</artifactId>\n    <version>1.0.0</version>\n    <packaging>jar</packaging>\n\n    <properties>\n        <maven.compiler.source>17</maven.compiler.source>\n        <maven.compiler.target>17</maven.compiler.target>\n        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>\n        <junit.version>5.10.2</junit.version>\n    </properties>\n\n    <dependencies>\n        <dependency>\n            <groupId>org.junit.jupiter</groupId>\n            <artifactId>junit-jupiter</artifactId>\n            <version>${junit.version}</version>\n            <scope>test</scope>\n        </dependency>\n    </dependencies>\n\n    <build>\n        <finalName>app</finalName>\n        <plugins>\n            <plugin>\n                <groupId>org.apache.maven.plugins</groupId>\n                <artifactId>maven-jar-plugin</artifactId>\n                <configuration>\n                    <archive>\n                        <manifest>\n                            <mainClass>com.example.app.Main</mainClass>\n                        </manifest>\n                    </archive>\n                </configuration>\n            </plugin>\n            <plugin>\n                <groupId>org.apache.maven.plugins</groupId>\n                <artifactId>maven-surefire-plugin</artifactId>\n                <version>3.2.5</version>\n            </plugin>\n        </plugins>\n    </build>\n</project>" },
+        { "name": "Main.java", "ctx": "package com.example.app;\n\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(\"hello world\");\n    }\n}" },
+        { "name": "MainTest.java", "ctx": "package com.example.app;\n\nimport org.junit.jupiter.api.Test;\nimport static org.junit.jupiter.api.Assertions.assertTrue;\n\nclass MainTest {\n\n    @Test\n    void placeholderTest() {\n        assertTrue(true);\n    }\n}" },
+        { "name": "application.properties", "ctx": "# application properties\napp.name=app" },
+        { "name": "readme.md", "ctx": "# Java Maven\n\nШаблон Java-проекта со стандартной структурой Maven.\n\n## Сборка\n\n```\nmvn clean package\n```\n\n## Запуск\n\n```\nmvn compile exec:java -Dexec.mainClass=\"com.example.app.Main\"\n```\n\nили после сборки:\n\n```\njava -jar target/app.jar\n```\n\n## Тесты\n\n```\nmvn test\n```" },
+        { "name": ".gitignore", "ctx": "/target/\n*.class\n.idea/\n*.iml\n.vscode/" }
+    ]
+}

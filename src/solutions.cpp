@@ -1,288 +1,191 @@
 #include "solutions.hpp"
-#include <iostream>
+
+#include <algorithm>
+#include <cstdlib>
 #include <fstream>
+#include <iostream>
 #include <stdexcept>
-#include <vector>
-#include <ranges>
-#include <sstream>
+
 #include "colorise.hpp"
-#include "util.hpp"
 
-using json = nlohmann::json;
 namespace fs = std::filesystem;
+using json = nlohmann::json;
 
+namespace {
 
-json Solution::load_app_config() {
-    std::ifstream file(get_parent_dir_path_str() + "config.json");
+fs::path executable_dir() {
+    std::error_code ec;
+    fs::path exe = fs::canonical("/proc/self/exe", ec);
+    if (ec)
+        throw std::runtime_error("ERROR_EXECUTABLE_PATH");
+    return exe.parent_path();
+}
 
+json read_json(const fs::path& path, const char* not_found_error, const char* parse_error) {
+    std::ifstream file(path);
+    if (!file)
+        throw std::runtime_error(not_found_error);
 
-    if (!file.is_open())
-        throw std::runtime_error("CONFIG_NOT_FOUND");
-
-    json cfg;
+    json data;
     try {
-        file >> cfg;
-    } catch (const json::parse_error& e) {
-        throw std::runtime_error("CONFIG_PARSE_ERROR");
+        file >> data;
+    } catch (const json::parse_error&) {
+        throw std::runtime_error(parse_error);
     }
-
-    if (cfg.empty())
-        throw std::runtime_error("CONFIG_IS_EMPTY");
-
-    return cfg;
+    return data;
 }
 
-/**
- * @brief Constructs and returns the filesystem path to the source directory of this solution.
- *        The path is formed by using the absolute solution directory from the application configuration
- *        and combining it with the solution's name and the fixed subdirectory "_src_".
- *
- * @return fs::path An object representing the full path to the solution's source code directory.
- */
-fs::path Solution::src_path() const {
-    fs::path solution_dir = app_config["SOLUTION_DIR"].get<std::string>();
-    return solution_dir / name / "_src_";
+void validate_name(const std::string& name) {
+    fs::path path(name);
+    if (name.empty() || path.filename() != path)
+        throw std::runtime_error("ERROR_NAME_IS_NOT_CORRECT");
 }
 
-fs::path Solution::safe_path(const fs::path& base, const std::string& relative) const {
+fs::path solution_dir(const AppConfig& config, const std::string& name) {
+    validate_name(name);
+    return config.solutions_dir / name;
+}
+
+fs::path safe_path(const fs::path& base, const std::string& relative) {
     fs::path result = fs::weakly_canonical(base / relative);
-    fs::path canonical_base = fs::weakly_canonical(base);
+    fs::path root = fs::weakly_canonical(base);
 
-    // Проверяем, что result начинается с base
-    auto [a, b] = std::mismatch(
-        canonical_base.begin(), canonical_base.end(),
-        result.begin()
-    );
-
-    if (a != canonical_base.end())
+    auto mismatch = std::mismatch(root.begin(), root.end(), result.begin());
+    if (mismatch.first != root.end())
         throw std::runtime_error("ERROR_PATH_IS_NOT_CORRECT");
 
     return result;
 }
 
-// Конструктор
+void build_tree(const json& tree, const fs::path& base) {
+    for (const auto& [name, node] : tree.items()) {
+        fs::path current = base / name;
 
-Solution::Solution(const std::string& name) {
-    app_config = load_app_config();
-
-    // Имя должно быть простым — без слэшей и ".."
-    fs::path p(name);
-    if (p.filename() != p || name.empty())
-        throw std::runtime_error("ERROR_NAME_IS_NOT_CORRECT");
-
-    this->name = name;
-}
-
-void Solution::loadTemplate(const std::string& filename) {
-    fs::path template_dir = app_config["CODE_TEMPLATE_DIR"].get<std::string>();
-    fs::path tmpl_path = template_dir / filename;
-
-    if (!fs::exists(tmpl_path))
-        throw std::runtime_error("ERROR_TEMPLATE_NOT_FOUND");
-
-    std::ifstream file(tmpl_path);
-    try {
-        file >> tmpl;
-    } catch (const json::parse_error& e) {
-        throw std::runtime_error("ERROR_TEMPLATE_PARSE_ERROR");
-    }
-}
-
-// Вспомогательный рекурсивный метод для обхода TREE
-void Solution::build_tree(const json& tree, const fs::path& base) {
-    for (auto& [key, value] : tree.items()) {
-        fs::path current = base / key;
-
-        if (value.empty()) {
-            // Лист — это файл (создаём пустым, содержимое придёт из FILES)
+        if (node.empty()) {
             fs::create_directories(current.parent_path());
-            if (!fs::exists(current)) {
-                std::ofstream f(current);
-            }
+            std::ofstream file(current);
         } else {
-            // Узел — это директория
             fs::create_directories(current);
-            build_tree(value, current);
+            build_tree(node, current);
         }
     }
 }
-void Solution::build() {
-    if (tmpl.empty())
-        throw std::runtime_error("ERROR_TEMPLATE_NOT_LOADED");
 
-    fs::path src = src_path();
+std::vector<std::string> list_entries(const fs::path& dir, bool directories) {
+    std::error_code ec;
+    if (!fs::is_directory(dir, ec))
+        return {};
 
-    // 1. Строим структуру из TREE
-    if (tmpl.contains("TREE")) {
-        build_tree(tmpl["TREE"], src);
+    std::vector<std::string> names;
+    for (const auto& entry : fs::directory_iterator(dir, fs::directory_options::skip_permission_denied, ec)) {
+        std::error_code entry_error;
+        bool matches = directories ? entry.is_directory(entry_error) : entry.is_regular_file(entry_error);
+        if (matches)
+            names.push_back(entry.path().filename().string());
     }
 
-    // 2. Заполняем файлы содержимым из FILES
+    std::sort(names.begin(), names.end());
+    return names;
+}
+
+std::string read_description(const fs::path& path, const char* key, const char* not_found) {
+    if (!fs::exists(path))
+        return not_found;
+
+    try {
+        std::ifstream file(path);
+        json data;
+        file >> data;
+
+        if (data.contains(key) && data[key].is_string())
+            return data[key].get<std::string>();
+        return "No description";
+    } catch (const std::exception&) {
+        return "Error parsing description";
+    }
+}
+
+} // namespace
+
+AppConfig load_app_config() {
+    json data = read_json(executable_dir() / "config.json", "CONFIG_NOT_FOUND", "CONFIG_PARSE_ERROR");
+    if (data.empty())
+        throw std::runtime_error("CONFIG_IS_EMPTY");
+
+    if (!data.contains("SOLUTION_DIR") || !data["SOLUTION_DIR"].is_string())
+        throw std::runtime_error("CONFIG_MISSING_SOLUTION_DIR");
+    if (!data.contains("CODE_TEMPLATE_DIR") || !data["CODE_TEMPLATE_DIR"].is_string())
+        throw std::runtime_error("CONFIG_MISSING_CODE_TEMPLATE_DIR");
+
+    AppConfig config;
+    config.solutions_dir = data["SOLUTION_DIR"].get<std::string>();
+    config.templates_dir = data["CODE_TEMPLATE_DIR"].get<std::string>();
+    config.open_cmd = data.value("OPEN_IN_IDE_CMD", "xdg-open");
+    return config;
+}
+
+std::vector<std::string> list_solutions(const AppConfig& config) {
+    return list_entries(config.solutions_dir, true);
+}
+
+std::vector<std::string> list_templates(const AppConfig& config) {
+    return list_entries(config.templates_dir, false);
+}
+
+std::string solution_description(const AppConfig& config, const std::string& name) {
+    return read_description(config.solutions_dir / name / "config.json", "Description", "Solution config not found");
+}
+
+std::string template_description(const AppConfig& config, const std::string& name) {
+    return read_description(config.templates_dir / name, "description", "Template not found");
+}
+
+void create_solution(const AppConfig& config, const std::string& name, const std::string& template_name) {
+    validate_name(name);
+
+    json tmpl = read_json(config.templates_dir / template_name,
+                          "ERROR_TEMPLATE_NOT_FOUND",
+                          "ERROR_TEMPLATE_PARSE_ERROR");
+
+    fs::path dir = config.solutions_dir / name;
+    fs::path src = dir / "_src_";
+
+    if (fs::exists(src))
+        throw std::runtime_error("ERROR_SOLUTION_ALREADY_EXISTS");
+
+    fs::create_directories(src);
+
+    if (tmpl.contains("TREE"))
+        build_tree(tmpl["TREE"], src);
+
     if (tmpl.contains("FILES")) {
-        for (auto& entry : tmpl["FILES"]) {
-            std::string rel = entry["name"].get<std::string>();
-            std::string ctx = entry.value("ctx", "");
-
-            fs::path target = safe_path(src, rel);
-
+        for (const auto& entry : tmpl["FILES"]) {
+            fs::path target = safe_path(src, entry.at("name").get<std::string>());
             if (!fs::exists(target))
                 throw std::runtime_error("ERROR_FILE_NOT_IN_TREE");
 
-            std::ofstream f(target);
-            f << ctx;
+            std::ofstream file(target);
+            file << entry.value("ctx", "");
         }
     }
 
-    // 3. Пишем config.json решения
     json solution_config;
-    for (auto& [key, value] : tmpl.items()) {
-        if (key != "TREE" && key != "FILES") {
+    for (const auto& [key, value] : tmpl.items()) {
+        if (key != "TREE" && key != "FILES")
             solution_config[key] = value;
-        }
     }
 
-    fs::path solution_dir = app_config["SOLUTION_DIR"].get<std::string>();
-    fs::path config_path = solution_dir / name / "config.json";
-    std::ofstream cfg_file(config_path);
-    cfg_file << solution_config.dump(4);
+    std::ofstream file(dir / "config.json");
+    file << solution_config.dump(4);
 }
 
-void Solution::create() {
-    if (!app_config.contains("SOLUTION_DIR") || !app_config["SOLUTION_DIR"].is_string())
-        throw std::runtime_error("CONFIG_MISSING_SOLUTION_DIR");
+void open_solution(const AppConfig& config, const std::string& name) {
+    fs::path src = solution_dir(config, name) / "_src_";
 
-    fs::path solution_dir = app_config["SOLUTION_DIR"].get<std::string>();
-    fs::path solution_path = solution_dir / name / "_src_";
-
-    if (fs::exists(solution_path))
-        throw std::runtime_error("ERROR_SOLUTION_ALREADY_EXISTS");
-
-    fs::create_directories(src_path());
+    std::cout << echo("Opening solution in IDE...") << '\n';
+    std::system((config.open_cmd + " " + src.string()).c_str());
 }
 
-void Solution::open_in_ide() {
-    fs::path solution_dir = app_config["SOLUTION_DIR"].get<std::string>();
-    fs::path target_path = solution_dir / name / "_src_";
-    std::cout << echo("Opening solution in IDE...") << std::endl;
-    std::string cmd = app_config["OPEN_IN_IDE_CMD"].get<std::string>() + " " + target_path.string();
-    system(cmd.c_str());
-}
-
-void Solution::delete_solution(const std::string& solution_name) {
-    json app_config = load_app_config();
-
-    if (!app_config.contains("SOLUTION_DIR") || !app_config["SOLUTION_DIR"].is_string()) {
-        throw std::runtime_error("CONFIG_MISSING_SOLUTION_DIR");
-    }
-
-    fs::path dir_path = app_config["SOLUTION_DIR"].get<std::string>();
-
-    fs::path solution_path = dir_path / solution_name;
-    if (fs::exists(solution_path)) {
-        fs::remove_all(solution_path);
-    }
-}
-
-std::vector<std::string> Solution::index_sons() {
-    json app_config = load_app_config();
-
-    if (!app_config.contains("SOLUTION_DIR") || !app_config["SOLUTION_DIR"].is_string()) {
-        throw std::runtime_error("CONFIG_MISSING_SOLUTION_DIR");
-    }
-
-    fs::path dir_path = app_config["SOLUTION_DIR"].get<std::string>();
-
-    std::error_code ec;
-    if (!fs::exists(dir_path, ec) || !fs::is_directory(dir_path, ec)) {
-        return {};
-    }
-
-    std::vector<std::string> result;
-    for (const auto& entry : fs::directory_iterator(dir_path, fs::directory_options::skip_permission_denied, ec)) {
-        std::error_code err;
-        if (entry.is_directory(err)) {
-            result.push_back(entry.path().filename().string());
-        }
-    }
-
-    return result;
-}
-
-std::vector<std::string> Solution::index_tmpl() {
-    json app_config = load_app_config();
-
-    if (!app_config.contains("CODE_TEMPLATE_DIR") || !app_config["CODE_TEMPLATE_DIR"].is_string()) {
-        throw std::runtime_error("CONFIG_MISSING_CODE_TEMPLATE_DIR");
-    }
-
-    fs::path dir_path = app_config["CODE_TEMPLATE_DIR"].get<std::string>();
-
-    std::error_code ec;
-    if (!fs::exists(dir_path, ec) || !fs::is_directory(dir_path, ec)) {
-        return {};
-    }
-
-    std::vector<std::string> result;
-    for (const auto& entry : fs::directory_iterator(dir_path, fs::directory_options::skip_permission_denied, ec)) {
-        std::error_code err;
-        if (entry.is_regular_file(err)) {
-            result.push_back(entry.path().filename().string());
-        }
-    }
-
-    return result;
-}
-
-std::string Solution::get_template_description(const std::string& tmpl_name) {
-    json app_config = load_app_config();
-
-    if (!app_config.contains("CODE_TEMPLATE_DIR") || !app_config["CODE_TEMPLATE_DIR"].is_string()) {
-        throw std::runtime_error("CONFIG_MISSING_CODE_TEMPLATE_DIR");
-    }
-
-    fs::path dir_path = app_config["CODE_TEMPLATE_DIR"].get<std::string>();
-    fs::path tmpl_path = dir_path / tmpl_name;
-
-    if (!fs::exists(tmpl_path)) {
-        return "Template not found";
-    }
-
-    try {
-        std::ifstream tmpl_file(tmpl_path);
-        json j;
-        tmpl_file >> j;
-        if (j.contains("description") && j["description"].is_string()) {
-            return j["description"].get<std::string>();
-        }
-        return "No description";
-    } catch (const std::exception& e) {
-        return "Error parsing description";
-    }
-}
-
-std::string Solution::get_solution_description(const std::string& solution_name) {
-    json app_config = load_app_config();
-
-    if (!app_config.contains("SOLUTION_DIR") || !app_config["SOLUTION_DIR"].is_string()) {
-        throw std::runtime_error("CONFIG_MISSING_SOLUTION_DIR");
-    }
-
-    fs::path dir_path = app_config["SOLUTION_DIR"].get<std::string>();
-    fs::path solution_config_path = dir_path / solution_name / "config.json";
-
-    if (!fs::exists(solution_config_path)) {
-        return "Solution config not found";
-    }
-
-    try {
-        std::ifstream cfg_file(solution_config_path);
-        json j;
-        cfg_file >> j;
-        if (j.contains("Description") && j["Description"].is_string()) {
-            return j["Description"].get<std::string>();
-        }
-        return "No description";
-    } catch (const std::exception& e) {
-        return "Error parsing description";
-    }
+void delete_solution(const AppConfig& config, const std::string& name) {
+    fs::remove_all(solution_dir(config, name));
 }
